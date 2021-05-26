@@ -17,10 +17,10 @@ void Mesh::ConstructPlane()
 	glm::vec4 p2 = glm::vec4(0.5, -0.5, 0, 1);
 	glm::vec4 p3 = glm::vec4(0.5, 0.5, 0, 1);
 
-	glm::vec4 n0 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
-	glm::vec4 n1 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
-	glm::vec4 n2 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
-	glm::vec4 n3 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
+	glm::vec4 n0 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 n1 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 n2 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 n3 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
 	 
 	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
 	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
@@ -44,6 +44,7 @@ void Mesh::ConstructPlane()
 	mVertexArray.push_back(v0);
 	mVertexArray.push_back(v2);
 
+	ConstructAveragedNormals();
 }
 void Mesh::ConstructCube()
 {
@@ -60,17 +61,17 @@ void Mesh::ConstructCube()
 	glm::vec4 p7 = glm::vec4(0.5, 0.5, -0.5, 1);
 
 	//front
-	glm::vec4 N_front = glm::vec4(0.0f, 0.0f, 0.5f, 0);
+	glm::vec4 N_front = glm::vec4(0.0f, 0.0f, 1.0f, 0);
 	//right
-	glm::vec4 N_right = glm::vec4(0.5f, 0.0f, 0.0f, 0);
+	glm::vec4 N_right = glm::vec4(1.0f, 0.0f, 0.0f, 0);
 	//back
-	glm::vec4 N_back = glm::vec4(0.0f, 0.0f, -0.5f, 0);
+	glm::vec4 N_back = glm::vec4(0.0f, 0.0f, 1.0f, 0);
 	//left
-	glm::vec4 N_left = glm::vec4(-0.5f, 0.0f, 0.0f, 0);
+	glm::vec4 N_left = glm::vec4(1.0f, 0.0f, 0.0f, 0);
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//UVs
 	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
 	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
@@ -173,6 +174,8 @@ void Mesh::ConstructCube()
 	mVertexArray.push_back(v33);
 	mVertexArray.push_back(v34);
 	mVertexArray.push_back(v35);
+	std::cout << "CUBE" << std::endl;
+	ConstructAveragedNormals();
 }
 void Mesh::ConstructCylinder(int slices)
 {
@@ -358,6 +361,9 @@ void Mesh::ConstructCylinder(int slices)
 	SetType(MeshType::CYLINDER);
 	SetVertexNum(int(mVertexArray.size()));
 	SetFaceNum(int(mVertexArray.size() / 3));
+
+	ConstructAveragedNormals();
+
 }
 void Mesh::ConstructCone(int slices)
 {
@@ -492,6 +498,9 @@ void Mesh::ConstructCone(int slices)
 	SetType(MeshType::CONE);
 	SetVertexNum(int(mVertexArray.size()));
 	SetFaceNum(int(mVertexArray.size() / 3));
+
+	ConstructAveragedNormals();
+
 }
 void Mesh::ConstructSphere(int slices)
 {
@@ -788,6 +797,9 @@ void Mesh::ConstructSphere(int slices)
 	SetType(MeshType::SPHERE);
 	SetVertexNum(int(mVertexArray.size()));
 	SetFaceNum(int(mVertexArray.size() / 3));
+
+	ConstructAveragedNormals();
+
 }
 void Mesh::CleanupAndReset()
 {
@@ -806,6 +818,12 @@ void* Mesh::GetNormals()
 {
 	//IS THIS OK?
 	auto ptr = &(*(mNormalArray.begin()));
+	return (void*)(ptr);
+}
+void* Mesh::GetAveragedNormals()
+{
+	//IS THIS OK?
+	auto ptr = &(*(mAveragedNormalArray.begin()));
 	return (void*)(ptr);
 }
 int Mesh::GetVertexNum()
@@ -848,5 +866,76 @@ void Mesh::GenerateNormalLines()
 		glm::vec4 end = v.position + v.normal;
 		NormalLine n(start, end);
 		mNormalArray.push_back(n);
+	}
+}
+void Mesh::GenerateAveragedNormalLines()
+{
+	int vertex_num = GetVertexNum();
+	for (int i = 0; i < vertex_num; i++)
+	{
+		Vertex v = mVertexArray[i];
+		glm::vec4 start = v.position;
+		glm::vec4 end = v.position + v.AveragedNormal;
+		NormalLine n(start, end);
+		mAveragedNormalArray.push_back(n);
+	}
+}
+
+void Mesh::ConstructAveragedNormals()
+{
+	//create a temporary vector for the averaged normals
+	std::vector<glm::vec4> averagedNormals;
+	int i = 0;
+	int j = 0;
+	//loop through each vertex in mVertexArrays using currentVertex
+	for (std::vector<Vertex>::iterator currentVertex = mVertexArray.begin(); currentVertex != mVertexArray.end(); ++currentVertex)
+	{
+		std::cout << "currentVertex = vertex " << i++ << std::endl;
+		//push the current vertex normal into the array
+		averagedNormals.push_back(currentVertex->normal);
+		//with this currentVertex  selected we loop through the vertex array again and add those vertices that
+		//share the same position as currentVertex, but ignoring those that have exactly the same Normal vector value
+		for (std::vector<Vertex>::iterator it = mVertexArray.begin(); it != mVertexArray.end(); ++it)
+		{
+			std::cout << "it = vertex " << j << std::endl;
+			//skip if its the same vertex
+			if (it == currentVertex)
+			{
+				j++;
+				continue;
+			}
+			//check if position is equal
+			glm::vec4 var = (currentVertex)->position;
+			glm::vec4 var2 = (it)->position;
+			std::cout << "currentVertex: " << var.x <<", "<< var.y << ", " << var.z << ", " << var.w << ", " << std::endl;
+			std::cout << "it           : " << var2.x <<", "<< var2.y << ", " << var2.z << ", " << var2.w << ", " << std::endl;
+			if ((currentVertex)->position == (it)->position)
+			{
+				//Check if Normal is exactly the same, if so, skip
+				if ((currentVertex)->normal == (it)->normal)
+				{
+					j++;
+					continue;
+				}
+				//push the iterator normal into the array
+				averagedNormals.push_back(it->normal);
+			}
+			j++;
+		}
+		j = 0;
+		//once you are done, average the normals
+		glm::vec4 result(0.0f, 0.0f, 0.0f, 0.0f);
+		for (std::vector<glm::vec4>::iterator it2 = averagedNormals.begin(); it2 != averagedNormals.end(); ++it2)
+		{
+			result += (*it2);
+		}
+		result.x = result.x / averagedNormals.size();
+		result.y = result.y / averagedNormals.size();
+		result.z = result.z / averagedNormals.size();
+		result.w = result.w / averagedNormals.size();
+		//once all of those are added to the temporary vector we average them, then set the Average normal of the current vertex to the value obtained
+		//set this new normal as the averaged nomal on currentVertex
+		result = glm::normalize(result);
+		currentVertex->AveragedNormal = result;
 	}
 }

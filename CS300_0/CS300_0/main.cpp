@@ -143,7 +143,21 @@ void InitializeNormalBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 }
+void InitializeAveragedNormalBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
+{
+    unsigned long stride = sizeof(glm::vec4);
+    // create buffer for VAO
+    glGenVertexArrays(1, &vao);
+    // create buffer for VBO
+    glGenBuffers(1, &vbo);
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(Mesh::NormalLine) * mesh.GetNormalsNum()), mesh.GetAveragedNormals(), GL_STATIC_DRAW);
 
+    //start
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
+}
 //Called to update the display.
 //You should call SDL_GL_SwapWindow after all of your rendering to display what you rendered.
 //TODO place clear and SD
@@ -203,6 +217,7 @@ void displayNormals(glm::mat4 & ModelMatrix, glm::mat4 & ViewMatrix, glm::mat4 &
     int s = 2 * mesh.GetVertexNum();
     glDrawArrays(GL_LINES, 0, s);
 }
+
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -212,11 +227,12 @@ void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
     mesh.CleanupAndReset();
     
 }
-void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao)
+void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao, GLuint& average_normal_vbo, GLuint& average_normal_vao)
 {
     //reset the Mesh object and clean up the buffers
     CleanUpObjectAndBuffers(vbo, vao, mesh);
     CleanUpObjectAndBuffers(normal_vbo, normal_vao, mesh);
+    CleanUpObjectAndBuffers(average_normal_vbo, average_normal_vao, mesh);
     //reconstruct mesh with new slices
     switch (t)
     {
@@ -234,7 +250,9 @@ void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType
     }
     InitializeMeshBuffers(vbo, vao, mesh);
     mesh.GenerateNormalLines();
+    mesh.GenerateAveragedNormalLines();
     InitializeNormalBuffers(normal_vbo, normal_vao, mesh);
+    InitializeAveragedNormalBuffers(average_normal_vbo, average_normal_vao, mesh);
 }
 GLuint& makeTexture(GLuint& t)
 {
@@ -350,20 +368,28 @@ int main(int argc, char* args[])
     GLuint plane_VAO;
     GLuint plane_Normal_VBO;
     GLuint plane_Normal_VAO;
+    GLuint plane_AveragedNormal_VBO;
+    GLuint plane_AveragedNormal_VAO;
     plane.ConstructPlane();
     plane.GenerateNormalLines();
+    plane.GenerateAveragedNormalLines();
     InitializeMeshBuffers(plane_VBO, plane_VAO, plane);
     InitializeNormalBuffers(plane_Normal_VBO, plane_Normal_VAO, plane);
+    InitializeAveragedNormalBuffers(plane_AveragedNormal_VBO, plane_AveragedNormal_VAO, plane);
 
     Mesh cube = Mesh();
     GLuint cube_VBO;
     GLuint cube_VAO;
     GLuint cube_Normal_VBO;
     GLuint cube_Normal_VAO;
+    GLuint cube_AveragedNormal_VBO;
+    GLuint cube_AveragedNormal_VAO;
     cube.ConstructCube();
     cube.GenerateNormalLines();
+    cube.GenerateAveragedNormalLines();
     InitializeMeshBuffers(cube_VBO, cube_VAO, cube);
     InitializeNormalBuffers(cube_Normal_VBO, cube_Normal_VAO, cube);
+    InitializeAveragedNormalBuffers(cube_AveragedNormal_VBO, cube_AveragedNormal_VAO, cube);
 
     int current_slices = 6;
     Mesh cylinder = Mesh();
@@ -371,30 +397,42 @@ int main(int argc, char* args[])
     GLuint cylinder_VAO;
     GLuint cylinder_Normal_VBO;
     GLuint cylinder_Normal_VAO;
+    GLuint cylinder_AveragedNormal_VBO;
+    GLuint cylinder_AveragedNormal_VAO;
     cylinder.ConstructCylinder(current_slices);
     cylinder.GenerateNormalLines();
+    cylinder.GenerateAveragedNormalLines();
     InitializeMeshBuffers(cylinder_VBO, cylinder_VAO, cylinder);
     InitializeNormalBuffers(cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder);
+    InitializeAveragedNormalBuffers(cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO, cylinder);
 
     Mesh cone = Mesh();
     GLuint cone_VBO;
     GLuint cone_VAO;
     GLuint cone_Normal_VBO;
     GLuint cone_Normal_VAO;
+    GLuint cone_AveragedNormal_VBO;
+    GLuint cone_AveragedNormal_VAO;
     cone.ConstructCone(current_slices);
     cone.GenerateNormalLines();
+    cone.GenerateAveragedNormalLines();
     InitializeMeshBuffers(cone_VBO, cone_VAO, cone);
     InitializeNormalBuffers(cone_Normal_VBO, cone_Normal_VAO, cone);
+    InitializeAveragedNormalBuffers(cone_AveragedNormal_VBO, cone_AveragedNormal_VAO, cone);
 
     Mesh sphere = Mesh();
     GLuint sphere_VBO;
     GLuint sphere_VAO;
     GLuint sphere_Normal_VBO;
     GLuint sphere_Normal_VAO;
+    GLuint sphere_AveragedNormal_VBO;
+    GLuint sphere_AveragedNormal_VAO;
     sphere.ConstructSphere(current_slices);
     sphere.GenerateNormalLines();
+    sphere.GenerateAveragedNormalLines();
     InitializeMeshBuffers(sphere_VBO, sphere_VAO, sphere);
     InitializeNormalBuffers(sphere_Normal_VBO, sphere_Normal_VAO, sphere);
+    InitializeAveragedNormalBuffers(sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO, sphere);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -405,6 +443,7 @@ int main(int argc, char* args[])
     int Display_Normals = 0;
     bool Display_Wireframe = false;
     int ColoredBoxTextureOn = 1;
+    int UsingFaceNormals = 1;
     SDL_Event event;
     bool      quit = false;
     while (!quit)
@@ -459,6 +498,17 @@ int main(int argc, char* args[])
                 {
                     current_mesh_to_display = 5;
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_F)
+                {
+                    if (UsingFaceNormals == 1)
+                    {
+                        UsingFaceNormals = 0;
+                    }
+                    else
+                    {
+                        UsingFaceNormals = 1;
+                    }
+                }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_M)
                 {
                     Display_Wireframe = !Display_Wireframe;
@@ -480,9 +530,9 @@ int main(int argc, char* args[])
                     MeshType cy = cylinder.GetType();
                     MeshType cn = cone.GetType();
                     MeshType sp = sphere.GetType();
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinder, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, cone, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphere, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO);
+                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinder, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
+                    ChangeSlices(cone_VBO, cone_VAO, cone, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
+                    ChangeSlices(sphere_VBO, sphere_VAO, sphere, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
 
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
@@ -495,9 +545,9 @@ int main(int argc, char* args[])
                     MeshType cy = cylinder.GetType();
                     MeshType cn = cone.GetType();
                     MeshType sp = sphere.GetType();
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinder, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, cone, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphere, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO);
+                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinder, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
+                    ChangeSlices(cone_VBO, cone_VAO, cone, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
+                    ChangeSlices(sphere_VBO, sphere_VAO, sphere, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
@@ -526,7 +576,14 @@ int main(int argc, char* args[])
                 displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, plane);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_Normal_VAO, NormalshaderProgram, plane);
+                    if (UsingFaceNormals)
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_Normal_VAO, NormalshaderProgram, plane);
+                    }
+                    else
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_AveragedNormal_VAO, NormalshaderProgram, plane);
+                    }
                 }
             }
             break;
@@ -535,7 +592,14 @@ int main(int argc, char* args[])
                 displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, cube_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, cube);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cube_Normal_VAO, NormalshaderProgram, cube);
+                    if (UsingFaceNormals)
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cube_Normal_VAO, NormalshaderProgram, cube);
+                    }
+                    else
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cube_AveragedNormal_VAO, NormalshaderProgram, cube);
+                    }
                 }
             }
             break;
@@ -544,7 +608,14 @@ int main(int argc, char* args[])
                 displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, cylinder_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, cylinder);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cylinder_Normal_VAO, NormalshaderProgram, cylinder);
+                    if (UsingFaceNormals)
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cylinder_Normal_VAO, NormalshaderProgram, cylinder);
+                    }
+                    else
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cylinder_AveragedNormal_VAO, NormalshaderProgram, cylinder);
+                    }
                 }
             }
             break;
@@ -553,7 +624,14 @@ int main(int argc, char* args[])
                 displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, cone_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, cone);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cone_Normal_VAO, NormalshaderProgram, cone);
+                    if (UsingFaceNormals)
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cone_Normal_VAO, NormalshaderProgram, cone);
+                    }
+                    else
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cone_AveragedNormal_VAO, NormalshaderProgram, cone);
+                    }
                 }
             }
             break;
@@ -562,7 +640,14 @@ int main(int argc, char* args[])
                 displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, sphere_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, sphere);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, sphere_Normal_VAO, NormalshaderProgram, sphere);
+                    if (UsingFaceNormals)
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, sphere_Normal_VAO, NormalshaderProgram, sphere);
+                    }
+                    else
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, sphere_AveragedNormal_VAO, NormalshaderProgram, sphere);
+                    }
                 }
             }
             break;
@@ -576,6 +661,18 @@ int main(int argc, char* args[])
     CleanUpObjectAndBuffers(cylinder_VBO, cylinder_VAO, cylinder);
     CleanUpObjectAndBuffers(cone_VBO, cone_VAO, cone);
     CleanUpObjectAndBuffers(sphere_VBO, sphere_VAO, sphere);
+
+    CleanUpObjectAndBuffers(plane_Normal_VBO, plane_Normal_VAO, plane);
+    CleanUpObjectAndBuffers(cube_Normal_VBO, cube_Normal_VAO, cube);
+    CleanUpObjectAndBuffers(cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder);
+    CleanUpObjectAndBuffers(cone_Normal_VBO, cone_Normal_VAO, cone);
+    CleanUpObjectAndBuffers(sphere_Normal_VBO, sphere_Normal_VAO, sphere);
+    
+    CleanUpObjectAndBuffers(plane_AveragedNormal_VBO, plane_AveragedNormal_VAO, plane);
+    CleanUpObjectAndBuffers(cube_AveragedNormal_VBO, cube_AveragedNormal_VAO, cube);
+    CleanUpObjectAndBuffers(cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO, cylinder);
+    CleanUpObjectAndBuffers(cone_AveragedNormal_VBO, cone_AveragedNormal_VAO, cone);
+    CleanUpObjectAndBuffers(sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO, sphere);
 
     glDeleteProgram(shaderProgram);
     SDL_GL_DeleteContext(context_);
