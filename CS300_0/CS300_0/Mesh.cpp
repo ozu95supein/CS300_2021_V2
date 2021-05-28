@@ -65,13 +65,13 @@ void Mesh::ConstructCube()
 	//right
 	glm::vec4 N_right = glm::vec4(1.0f, 0.0f, 0.0f, 0);
 	//back
-	glm::vec4 N_back = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 N_back = glm::vec4(0.0f, 0.0f, -1.0f, 0);
 	//left
-	glm::vec4 N_left = glm::vec4(1.0f, 0.0f, 0.0f, 0);
+	glm::vec4 N_left = glm::vec4(-1.0f, 0.0f, 0.0f, 0);
 	//top
 	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, 1.0f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 	//UVs
 	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
 	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
@@ -890,14 +890,14 @@ void Mesh::ConstructAveragedNormals()
 	//loop through each vertex in mVertexArrays using currentVertex
 	for (std::vector<Vertex>::iterator currentVertex = mVertexArray.begin(); currentVertex != mVertexArray.end(); ++currentVertex)
 	{
-		std::cout << "currentVertex = vertex " << i++ << std::endl;
+		//std::cout << "currentVertex = vertex " << i++ << std::endl;
 		//push the current vertex normal into the array
 		averagedNormals.push_back(currentVertex->normal);
 		//with this currentVertex  selected we loop through the vertex array again and add those vertices that
 		//share the same position as currentVertex, but ignoring those that have exactly the same Normal vector value
 		for (std::vector<Vertex>::iterator it = mVertexArray.begin(); it != mVertexArray.end(); ++it)
 		{
-			std::cout << "it = vertex " << j << std::endl;
+			//std::cout << "it = vertex " << j << std::endl;
 			//skip if its the same vertex
 			if (it == currentVertex)
 			{
@@ -907,18 +907,39 @@ void Mesh::ConstructAveragedNormals()
 			//check if position is equal
 			glm::vec4 var = (currentVertex)->position;
 			glm::vec4 var2 = (it)->position;
-			std::cout << "currentVertex: " << var.x <<", "<< var.y << ", " << var.z << ", " << var.w << ", " << std::endl;
-			std::cout << "it           : " << var2.x <<", "<< var2.y << ", " << var2.z << ", " << var2.w << ", " << std::endl;
+			//std::cout << "currentVertex: " << var.x <<", "<< var.y << ", " << var.z << ", " << var.w << ", " << std::endl;
+			//std::cout << "it           : " << var2.x <<", "<< var2.y << ", " << var2.z << ", " << var2.w << ", " << std::endl;
 			if ((currentVertex)->position == (it)->position)
 			{
 				//Check if Normal is exactly the same, if so, skip
-				if ((currentVertex)->normal == (it)->normal)
+ 				if ((currentVertex)->normal == (it)->normal)
 				{
 					j++;
 					continue;
 				}
-				//push the iterator normal into the array
-				averagedNormals.push_back(it->normal);
+				bool found = false;
+				//iterated through the current averaged normals and check if the value of this normal is already in it
+				for (std::vector<glm::vec4>::iterator temp = averagedNormals.begin(); temp != averagedNormals.end(); ++temp)
+				{
+					//if the normal at 'it' already exists in averaged normals, we break and skip it
+					if ((*temp) == it->normal)
+					{
+						found = true;
+						break;
+					}
+				}
+				//if we found the normal, we skip
+				if (found)
+				{
+					j++;
+					continue;
+				}
+				else
+				{
+					//push the iterator normal into the array
+					averagedNormals.push_back(it->normal);
+				}
+				
 			}
 			j++;
 		}
@@ -937,5 +958,6 @@ void Mesh::ConstructAveragedNormals()
 		//set this new normal as the averaged nomal on currentVertex
 		result = glm::normalize(result);
 		currentVertex->AveragedNormal = result;
+		averagedNormals.clear();
 	}
 }
