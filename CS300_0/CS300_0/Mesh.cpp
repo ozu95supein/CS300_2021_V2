@@ -802,6 +802,7 @@ void Mesh::CleanupAndReset()
 {
 	mVertexArray.clear();
 	mNormalArray.clear();
+	mAveragedNormalArray.clear();
 	mVertexNum = 0;
 	mFaceNum = 0;
 }
