@@ -193,9 +193,9 @@ void Mesh::ConstructCylinder(int slices)
 	
 	//TODO, MAKE NORMALS
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 	std::vector<glm::vec4> NormalsForSides;
 	//make the top-bottom pairs of all positions on the same y axis
 	for (int i = 0; i < slices; i++)
@@ -363,7 +363,6 @@ void Mesh::ConstructCylinder(int slices)
 	SetFaceNum(int(mVertexArray.size() / 3));
 
 	ConstructAveragedNormals();
-
 }
 void Mesh::ConstructCone(int slices)
 {
@@ -380,9 +379,9 @@ void Mesh::ConstructCone(int slices)
 
 	//TODO, MAKE NORMALS
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 
 	//make the positions of the cone bottom
 	for (int i = 0; i < slices; i++)
@@ -527,9 +526,9 @@ void Mesh::ConstructSphere(int slices)
 
 	//TODO, MAKE NORMALS
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 
 	/************************************************************************************************************/
 	//make the positions of first ring (top)
@@ -753,8 +752,8 @@ void Mesh::ConstructSphere(int slices)
 			glm::vec4 higherNum = positions[b];
 
 			//make normals through cross product
-			glm::vec3 v_1 = (lowerNum - higherNum);
-			glm::vec3 v_2 = (higherNum - higherNum);
+			glm::vec3 v_1 = (lowerNum - center);
+			glm::vec3 v_2 = (higherNum - center);
 			glm::vec3 v_3 = glm::cross(v_2, v_1);
 			glm::vec3 v_4 = glm::normalize(v_3);
 			glm::vec4 n = glm::vec4(v_4.x, v_4.y, v_4.z, 0.0f);
@@ -950,12 +949,13 @@ void Mesh::ConstructAveragedNormals()
 		{
 			result += (*it2);
 		}
-		result.x = result.x / averagedNormals.size();
-		result.y = result.y / averagedNormals.size();
-		result.z = result.z / averagedNormals.size();
-		result.w = result.w / averagedNormals.size();
+
 		//once all of those are added to the temporary vector we average them, then set the Average normal of the current vertex to the value obtained
 		//set this new normal as the averaged nomal on currentVertex
+		if (glm::length(result) < 0.01f)
+		{
+			int k = 0;
+		}
 		result = glm::normalize(result);
 		currentVertex->AveragedNormal = result;
 		averagedNormals.clear();
