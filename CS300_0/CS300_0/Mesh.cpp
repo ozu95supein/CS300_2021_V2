@@ -210,19 +210,15 @@ void Mesh::ConstructCylinder(int slices)
 		//std::cout << down.x << ", "<< down.y << ", "<< down.z << ", "<< down.w << std::endl;
 		positions.push_back(up);
 		positions.push_back(down);
+
+		float u = angle_rad / (2 * PI);
+		U_coords.push_back(u);
+
 		angle_rad += rad_increment;
 		//U coord calculations
 		//TODO make PI better
-		float u = angle_rad / (2 * PI);
-		U_coords.push_back(u);
+		
 	}
-	
-	//UVs
-	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
-	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
-	glm::vec2 uv2 = glm::vec2(1.0, 1.0);
-	glm::vec2 uv3 = glm::vec2(1.0, 0.0);
-
 	//NOTE ORDER has to be CENTER SECOND FIRST Vert due to weirdness in XZ plane to
 	// 	   make this entire thing counterclockwise
 	//top faces of the cylinder
@@ -394,11 +390,12 @@ void Mesh::ConstructCone(int slices)
 		//std::cout << "Angle: " << angle_rad << std::endl;
 		//std::cout << current.x << ", " << current.y << ", " << current.z << ", " << current.w << std::endl;
 		positions.push_back(current);
+		float u = angle_rad / (2 * PI);
+		U_coords.push_back(u);
 		angle_rad += rad_increment;
 		//U coord calculations
 		//TODO make PI better
-		float u = angle_rad / (2 * PI);
-		U_coords.push_back(u);
+		
 	}
 	//Do Bottom part of cone
 	//p1, p2, p3
@@ -548,11 +545,12 @@ void Mesh::ConstructSphere(int slices)
 		//std::cout << current.x << ", " << current.y << ", " << current.z << ", " << current.w << std::endl;
 		positions.push_back(current);
 		pos_index += 1;
-		alpha_rad += alpha_increment;
 		//U coord calculations
 		//TODO make PI better
 		float u = alpha_rad / (2 * PI);
 		U_coords.push_back(u);
+		alpha_rad += alpha_increment;
+		
 	}
 	//calculate the V coord values
 	V_coords.push_back(0.0f);
