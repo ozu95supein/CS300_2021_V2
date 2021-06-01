@@ -8,7 +8,7 @@ RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
     mObjectAveragedNormal_VBO   = 0;
     mObjectAveragedNormal_VAO   = 0;
 }
-RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, GLuint& vbo, GLuint& vao, Mesh& mesh, GLuint& Normal_vbo, GLuint& Normal_vao, GLuint& Averaged_vbo, GLuint& Averaged_vao)
+RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, GLuint& vbo, GLuint& vao, GLuint& Normal_vbo, GLuint& Normal_vao, GLuint& Averaged_vbo, GLuint& Averaged_vao)
 {
     mObjectMesh = Mesh();
     switch (t)
@@ -41,7 +41,13 @@ RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, GLuint& vbo, 
     //initialize buffers for vbo and vaos
     Renderable_InitAllBuffers();
 }
-
+RenderableMeshObject::~RenderableMeshObject()
+{
+    Renderable_CleanUpObjectAndBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
+    mObjectMesh.~Mesh();
+}
 
 void RenderableMeshObject::Renderable_InitAllBuffers()
 {
@@ -104,4 +110,41 @@ void RenderableMeshObject::Renderable_InitializeAveragedNormalBuffers(GLuint vbo
     //start
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
+}
+
+Mesh& RenderableMeshObject::GetMesh()
+{
+    return mObjectMesh;
+}
+GLuint& RenderableMeshObject::GetVBO()
+{
+    return mObjectVBO;
+}
+GLuint& RenderableMeshObject::GetVAO()
+{
+    return mObjectVAO;
+}
+GLuint& RenderableMeshObject::GetNormalVBO()
+{
+    return mObjectNormal_VBO;
+}
+GLuint& RenderableMeshObject::GetNormalVAO()
+{
+    return mObjectNormal_VAO;
+}
+GLuint& RenderableMeshObject::GetAveragedNormalVBO()
+{
+    return mObjectAveragedNormal_VBO;
+}
+GLuint& RenderableMeshObject::GetAveragedNormalVAO()
+{
+    return mObjectAveragedNormal_VAO;
+}
+void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
+{
+    // Delete the VBOs
+    glDeleteBuffers(1, &vbo);
+    // Delete the VAO
+    glDeleteVertexArrays(1, &vao);
+    mesh.CleanupAndReset();
 }

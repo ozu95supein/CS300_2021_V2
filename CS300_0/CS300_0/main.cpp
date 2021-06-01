@@ -10,12 +10,11 @@
 #include "OGLDebug.h"
 #include "ShaderUtils.h"
 
-#include "Mesh.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "RenderableMeshObject.h"
 
 static int     winID;
 static GLsizei WIDTH = 1280;
@@ -224,8 +223,7 @@ void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
     glDeleteBuffers(1, &vbo);
     // Delete the VAO
     glDeleteVertexArrays(1, &vao);
-    mesh.CleanupAndReset();
-    
+    mesh.CleanupAndReset(); 
 }
 void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao, GLuint& average_normal_vbo, GLuint& average_normal_vao)
 {
@@ -361,6 +359,7 @@ int main(int argc, char* args[])
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
 
+    int current_slices = 6;
     
     //change shader program to receive matrices as inputs
     Mesh plane = Mesh();
@@ -377,6 +376,8 @@ int main(int argc, char* args[])
     InitializeNormalBuffers(plane_Normal_VBO, plane_Normal_VAO, plane);
     InitializeAveragedNormalBuffers(plane_AveragedNormal_VBO, plane_AveragedNormal_VAO, plane);
 
+    RenderableMeshObject planeObject(MeshType::PLANE, current_slices, plane_VBO, plane_VAO, plane_Normal_VBO, plane_Normal_VAO, plane_AveragedNormal_VBO, plane_AveragedNormal_VAO);
+
     Mesh cube = Mesh();
     GLuint cube_VBO;
     GLuint cube_VAO;
@@ -391,7 +392,7 @@ int main(int argc, char* args[])
     InitializeNormalBuffers(cube_Normal_VBO, cube_Normal_VAO, cube);
     InitializeAveragedNormalBuffers(cube_AveragedNormal_VBO, cube_AveragedNormal_VAO, cube);
 
-    int current_slices = 6;
+    
     Mesh cylinder = Mesh();
     GLuint cylinder_VBO;
     GLuint cylinder_VAO;
@@ -573,6 +574,7 @@ int main(int argc, char* args[])
         {
             case 1:
             {
+                /*
                 displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, plane);
                 if (Display_Normals)
                 {
@@ -583,6 +585,19 @@ int main(int argc, char* args[])
                     else
                     {
                         displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_AveragedNormal_VAO, NormalshaderProgram, plane);
+                    }
+                }
+                */
+                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, planeObject.GetVAO(), shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, planeObject.GetMesh());
+                if (Display_Normals)
+                {
+                    if (UsingFaceNormals)
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, planeObject.GetNormalVAO(), NormalshaderProgram, planeObject.GetMesh());
+                    }
+                    else
+                    {
+                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, planeObject.GetAveragedNormalVAO(), NormalshaderProgram, planeObject.GetMesh());
                     }
                 }
             }
