@@ -100,63 +100,6 @@ GLuint InitializeNormalProgram()
     return theProgram;
 }
 
-void InitializeMeshBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh)
-{
-    unsigned long stride = sizeof(Vertex);
-    // create buffer for VAO
-    glGenVertexArrays(1, &vao);
-    // create buffer for VBO
-    glGenBuffers(1, &vbo);
-    //bind so we are now doing stuff to the vao
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, (sizeof(Vertex) * mesh.GetVertexNum()), mesh.GetVertices(), GL_STATIC_DRAW);
-    
-    //positions
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
-    //normals
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, normal)));
-    //uv
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, UV)));
-
-    // Unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
-void InitializeNormalBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
-{
-    unsigned long stride = sizeof(glm::vec4);
-    // create buffer for VAO
-    glGenVertexArrays(1, &vao);
-    // create buffer for VBO
-    glGenBuffers(1, &vbo);
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, (sizeof(Mesh::NormalLine) * mesh.GetNormalsNum()), mesh.GetNormals(), GL_STATIC_DRAW);
-
-    //start
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
-}
-void InitializeAveragedNormalBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
-{
-    unsigned long stride = sizeof(glm::vec4);
-    // create buffer for VAO
-    glGenVertexArrays(1, &vao);
-    // create buffer for VBO
-    glGenBuffers(1, &vbo);
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, (sizeof(Mesh::NormalLine) * mesh.GetNormalsNum()), mesh.GetAveragedNormals(), GL_STATIC_DRAW);
-
-    //start
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
-}
 //Called to update the display.
 //You should call SDL_GL_SwapWindow after all of your rendering to display what you rendered.
 //TODO place clear and SD
@@ -225,8 +168,9 @@ void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset(); 
 }
-void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao, GLuint& average_normal_vbo, GLuint& average_normal_vao)
+void ChangeSlices(GLuint& vbo, GLuint& vao, RenderableMeshObject & RenderableMesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao, GLuint& average_normal_vbo, GLuint& average_normal_vao)
 {
+    Mesh& mesh = RenderableMesh.GetMesh();
     //reset the Mesh object and clean up the buffers
     CleanUpObjectAndBuffers(vbo, vao, mesh);
     CleanUpObjectAndBuffers(normal_vbo, normal_vao, mesh);
@@ -246,11 +190,12 @@ void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType
     default:
         break;
     }
-    InitializeMeshBuffers(vbo, vao, mesh);
+    
+    RenderableMesh.Renderable_InitializeMeshBuffers(vbo, vao, mesh);
     mesh.GenerateNormalLines();
     mesh.GenerateAveragedNormalLines();
-    InitializeNormalBuffers(normal_vbo, normal_vao, mesh);
-    InitializeAveragedNormalBuffers(average_normal_vbo, average_normal_vao, mesh);
+    RenderableMesh.Renderable_InitializeNormalBuffers(normal_vbo, normal_vao, mesh);
+    RenderableMesh.Renderable_InitializeAveragedNormalBuffers(average_normal_vbo, average_normal_vao, mesh);
 }
 GLuint& makeTexture(GLuint& t)
 {
@@ -498,9 +443,9 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinderObject.GetMesh(), current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, coneObject.GetMesh(), current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphereObject.GetMesh(), current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
+                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinderObject, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
+                    ChangeSlices(cone_VBO, cone_VAO, coneObject, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
+                    ChangeSlices(sphere_VBO, sphere_VAO, sphereObject, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -512,9 +457,9 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinderObject.GetMesh(), current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, coneObject.GetMesh(), current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphereObject.GetMesh(), current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
+                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinderObject, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
+                    ChangeSlices(cone_VBO, cone_VAO, coneObject, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
+                    ChangeSlices(sphere_VBO, sphere_VAO, sphereObject, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
