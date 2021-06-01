@@ -14,7 +14,7 @@ class RenderableMeshObject
 public:
     RenderableMeshObject();
     ~RenderableMeshObject();
-    RenderableMeshObject(MeshType t, int slices, GLuint& vbo, GLuint& vao, GLuint& Normal_vbo, GLuint& Normal_vao, GLuint& Averaged_vbo, GLuint& Averaged_vao);
+    RenderableMeshObject(MeshType t, int slices);
     
     void Renderable_InitAllBuffers();
     void Renderable_InitializeMeshBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);

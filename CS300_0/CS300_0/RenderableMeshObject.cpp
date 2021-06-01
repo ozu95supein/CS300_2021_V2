@@ -8,7 +8,7 @@ RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
     mObjectAveragedNormal_VBO   = -1;
     mObjectAveragedNormal_VAO   = -1;
 }
-RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, GLuint& vbo, GLuint& vao, GLuint& Normal_vbo, GLuint& Normal_vao, GLuint& Averaged_vbo, GLuint& Averaged_vao)
+RenderableMeshObject::RenderableMeshObject(MeshType t, int slices)
 {
     mObjectMesh = Mesh();
     switch (t)
@@ -26,15 +26,9 @@ RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, GLuint& vbo, 
         mObjectMesh.ConstructCone(slices);
         break;
     case MeshType::SPHERE:
-        mObjectMesh.ConstructCylinder(slices);
+        mObjectMesh.ConstructSphere(slices);
         break;
     }
-    mObjectVBO = vbo;
-    mObjectVAO = vao;
-    mObjectNormal_VBO = Normal_vbo;
-    mObjectNormal_VAO = Normal_vao;
-    mObjectAveragedNormal_VBO = Averaged_vbo;
-    mObjectAveragedNormal_VAO = Averaged_vao;
     //generateNormal lines for the Mesh Object
     mObjectMesh.GenerateNormalLines();
     mObjectMesh.GenerateAveragedNormalLines();

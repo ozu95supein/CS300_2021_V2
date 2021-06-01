@@ -307,45 +307,20 @@ int main(int argc, char* args[])
     int current_slices = 6;
     
     //change shader program to receive matrices as inputs
-    GLuint plane_VBO;
-    GLuint plane_VAO;
-    GLuint plane_Normal_VBO;
-    GLuint plane_Normal_VAO;
-    GLuint plane_AveragedNormal_VBO;
-    GLuint plane_AveragedNormal_VAO;
-    RenderableMeshObject planeObject(MeshType::PLANE, current_slices, plane_VBO, plane_VAO, plane_Normal_VBO, plane_Normal_VAO, plane_AveragedNormal_VBO, plane_AveragedNormal_VAO);
 
-    GLuint cube_VBO;
-    GLuint cube_VAO;
-    GLuint cube_Normal_VBO;
-    GLuint cube_Normal_VAO;
-    GLuint cube_AveragedNormal_VBO;
-    GLuint cube_AveragedNormal_VAO;
-    RenderableMeshObject cubeObject(MeshType::CUBE, current_slices, cube_VBO, cube_VAO, cube_Normal_VBO, cube_Normal_VAO, cube_AveragedNormal_VBO, cube_AveragedNormal_VAO);
+    RenderableMeshObject planeObject(MeshType::PLANE, current_slices);
+
+
+    RenderableMeshObject cubeObject(MeshType::CUBE, current_slices);
   
-    GLuint cylinder_VBO;
-    GLuint cylinder_VAO;
-    GLuint cylinder_Normal_VBO;
-    GLuint cylinder_Normal_VAO;
-    GLuint cylinder_AveragedNormal_VBO;
-    GLuint cylinder_AveragedNormal_VAO;
-    RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices, cylinder_VBO, cylinder_VAO, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
 
-    GLuint cone_VBO;
-    GLuint cone_VAO;
-    GLuint cone_Normal_VBO;
-    GLuint cone_Normal_VAO;
-    GLuint cone_AveragedNormal_VBO;
-    GLuint cone_AveragedNormal_VAO;
-    RenderableMeshObject coneObject(MeshType::CONE, current_slices, cone_VBO, cone_VAO, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
+    RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices);
 
-    GLuint sphere_VBO;
-    GLuint sphere_VAO;
-    GLuint sphere_Normal_VBO;
-    GLuint sphere_Normal_VAO;
-    GLuint sphere_AveragedNormal_VBO;
-    GLuint sphere_AveragedNormal_VAO;
-    RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices, sphere_VBO, sphere_VAO, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
+
+    RenderableMeshObject coneObject(MeshType::CONE, current_slices);
+
+
+    RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -443,9 +418,9 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinderObject, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, coneObject, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphereObject, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
+                    ChangeSlices(cylinderObject.GetVBO(), cylinderObject.GetVAO(), cylinderObject, current_slices, cy, cylinderObject.GetNormalVBO(), cylinderObject.GetNormalVAO(), cylinderObject.GetAveragedNormalVBO(), cylinderObject.GetAveragedNormalVBO());
+                    ChangeSlices(coneObject.GetVBO(), coneObject.GetVAO(), coneObject, current_slices, cy, coneObject.GetNormalVBO(), coneObject.GetNormalVAO(), coneObject.GetAveragedNormalVBO(), coneObject.GetAveragedNormalVBO());
+                    ChangeSlices(sphereObject.GetVBO(), sphereObject.GetVAO(), sphereObject, current_slices, cy, sphereObject.GetNormalVBO(), sphereObject.GetNormalVAO(), sphereObject.GetAveragedNormalVBO(), sphereObject.GetAveragedNormalVBO());
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -457,9 +432,9 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinderObject, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, coneObject, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO, cone_AveragedNormal_VBO, cone_AveragedNormal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphereObject, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO, sphere_AveragedNormal_VBO, sphere_AveragedNormal_VAO);
+                    ChangeSlices(cylinderObject.GetVBO(), cylinderObject.GetVAO(), cylinderObject, current_slices, cy, cylinderObject.GetNormalVBO(), cylinderObject.GetNormalVAO(), cylinderObject.GetAveragedNormalVBO(), cylinderObject.GetAveragedNormalVBO());
+                    ChangeSlices(coneObject.GetVBO(), coneObject.GetVAO(), coneObject, current_slices, cy, coneObject.GetNormalVBO(), coneObject.GetNormalVAO(), coneObject.GetAveragedNormalVBO(), coneObject.GetAveragedNormalVBO());
+                    ChangeSlices(sphereObject.GetVBO(), sphereObject.GetVAO(), sphereObject, current_slices, cy, sphereObject.GetNormalVBO(), sphereObject.GetNormalVAO(), sphereObject.GetAveragedNormalVBO(), sphereObject.GetAveragedNormalVBO());
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
