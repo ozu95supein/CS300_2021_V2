@@ -55,7 +55,7 @@ void RenderableMeshObject::Renderable_InitAllBuffers()
     Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
 }
-void RenderableMeshObject::Renderable_InitializeMeshBuffers(GLuint vbo, GLuint vao, Mesh& mesh)
+void RenderableMeshObject::Renderable_InitializeMeshBuffers(GLuint &vbo, GLuint &vao, Mesh& mesh)
 {
     unsigned long stride = sizeof(Vertex);
     // create buffer for VAO
@@ -81,7 +81,7 @@ void RenderableMeshObject::Renderable_InitializeMeshBuffers(GLuint vbo, GLuint v
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
-void RenderableMeshObject::Renderable_InitializeNormalBuffers(GLuint vbo, GLuint vao, Mesh& mesh)
+void RenderableMeshObject::Renderable_InitializeNormalBuffers(GLuint & vbo, GLuint & vao, Mesh& mesh)
 {
     unsigned long stride = sizeof(glm::vec4);
     // create buffer for VAO
@@ -96,7 +96,7 @@ void RenderableMeshObject::Renderable_InitializeNormalBuffers(GLuint vbo, GLuint
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 }
-void RenderableMeshObject::Renderable_InitializeAveragedNormalBuffers(GLuint vbo, GLuint vao, Mesh& mesh)
+void RenderableMeshObject::Renderable_InitializeAveragedNormalBuffers(GLuint & vbo, GLuint & vao, Mesh& mesh)
 {
     unsigned long stride = sizeof(glm::vec4);
     // create buffer for VAO

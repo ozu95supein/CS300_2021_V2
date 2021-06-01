@@ -17,9 +17,9 @@ public:
     RenderableMeshObject(MeshType t, int slices, GLuint& vbo, GLuint& vao, GLuint& Normal_vbo, GLuint& Normal_vao, GLuint& Averaged_vbo, GLuint& Averaged_vao);
     
     void Renderable_InitAllBuffers();
-    void Renderable_InitializeMeshBuffers(GLuint vbo, GLuint vao, Mesh & mesh);
-    void Renderable_InitializeNormalBuffers(GLuint vbo, GLuint vao, Mesh & mesh);
-    void Renderable_InitializeAveragedNormalBuffers(GLuint vbo, GLuint vao, Mesh & mesh);
+    void Renderable_InitializeMeshBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
+    void Renderable_InitializeNormalBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
+    void Renderable_InitializeAveragedNormalBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
 
     Mesh & GetMesh();
     GLuint& GetVBO();
