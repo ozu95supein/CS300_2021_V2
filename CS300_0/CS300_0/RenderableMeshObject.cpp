@@ -1,12 +1,12 @@
 #include "RenderableMeshObject.h"
 RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
 {
-    mObjectVBO                  = 0;
-    mObjectVAO                  = 0;
-    mObjectNormal_VBO           = 0;
-    mObjectNormal_VAO           = 0;
-    mObjectAveragedNormal_VBO   = 0;
-    mObjectAveragedNormal_VAO   = 0;
+    mObjectVBO                  = -1;
+    mObjectVAO                  = -1;
+    mObjectNormal_VBO           = -1;
+    mObjectNormal_VAO           = -1;
+    mObjectAveragedNormal_VBO   = -1;
+    mObjectAveragedNormal_VAO   = -1;
 }
 RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, GLuint& vbo, GLuint& vao, GLuint& Normal_vbo, GLuint& Normal_vao, GLuint& Averaged_vbo, GLuint& Averaged_vao)
 {

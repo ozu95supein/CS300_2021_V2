@@ -362,19 +362,12 @@ int main(int argc, char* args[])
     int current_slices = 6;
     
     //change shader program to receive matrices as inputs
-    Mesh plane = Mesh();
     GLuint plane_VBO;
     GLuint plane_VAO;
     GLuint plane_Normal_VBO;
     GLuint plane_Normal_VAO;
     GLuint plane_AveragedNormal_VBO;
     GLuint plane_AveragedNormal_VAO;
-    plane.ConstructPlane();
-    plane.GenerateNormalLines();
-    plane.GenerateAveragedNormalLines();
-    InitializeMeshBuffers(plane_VBO, plane_VAO, plane);
-    InitializeNormalBuffers(plane_Normal_VBO, plane_Normal_VAO, plane);
-    InitializeAveragedNormalBuffers(plane_AveragedNormal_VBO, plane_AveragedNormal_VAO, plane);
 
     RenderableMeshObject planeObject(MeshType::PLANE, current_slices, plane_VBO, plane_VAO, plane_Normal_VBO, plane_Normal_VAO, plane_AveragedNormal_VBO, plane_AveragedNormal_VAO);
 
@@ -671,19 +664,16 @@ int main(int argc, char* args[])
         SDL_GL_SwapWindow(window);
     }
     //cleanup meshes and buffers
-    CleanUpObjectAndBuffers(plane_VBO, plane_VAO, plane);
     CleanUpObjectAndBuffers(cube_VBO, cube_VAO, cube);
     CleanUpObjectAndBuffers(cylinder_VBO, cylinder_VAO, cylinder);
     CleanUpObjectAndBuffers(cone_VBO, cone_VAO, cone);
     CleanUpObjectAndBuffers(sphere_VBO, sphere_VAO, sphere);
 
-    CleanUpObjectAndBuffers(plane_Normal_VBO, plane_Normal_VAO, plane);
     CleanUpObjectAndBuffers(cube_Normal_VBO, cube_Normal_VAO, cube);
     CleanUpObjectAndBuffers(cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder);
     CleanUpObjectAndBuffers(cone_Normal_VBO, cone_Normal_VAO, cone);
     CleanUpObjectAndBuffers(sphere_Normal_VBO, sphere_Normal_VAO, sphere);
     
-    CleanUpObjectAndBuffers(plane_AveragedNormal_VBO, plane_AveragedNormal_VAO, plane);
     CleanUpObjectAndBuffers(cube_AveragedNormal_VBO, cube_AveragedNormal_VAO, cube);
     CleanUpObjectAndBuffers(cylinder_AveragedNormal_VBO, cylinder_AveragedNormal_VAO, cylinder);
     CleanUpObjectAndBuffers(cone_AveragedNormal_VBO, cone_AveragedNormal_VAO, cone);
