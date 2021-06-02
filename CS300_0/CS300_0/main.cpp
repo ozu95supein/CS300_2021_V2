@@ -251,9 +251,13 @@ int main(int argc, char* args[])
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
     //LIGHTS
     float light_radius = 20.0f;
-    float light_XY_AngleDegrees = 0.0f;
+    float light_XY_Angle_Rad= 0.0f;
+    float light_XY_Angle_Rad_increment = 0.0001f;
+    float light_x = light_radius * glm::cos(light_XY_Angle_Rad);
+    float light_z = light_radius * glm::sin(light_XY_Angle_Rad);
+
     glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_radius, 0.0f, 0.0f));
-    glm::mat4 LIGHT_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(light_XY_AngleDegrees), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 LIGHT_rotationMatrix = glm::rotate(glm::mat4(1.0f), light_XY_Angle_Rad, glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
     //model matrix
     glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_rotationMatrix * LIGHT_scaleMatrix;//world space
@@ -428,6 +432,20 @@ int main(int argc, char* args[])
                         ColoredBoxTextureOn = 1;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_P)
+                {
+                //Debug
+                    //move the lightsource
+                    //rotate on xz plane
+                    //translate back to origin,
+                    light_XY_Angle_Rad += light_XY_Angle_Rad_increment;
+                    float x = light_radius * glm::cos(light_XY_Angle_Rad);
+                    float z = light_radius * glm::sin(light_XY_Angle_Rad);
+                    glm::vec3 t(x, 0.0f, z);
+                    glm::mat4 Light_translationMatrix = glm::translate(glm::mat4(1.0f), t);
+                    LIGHT_ModelMatrix = LIGHT_ModelMatrix * Light_translationMatrix;
+                    LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+                }
                 break;
             }
         }
@@ -522,11 +540,8 @@ int main(int argc, char* args[])
         }
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
         LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
-        SDL_GL_SwapWindow(window);
-
-        //move the lightsource
-        //rotate on xz plane
-
+        SDL_GL_SwapWindow(window);    
+        
     }
 
     glDeleteProgram(shaderProgram);
