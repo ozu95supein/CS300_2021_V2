@@ -33,7 +33,7 @@ public:
     void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn);
     void Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
-
+    void Renderable_ChangeSlices(int new_slices, MeshType& t);
     glm::mat4& GetModelRefference();
     glm::mat4 GetModel();
     void SetModel(glm::mat4 m);

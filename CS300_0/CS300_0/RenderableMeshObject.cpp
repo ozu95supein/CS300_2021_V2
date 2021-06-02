@@ -229,3 +229,32 @@ void RenderableMeshObject::SetModel(glm::mat4 m)
 {
     mModelMatrix = m;
 }
+void RenderableMeshObject::Renderable_ChangeSlices(int new_slices, MeshType& t)
+{
+    //reset the Mesh object and clean up the buffers
+    Renderable_CleanUpObjectAndBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
+
+    //reconstruct mesh with new slices
+    switch (t)
+    {
+    case MeshType::CYLINDER:
+        mObjectMesh.ConstructCylinder(new_slices);
+        break;
+    case MeshType::CONE:
+        mObjectMesh.ConstructCone(new_slices);
+        break;
+    case MeshType::SPHERE:
+        mObjectMesh.ConstructSphere(new_slices);
+        break;
+    default:
+        break;
+    }
+
+    Renderable_InitializeMeshBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
+    mObjectMesh.GenerateNormalLines();
+    mObjectMesh.GenerateAveragedNormalLines();
+    Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
+    Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
+}

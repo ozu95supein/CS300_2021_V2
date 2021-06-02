@@ -88,7 +88,6 @@ GLuint CreateProgram(const std::vector<GLuint>& shaderList)
 }
 
 
-
 GLuint InitializeProgram()
 {
     GLuint theProgram = ShaderUtils::CreateShaderProgram("Vertex.vert", "Fragment.frag");
@@ -99,67 +98,6 @@ GLuint InitializeNormalProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("NormalVertex.vert", "NormalFragment.frag");
     return theProgram;
 }
-
-//Called to update the display.
-//You should call SDL_GL_SwapWindow after all of your rendering to display what you rendered.
-//TODO place clear and SD
-void displayMesh(glm::mat4& ModelMatrix, glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint & current_vao, GLuint& shader, GLuint & texture, bool display_wiremesh, int ColoredBoxTextureOn, Mesh& mesh)
-{
-    ////////////////////////////////////////////////////////////////////////////////
-        // Bind the glsl program and this object's VAO
-    glUseProgram(shader);
-    //pass them to program
-    GLint model = glGetUniformLocation(shader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(ModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(shader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(shader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    //ColoredBoxTextureOn
-    GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
-    glUniform1i(texture_tog, ColoredBoxTextureOn);
-
-    //texture stuff
-    glActiveTexture(GL_TEXTURE0); //activate bucket 0
-    glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
-    GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
-    glUniform1i(loc, 0);    //use stuff from bucket 0
-
-    // Draw
-    if (display_wiremesh == false)
-    {
-        glBindVertexArray(current_vao);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawArrays(GL_TRIANGLES, 0, mesh.GetVertexNum());
-    }
-    else
-    {
-        glBindVertexArray(current_vao);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_TRIANGLES, 0, mesh.GetVertexNum());
-    }
-}
-
-void displayNormals(glm::mat4 & ModelMatrix, glm::mat4 & ViewMatrix, glm::mat4 & ProjectionMatrix, GLuint & normalVAO, GLuint & normalShader, Mesh& mesh)
-{
-    // Bind the glsl program and this object's VAO
-    glUseProgram(normalShader);
-
-    //pass them to program
-    GLint model = glGetUniformLocation(normalShader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(ModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(normalShader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(normalShader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    glBindVertexArray(normalVAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    int s = 2 * mesh.GetVertexNum();
-    glDrawArrays(GL_LINES, 0, s);
-}
-
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -440,9 +378,9 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    ChangeSlices(cylinderObject.GetVBO(), cylinderObject.GetVAO(), cylinderObject, current_slices, cy, cylinderObject.GetNormalVBO(), cylinderObject.GetNormalVAO(), cylinderObject.GetAveragedNormalVBO(), cylinderObject.GetAveragedNormalVBO());
-                    ChangeSlices(coneObject.GetVBO(), coneObject.GetVAO(), coneObject, current_slices, cy, coneObject.GetNormalVBO(), coneObject.GetNormalVAO(), coneObject.GetAveragedNormalVBO(), coneObject.GetAveragedNormalVBO());
-                    ChangeSlices(sphereObject.GetVBO(), sphereObject.GetVAO(), sphereObject, current_slices, cy, sphereObject.GetNormalVBO(), sphereObject.GetNormalVAO(), sphereObject.GetAveragedNormalVBO(), sphereObject.GetAveragedNormalVBO());
+                    cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    sphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -454,9 +392,9 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    ChangeSlices(cylinderObject.GetVBO(), cylinderObject.GetVAO(), cylinderObject, current_slices, cy, cylinderObject.GetNormalVBO(), cylinderObject.GetNormalVAO(), cylinderObject.GetAveragedNormalVBO(), cylinderObject.GetAveragedNormalVBO());
-                    ChangeSlices(coneObject.GetVBO(), coneObject.GetVAO(), coneObject, current_slices, cy, coneObject.GetNormalVBO(), coneObject.GetNormalVAO(), coneObject.GetAveragedNormalVBO(), coneObject.GetAveragedNormalVBO());
-                    ChangeSlices(sphereObject.GetVBO(), sphereObject.GetVAO(), sphereObject, current_slices, cy, sphereObject.GetNormalVBO(), sphereObject.GetNormalVAO(), sphereObject.GetAveragedNormalVBO(), sphereObject.GetAveragedNormalVBO());
+                    cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    sphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
