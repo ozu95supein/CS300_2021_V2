@@ -249,9 +249,20 @@ int main(int argc, char* args[])
     glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
     GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
+    //LIGHTS
+    float light_radius = 20.0f;
+    float light_XY_AngleDegrees = 0.0f;
+    glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_radius, 0.0f, 0.0f));
+    glm::mat4 LIGHT_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(light_XY_AngleDegrees), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
+    //model matrix
+    glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_rotationMatrix * LIGHT_scaleMatrix;//world space
+    RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, current_slices, LIGHT_ModelMatrix);
+
+    /*******************************************************************************************************************************************/
 
     //view matrix
-    glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, -50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
@@ -510,8 +521,12 @@ int main(int argc, char* args[])
             break;
         }
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
-
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
         SDL_GL_SwapWindow(window);
+
+        //move the lightsource
+        //rotate on xz plane
+
     }
 
     glDeleteProgram(shaderProgram);
