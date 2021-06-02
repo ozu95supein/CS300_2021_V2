@@ -19,7 +19,7 @@
 static int     winID;
 static GLsizei WIDTH = 1280;
 static GLsizei HEIGHT = 720;
-
+float PIValue = glm::atan(1) * 4;
 GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 {
     GLuint       shader = glCreateShader(eShaderType);
@@ -200,7 +200,6 @@ int main(int argc, char* args[])
         SDL_Quit();
         exit(1);
     }
-
     glewExperimental = true;
     if (glewInit() != GLEW_OK)
     {
@@ -215,38 +214,49 @@ int main(int argc, char* args[])
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);
 #endif
-
     // print GPU data
     std::cout << "GL_VENDOR: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
-    
+ 
+
     glEnable(GL_DEPTH_TEST);
 
     GLuint texture = makeTexture(texture);
-
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
+
+    /*******************************************************************************************************************************************/
 
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f));
     //model matrix
     glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
-    //view matrix
-    glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    //projection matrix
-    float aspect = (float)WIDTH / HEIGHT;
-    glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
-
     int current_slices = 6;
-    
+    //create objects to swap when pressing buttons
     RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
     RenderableMeshObject cubeObject(MeshType::CUBE, current_slices, ModelMatrix);
     RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices, ModelMatrix);
     RenderableMeshObject coneObject(MeshType::CONE, current_slices, ModelMatrix);
     RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices, ModelMatrix);
+    //GROUND
+    glm::mat4 GROUND_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -15.0f, 0.0f));
+    glm::mat4 GROUND_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f, 50.0f, 50.0f));
+    //model matrix
+    glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
+    GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
+
+    //view matrix
+    glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, -50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    //projection matrix
+    float aspect = (float)WIDTH / HEIGHT;
+    glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
+
+
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -499,6 +509,7 @@ int main(int argc, char* args[])
             }
             break;
         }
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
 
         SDL_GL_SwapWindow(window);
     }
