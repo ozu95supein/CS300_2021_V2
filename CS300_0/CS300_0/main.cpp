@@ -296,31 +296,19 @@ int main(int argc, char* args[])
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     //model matrix
     glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
-
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
 
     int current_slices = 6;
     
-    //change shader program to receive matrices as inputs
-
-    RenderableMeshObject planeObject(MeshType::PLANE, current_slices);
-
-
-    RenderableMeshObject cubeObject(MeshType::CUBE, current_slices);
-  
-
-    RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices);
-
-
-    RenderableMeshObject coneObject(MeshType::CONE, current_slices);
-
-
-    RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices);
+    RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
+    RenderableMeshObject cubeObject(MeshType::CUBE, current_slices, ModelMatrix);
+    RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices, ModelMatrix);
+    RenderableMeshObject coneObject(MeshType::CONE, current_slices, ModelMatrix);
+    RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices, ModelMatrix);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -351,20 +339,71 @@ int main(int argc, char* args[])
                 else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
                 {
                     //down along y axis
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4 mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    planeObject.SetModel(mPlane);
+
+                    glm::mat4 mCube = glm::rotate(cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    cubeObject.SetModel(mCube);
+
+                    glm::mat4 mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mCone = glm::rotate(coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    sphereObject.SetModel(mSphere);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
                 {
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4 mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    planeObject.SetModel(mPlane);
+
+                    glm::mat4 mCube = glm::rotate(cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    cubeObject.SetModel(mCube);
+
+                    glm::mat4 mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mCone = glm::rotate(coneObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    sphereObject.SetModel(mSphere);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
                 {
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4 mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    planeObject.SetModel(mPlane);
+
+                    glm::mat4 mCube = glm::rotate(cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    cubeObject.SetModel(mCube);
+
+                    glm::mat4 mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mCone = glm::rotate(coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    sphereObject.SetModel(mSphere);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
                 {
-                    //right
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4 mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    planeObject.SetModel(mPlane);
+
+                    glm::mat4 mCube = glm::rotate(cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    cubeObject.SetModel(mCube);
+
+                    glm::mat4 mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mCone = glm::rotate(coneObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    cylinderObject.SetModel(mCylinder);
+
+                    glm::mat4 mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    sphereObject.SetModel(mSphere);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_1)
                 {
@@ -460,16 +499,16 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, planeObject.GetVAO(), shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, planeObject.GetMesh());
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
                     {
-                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, planeObject.GetNormalVAO(), NormalshaderProgram, planeObject.GetMesh());
+                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
                     }
                     else
                     {
-                        displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, planeObject.GetAveragedNormalVAO(), NormalshaderProgram, planeObject.GetMesh());
+                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
                     }
                 }
             }

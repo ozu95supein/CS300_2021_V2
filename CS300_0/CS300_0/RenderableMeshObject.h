@@ -14,7 +14,7 @@ class RenderableMeshObject
 public:
     RenderableMeshObject();
     ~RenderableMeshObject();
-    RenderableMeshObject(MeshType t, int slices);
+    RenderableMeshObject(MeshType t, int slices, glm::mat4 ModelMatrix);
     
     void Renderable_InitAllBuffers();
     void Renderable_InitializeMeshBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
@@ -30,6 +30,13 @@ public:
     GLuint& GetAveragedNormalVAO();
 
     void Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
+    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn);
+    void Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
+    void Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
+
+    glm::mat4& GetModelRefference();
+    glm::mat4 GetModel();
+    void SetModel(glm::mat4 m);
 private:
 
     Mesh mObjectMesh;
@@ -39,4 +46,5 @@ private:
     GLuint mObjectNormal_VAO;
     GLuint mObjectAveragedNormal_VBO;
     GLuint mObjectAveragedNormal_VAO;
+    glm::mat4 mModelMatrix;
 };

@@ -7,9 +7,11 @@ RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
     mObjectNormal_VAO           = -1;
     mObjectAveragedNormal_VBO   = -1;
     mObjectAveragedNormal_VAO   = -1;
+    mModelMatrix = glm::mat4(1.0f);
 }
-RenderableMeshObject::RenderableMeshObject(MeshType t, int slices)
+RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, glm::mat4 ModelMatrix)
 {
+    mModelMatrix = ModelMatrix;
     mObjectMesh = Mesh();
     switch (t)
     {
@@ -141,4 +143,89 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     // Delete the VAO
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset();
+}
+void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn)
+{
+    ////////////////////////////////////////////////////////////////////////////////
+        // Bind the glsl program and this object's VAO
+    glUseProgram(shader);
+    //pass them to program
+    GLint model = glGetUniformLocation(shader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(shader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(shader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    //ColoredBoxTextureOn
+    GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
+    glUniform1i(texture_tog, ColoredBoxTextureOn);
+
+    //texture stuff
+    glActiveTexture(GL_TEXTURE0); //activate bucket 0
+    glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
+    GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
+    glUniform1i(loc, 0);    //use stuff from bucket 0
+
+    // Draw
+    if (display_wiremesh == false)
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
+    else
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
+}
+void RenderableMeshObject::Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(normalShader);
+
+    //pass them to program
+    GLint model = glGetUniformLocation(normalShader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(normalShader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(normalShader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    glBindVertexArray(mObjectNormal_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    int s = 2 * mObjectMesh.GetVertexNum();
+    glDrawArrays(GL_LINES, 0, s);
+}
+void RenderableMeshObject::Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(normalShader);
+
+    //pass them to program
+    GLint model = glGetUniformLocation(normalShader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(normalShader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(normalShader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    glBindVertexArray(mObjectAveragedNormal_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    int s = 2 * mObjectMesh.GetVertexNum();
+    glDrawArrays(GL_LINES, 0, s);
+}
+glm::mat4& RenderableMeshObject::GetModelRefference()
+{
+    return mModelMatrix;
+}
+glm::mat4 RenderableMeshObject::GetModel()
+{
+    return mModelMatrix;
+}
+void RenderableMeshObject::SetModel(glm::mat4 m)
+{
+    mModelMatrix = m;
 }
