@@ -166,6 +166,8 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
 
+    Renderable_SetLightingUniforms(shader, CurrentLightAmbient, CurrentMaterialAmbient);
+
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
     glUniform1i(texture_tog, ColoredBoxTextureOn);
