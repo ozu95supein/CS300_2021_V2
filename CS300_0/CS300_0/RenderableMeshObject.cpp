@@ -1,4 +1,6 @@
 #include "RenderableMeshObject.h"
+#include "LightingInfo.h"
+#include "MaterialInfo.h"
 RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
 {
     mObjectVBO                  = -1;
@@ -146,7 +148,26 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset();
 }
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn)
+void RenderableMeshObject::SetLightingUniforms(GLuint& shader, LightSourceParameters light)
+{
+    //lighting
+    GLint Position = glGetUniformLocation(shader, "lightPosition1");
+    glUniform3fv(Position, 1, (const GLfloat*)(&(light.lightPosition)));
+
+    GLint Direction = glGetUniformLocation(shader, "lightDirection1");
+    glUniform3fv(Direction, 1, (const GLfloat*)(&(light.lightDirection)));
+
+    GLint Ambient = glGetUniformLocation(shader, "ambient1");
+    glUniform3fv(Ambient, 1, (const GLfloat*)(&(light.ambient)));
+
+    GLint Diffuse = glGetUniformLocation(shader, "diffuse1");
+    glUniform3fv(Diffuse, 1, (const GLfloat*)(&(light.diffuse)));
+
+    //material
+    GLint AmbientMat = glGetUniformLocation(shader, "ambientMat1");
+    glUniform3fv(Position, 1, (const GLfloat*)(&(mMaterial.ambient)));
+}
+void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, LightSourceParameters light)
 {
     ////////////////////////////////////////////////////////////////////////////////
         // Bind the glsl program and this object's VAO
@@ -168,6 +189,8 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
     GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
     glUniform1i(loc, 0);    //use stuff from bucket 0
+
+    SetLightingUniforms(shader, light);
 
     // Draw
     if (display_wiremesh == false)

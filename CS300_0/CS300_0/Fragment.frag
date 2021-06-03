@@ -31,6 +31,23 @@ uniform int texture_toggle;
 
 uniform Light u_Light;
 uniform Material u_Material;
+//uniform parameters for 1 manual lightsource and material
+//lighting
+uniform vec3 lightPosition1;
+uniform vec3 lightDirection1;
+uniform vec3 ambient1;
+uniform vec3 diffuse1;
+uniform vec3 specular1;
+uniform vec3 attenuation1;
+uniform float inner1;
+uniform float outer1;
+uniform float falloff1;
+//material
+uniform vec3  ambientMat1;
+uniform vec3  diffuseMat1;
+uniform vec3  specularMat1;
+uniform float ns1;
+
 void main()
 {
 	//lighting Computations
@@ -39,8 +56,8 @@ void main()
 	//vec3 I_specular = (I_s * K_s * max((dot(N, H), 0.0f)))
 
 	//only doing ambient for now
-	vec3 I_a = u_Light.ambient;
-	vec3 k_a = u_Material.ambient;
+	vec3 I_a = ambient1;
+	vec3 k_a = ambientMat1;
 
 	vec3 I_ambient = I_a * 0.1f;
 	if(texture_toggle == 1)

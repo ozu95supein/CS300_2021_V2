@@ -44,5 +44,11 @@
     <ClInclude Include="RenderableMeshObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightingInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

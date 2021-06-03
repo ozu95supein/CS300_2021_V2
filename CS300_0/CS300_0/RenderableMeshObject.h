@@ -4,6 +4,7 @@
 
 #include "Mesh.h"
 #include "MaterialInfo.h"
+#include "LightingInfo.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -31,7 +32,7 @@ public:
     GLuint& GetAveragedNormalVAO();
 
     void Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
-    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn);
+    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, LightSourceParameters light);
     void Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_ChangeSlices(int new_slices, MeshType& t);
@@ -41,6 +42,7 @@ public:
     void SetMaterial(MaterialParameters m);
     MaterialParameters GetMaterial();
     MaterialParameters & GetMaterialRefference();
+    void SetLightingUniforms(GLuint& shader, LightSourceParameters light);
 private:
 
     Mesh mObjectMesh;

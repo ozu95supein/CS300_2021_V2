@@ -274,13 +274,16 @@ int main(int argc, char* args[])
 
     LightSourceParameters mLight;
     MaterialParameters mMaterial;
+    planeObject.SetMaterial(mMaterial);
+    cubeObject.SetMaterial(mMaterial);
+    cylinderObject.SetMaterial(mMaterial);
+    coneObject.SetMaterial(mMaterial);
+    sphereObject.SetMaterial(mMaterial);
+    GROUND_planeObject.SetMaterial(mMaterial);
+    LIGHT_sphereObject.SetMaterial(mMaterial);
     //pass them to program
     //light
-    GLint light = glGetUniformLocation(shaderProgram, "u_Light");
-    glUniformMatrix4fv(light, 1, GL_FALSE, (const GLfloat *)(&mLight));
-    //material
-    GLint material = glGetUniformLocation(shaderProgram, "u_material");
-    glUniformMatrix4fv(material, 1, GL_FALSE, (const GLfloat*)(&mMaterial));
+    
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -468,7 +471,7 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -484,7 +487,7 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -500,7 +503,7 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -516,7 +519,7 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -532,7 +535,7 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -547,8 +550,8 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
         SDL_GL_SwapWindow(window);    
         
     }
