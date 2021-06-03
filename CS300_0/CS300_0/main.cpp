@@ -15,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "RenderableMeshObject.h"
+#include "LightingInfo.h"
 
 static int     winID;
 static GLsizei WIDTH = 1280;
@@ -271,7 +272,15 @@ int main(int argc, char* args[])
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
 
-
+    LightSourceParameters mLight;
+    MaterialParameters mMaterial;
+    //pass them to program
+    //light
+    GLint light = glGetUniformLocation(shaderProgram, "u_Light");
+    glUniformMatrix4fv(light, 1, GL_FALSE, (const GLfloat *)(&mLight));
+    //material
+    GLint material = glGetUniformLocation(shaderProgram, "u_material");
+    glUniformMatrix4fv(material, 1, GL_FALSE, (const GLfloat*)(&mMaterial));
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);

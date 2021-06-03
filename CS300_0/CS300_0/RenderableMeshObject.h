@@ -3,6 +3,7 @@
 #include "ShaderUtils.h"
 
 #include "Mesh.h"
+#include "MaterialInfo.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -37,6 +38,9 @@ public:
     glm::mat4& GetModelRefference();
     glm::mat4 GetModel();
     void SetModel(glm::mat4 m);
+    void SetMaterial(MaterialParameters m);
+    MaterialParameters GetMaterial();
+    MaterialParameters & GetMaterialRefference();
 private:
 
     Mesh mObjectMesh;
@@ -47,4 +51,6 @@ private:
     GLuint mObjectAveragedNormal_VBO;
     GLuint mObjectAveragedNormal_VAO;
     glm::mat4 mModelMatrix;
+
+    MaterialParameters mMaterial;
 };

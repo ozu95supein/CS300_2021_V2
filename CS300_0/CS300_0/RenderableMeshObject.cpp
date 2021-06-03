@@ -8,6 +8,7 @@ RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
     mObjectAveragedNormal_VBO   = -1;
     mObjectAveragedNormal_VAO   = -1;
     mModelMatrix = glm::mat4(1.0f);
+    mMaterial = MaterialParameters();
 }
 RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, glm::mat4 ModelMatrix)
 {
@@ -36,6 +37,7 @@ RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, glm::mat4 Mod
     mObjectMesh.GenerateAveragedNormalLines();
     //initialize buffers for vbo and vaos
     Renderable_InitAllBuffers();
+    mMaterial = MaterialParameters();
 }
 RenderableMeshObject::~RenderableMeshObject()
 {
@@ -257,4 +259,16 @@ void RenderableMeshObject::Renderable_ChangeSlices(int new_slices, MeshType& t)
     mObjectMesh.GenerateAveragedNormalLines();
     Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
+}
+void RenderableMeshObject::SetMaterial(MaterialParameters m)
+{
+    mMaterial = m;
+}
+MaterialParameters RenderableMeshObject::GetMaterial()
+{
+    return mMaterial;
+}
+MaterialParameters& RenderableMeshObject::GetMaterialRefference()
+{
+    return mMaterial;
 }
