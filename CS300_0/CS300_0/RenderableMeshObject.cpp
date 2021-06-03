@@ -151,20 +151,17 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
 void RenderableMeshObject::SetLightingUniforms(GLuint& shader, LightSourceParameters light)
 {
     //lighting
-    GLint Position = glGetUniformLocation(shader, "lightPosition1");
+    GLint Position = glGetUniformLocation(shader, "lightPosition");
     glUniform3fv(Position, 1, (const GLfloat*)(&(light.lightPosition)));
 
-    GLint Direction = glGetUniformLocation(shader, "lightDirection1");
+    GLint Direction = glGetUniformLocation(shader, "lightDirection");
     glUniform3fv(Direction, 1, (const GLfloat*)(&(light.lightDirection)));
 
-    GLint Ambient = glGetUniformLocation(shader, "ambient1");
+    GLint Ambient = glGetUniformLocation(shader, "lightAmbient");
     glUniform3fv(Ambient, 1, (const GLfloat*)(&(light.ambient)));
 
-    GLint Diffuse = glGetUniformLocation(shader, "diffuse1");
-    glUniform3fv(Diffuse, 1, (const GLfloat*)(&(light.diffuse)));
-
     //material
-    GLint AmbientMat = glGetUniformLocation(shader, "ambientMat1");
+    GLint AmbientMat = glGetUniformLocation(shader, "materialAmbient");
     glUniform3fv(Position, 1, (const GLfloat*)(&(mMaterial.ambient)));
 }
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, LightSourceParameters light)

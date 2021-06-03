@@ -5,8 +5,8 @@ layout(location = 1) in vec4 aNormal;
 layout(location = 2) in vec2 aUV;
 
 out vec2 outUV;
-out position_cameraspace;
-out normal_cameraspace;
+out vec4 position_cameraspace;
+out vec4 normal_cameraspace;
 
 uniform mat4 u_M;
 uniform mat4 u_V;

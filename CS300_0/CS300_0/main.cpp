@@ -271,9 +271,11 @@ int main(int argc, char* args[])
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //CREATE LIGHT AND MATERIAL VARIABLES
     LightSourceParameters mLight;
     MaterialParameters mMaterial;
+
     planeObject.SetMaterial(mMaterial);
     cubeObject.SetMaterial(mMaterial);
     cylinderObject.SetMaterial(mMaterial);
@@ -281,9 +283,8 @@ int main(int argc, char* args[])
     sphereObject.SetMaterial(mMaterial);
     GROUND_planeObject.SetMaterial(mMaterial);
     LIGHT_sphereObject.SetMaterial(mMaterial);
-    //pass them to program
-    //light
-    
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
