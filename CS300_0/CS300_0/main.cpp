@@ -189,7 +189,7 @@ int main(int argc, char* args[])
         exit(1);
     }
     //ASK ABOUT THIS
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     //CREATE the Context, ask about this
     SDL_GLContext context_ = SDL_GL_CreateContext(window);
