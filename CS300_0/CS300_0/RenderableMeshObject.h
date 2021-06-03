@@ -30,7 +30,8 @@ public:
     GLuint& GetAveragedNormalVAO();
 
     void Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
-    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn);
+    void Renderable_SetLightingUniforms(GLuint& shader, glm::vec3& CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient);
+    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, glm::vec3& CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient);
     void Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_ChangeSlices(int new_slices, MeshType& t);

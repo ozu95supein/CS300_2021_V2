@@ -271,6 +271,12 @@ int main(int argc, char* args[])
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
 
+    /*==========================================================================================================================================*/
+    //HARD CODED for now
+    glm::vec3 main_material_ambient(0.5);
+    glm::vec3 main_light_ambient(1.0f);
+    /*==========================================================================================================================================*/
+
 
 
     glEnable(GL_CULL_FACE);
@@ -459,7 +465,7 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -475,7 +481,7 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -491,7 +497,7 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -507,7 +513,7 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -523,7 +529,7 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -538,8 +544,8 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, main_light_ambient, main_material_ambient);
         SDL_GL_SwapWindow(window);    
         
     }

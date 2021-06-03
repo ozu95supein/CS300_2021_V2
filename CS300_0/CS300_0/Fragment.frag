@@ -4,10 +4,11 @@ in vec2 outUV;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform int texture_toggle;
+
+uniform vec3 lightAmbient;
+uniform vec3 materialAmbient;
 void main()
 {
-	//
-	//outputColor = vec4(1, 1, 1, 1.0f);
 	
 	if(texture_toggle == 1)
 	{

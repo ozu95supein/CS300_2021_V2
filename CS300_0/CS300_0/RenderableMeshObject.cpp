@@ -144,7 +144,16 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset();
 }
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn)
+void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, glm::vec3 & CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient)
+{
+    glUseProgram(shader);
+    //pass them to program
+    GLint LIGHTAMBIENT = glGetUniformLocation(shader, "lightAmbient");
+    glUniform3fv(LIGHTAMBIENT, 1, &(CurrentLightAmbient[0]));
+    GLint MATERIALAMBIENT = glGetUniformLocation(shader, "materialAmbient");
+    glUniform3fv(LIGHTAMBIENT, 1, &(CurrentMaterialAmbient[0]));
+}
+void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, glm::vec3& CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient)
 {
     ////////////////////////////////////////////////////////////////////////////////
         // Bind the glsl program and this object's VAO
