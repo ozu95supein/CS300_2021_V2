@@ -22,7 +22,7 @@ void main()
 
 	outUV = aUV;
 	position_cameraspace = u_V * u_M * aPosition;
-	lightPosition_cameraspace = u_V * u_M * lightPosition;
+	lightPosition_cameraspace = u_V * lightPosition;
 
 	normal_cameraspace = Q * aNormal;
 

@@ -281,7 +281,7 @@ int main(int argc, char* args[])
     glm::vec3 main_light_ambient(0.5f);
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
-    glm::vec3 main_light_diffuse(0.5f);
+    glm::vec3 main_light_diffuse(1.0f);
     glm::vec4 light_position = glm::vec4(glm::vec3(0.0f, 0.0f, light_radius), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
     //SPECULAR
     glm::vec3 main_light_specular = glm::vec3(1.0f);
@@ -467,7 +467,24 @@ int main(int argc, char* args[])
                     {
                         ColoredBoxTextureOn = 1;
                     }
-                }     
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_W)
+                {
+                    //glm::rotate();
+                    //glm::mat4 rotMat = glm::rotate();
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_S)
+                {
+
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_A)
+                {
+
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_D)
+                {
+
+                }
                 break;
             }
         }
