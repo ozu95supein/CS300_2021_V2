@@ -3,6 +3,7 @@ out vec4 outputColor;
 in vec2 outUV;
 in vec4 position_cameraspace;
 in vec4 normal_cameraspace;
+in vec4 lightPosition_cameraspace;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform int texture_toggle;
@@ -15,6 +16,7 @@ uniform vec3 materialDiffuse;
 
 void main()
 {
+	vec4 L = lightPosition_cameraspace - position_cameraspace;
 	if(texture_toggle == 1)
 	{
 		vec4 meshColor4 = texture(texture_data, outUV); 
