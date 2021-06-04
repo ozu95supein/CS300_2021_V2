@@ -144,24 +144,22 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset();
 }
-void DummyDebug(glm::vec3& CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient)
+
+void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial)
 {
-    glm::vec3 red(1.0f, 0.0f, 0.0f);
-    glm::vec3 K_a = red * CurrentMaterialAmbient;
-    glm::vec3 I_ambient = CurrentLightAmbient * K_a;
-    glm::vec4 outputColor = glm::vec4(I_ambient, 1.0f);
-}
-void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, glm::vec3 & CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient)
-{
-    DummyDebug(CurrentLightAmbient,  CurrentMaterialAmbient);
     glUseProgram(shader);
     //pass them to program
+    
+    //AMBIENT
     GLint LIGHTAMBIENT = glGetUniformLocation(shader, "lightAmbient");
-    glUniform3fv(LIGHTAMBIENT, 1, &(CurrentLightAmbient[0]));
+    glUniform3fv(LIGHTAMBIENT, 1, &(CurrentLight.light_ambient[0]));
     GLint MATERIALAMBIENT = glGetUniformLocation(shader, "materialAmbient");
-    glUniform3fv(MATERIALAMBIENT, 1, &(CurrentMaterialAmbient[0]));
+    glUniform3fv(MATERIALAMBIENT, 1, &(CurrentMaterial.material_ambient[0]));
+
+    //DIFFUSE
+
 }
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, glm::vec3& CurrentLightAmbient, glm::vec3& CurrentMaterialAmbient)
+void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight, Material & CurrentMaterial)
 {
     ////////////////////////////////////////////////////////////////////////////////
         // Bind the glsl program and this object's VAO
@@ -174,7 +172,7 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
 
-    Renderable_SetLightingUniforms(shader, CurrentLightAmbient, CurrentMaterialAmbient);
+    Renderable_SetLightingUniforms(shader, CurrentLight, CurrentMaterial);
 
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
