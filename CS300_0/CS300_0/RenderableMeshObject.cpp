@@ -157,6 +157,12 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     glUniform3fv(MATERIALAMBIENT, 1, &(CurrentMaterial.material_ambient[0]));
 
     //DIFFUSE
+    GLuint LIGHTDIFFUSE = glGetUniformLocation(shader, "lightDiffuse");
+    glUniform3fv(LIGHTDIFFUSE, 1, &(CurrentLight.light_diffuse[0]));
+    GLuint LIGHTPOSITION = glGetUniformLocation(shader, "lightPosition");
+    glUniform4fv(LIGHTPOSITION, 1, &(CurrentLight.light_position[0]));
+    GLuint MATERIALDIFFUSE = glGetUniformLocation(shader, "materialDiffuse");
+    glUniform3fv(MATERIALDIFFUSE, 1, &(CurrentMaterial.material_diffuse[0]));
 
 }
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight, Material & CurrentMaterial)

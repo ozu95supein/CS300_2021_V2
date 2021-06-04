@@ -9,6 +9,7 @@ uniform int texture_toggle;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
+uniform vec4 lightPosition;
 
 uniform vec3 materialAmbient;
 uniform vec3 materialDiffuse;
