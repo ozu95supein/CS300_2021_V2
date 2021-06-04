@@ -3,6 +3,7 @@
 #include "ShaderUtils.h"
 
 #include "Mesh.h"
+#include "Light_And_Material.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

@@ -1,5 +1,4 @@
 #version 400
-
 out vec4 outputColor;
 in vec2 outUV;
 
@@ -10,15 +9,8 @@ uniform vec3 lightAmbient;
 uniform vec3 materialAmbient;
 void main()
 {
-	
 	if(texture_toggle == 1)
 	{
-		//vec3 meshColor3 = texture(texture_data, outUV); 
-		//vec3 K_a = meshColor3 * materialAmbient;
-		//vec3 I_ambient = lightAmbient * K_a;
-		//outputColor = vec4(I_ambient, 1.0f);
-
-
 		vec4 meshColor4 = texture(texture_data, outUV); 
 		vec3 meshColor3 = vec3(meshColor4.x, meshColor4.y, meshColor4.z);
 		vec3 K_a = meshColor3 * materialAmbient;
