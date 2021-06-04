@@ -22,7 +22,7 @@ void main()
 		vec3 meshColor3 = vec3(meshColor4.x, meshColor4.y, meshColor4.z);
 		vec3 K_a = meshColor3 * materialAmbient;
 		vec3 I_ambient = lightAmbient * K_a;
-
+		
 
 
 
