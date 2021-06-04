@@ -32,7 +32,7 @@ void main()
 		NL_result = max(NL_result, 0.0f);
 		vec3 I_diffuse = lightDiffuse * K_d * NL_result;
 
-		vec3 K_s = meshColor3 * materialSpecular;
+		vec3 K_s = materialSpecular;
 		//calculate R as a vec4
 		vec4 R4 = ((2 * NL_result) * normal_cameraspace) - L;
 		vec4 cameraView_cannonical = vec4(0.0f, 0.0f, -1.0f, 0.0f);
@@ -57,7 +57,7 @@ void main()
 		NL_result = max(NL_result, 0.0f);
 		vec3 I_diffuse = lightDiffuse * K_d * NL_result;
 
-		vec3 K_s = meshColor3 * materialSpecular;
+		vec3 K_s = materialSpecular;
 		//calculate R as a vec4
 		vec4 R4 = ((2 * NL_result) * normal_cameraspace) - L;
 		vec4 cameraView_cannonical = vec4(0.0f, 0.0f, -1.0f, 0.0f);

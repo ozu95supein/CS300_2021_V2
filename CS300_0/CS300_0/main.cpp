@@ -266,6 +266,10 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
 
     //view matrix
+    float CameraRadius = 50.f;
+    float alpha_rad = 0.0f;
+    float gamma_angle = 0.0f;
+
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
     ViewDirection = glm::normalize(ViewDirection);
@@ -471,7 +475,8 @@ int main(int argc, char* args[])
                 else if (event.key.keysym.scancode == SDL_SCANCODE_W)
                 {
                     //glm::rotate();
-                    //glm::mat4 rotMat = glm::rotate();
+                    //mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    //
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                 {
