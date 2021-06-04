@@ -1,10 +1,8 @@
 #pragma once
 #include "RenderableMeshObject.h"
-class LightSourceObject
+struct LightSourceObject
 {
-public:
-
-private:
+	glm::mat4 model;
 	Light mLight;
 	RenderableMeshObject mLightSphere;
 };

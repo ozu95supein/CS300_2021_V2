@@ -172,7 +172,7 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLuint MATERIALSPECULAR_NS = glGetUniformLocation(shader, "materialSpecularNS");
     glUniform1f(MATERIALSPECULAR_NS, (CurrentMaterial.ns));
 }
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight, Material & CurrentMaterial)
+void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight)
 {
     ////////////////////////////////////////////////////////////////////////////////
     // Bind the glsl program and this object's VAO
@@ -185,7 +185,7 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
 
-    Renderable_SetLightingUniforms(shader, CurrentLight, CurrentMaterial);
+    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial);
 
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
@@ -287,4 +287,12 @@ void RenderableMeshObject::Renderable_ChangeSlices(int new_slices, MeshType& t)
     mObjectMesh.GenerateAveragedNormalLines();
     Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
+}
+void RenderableMeshObject::SetMaterial(Material m)
+{
+    mMaterial = m;
+}
+Material& RenderableMeshObject::GetMaterialRefference()
+{
+    return mMaterial;
 }

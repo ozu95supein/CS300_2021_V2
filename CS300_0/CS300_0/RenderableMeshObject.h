@@ -32,13 +32,15 @@ public:
 
     void Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
     void Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial);
-    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light& CurrentLight, Material& CurrentMaterial);
+    void Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light& CurrentLight);
     void Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader);
     void Renderable_ChangeSlices(int new_slices, MeshType& t);
     glm::mat4& GetModelRefference();
     glm::mat4 GetModel();
     void SetModel(glm::mat4 m);
+    void SetMaterial(Material m);
+    Material& GetMaterialRefference();
 private:
 
     Mesh mObjectMesh;
@@ -49,4 +51,5 @@ private:
     GLuint mObjectAveragedNormal_VBO;
     GLuint mObjectAveragedNormal_VAO;
     glm::mat4 mModelMatrix;
+    Material mMaterial;
 };
