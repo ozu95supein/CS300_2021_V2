@@ -24,10 +24,15 @@ void main()
 		vec3 K_a = meshColor3 * materialAmbient;
 		vec3 I_ambient = lightAmbient * K_a;
 		
+		vec3 K_d = meshColor3 * materialDiffuse;
+		float NL_result = dot(normal_cameraspace, L);
+		NL_result = max(NL_result, 0.0f);
+		vec3 I_diffuse = lightDiffuse * K_d * NL_result;
 
 
+		vec3 I_total = I_ambient + I_diffuse;
+		outputColor = vec4(I_total, 1.0f);
 
-		outputColor = vec4(I_ambient, 1.0f);
 	}
 	else
 	{
