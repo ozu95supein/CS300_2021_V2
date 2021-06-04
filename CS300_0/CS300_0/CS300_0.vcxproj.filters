@@ -47,5 +47,8 @@
     <ClInclude Include="Light_And_Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LightSourceObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

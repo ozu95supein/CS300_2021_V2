@@ -279,16 +279,21 @@ int main(int argc, char* args[])
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
     glm::vec3 main_light_diffuse(0.5f);
-    glm::vec4 light_position = glm::vec4(glm::vec3(light_radius, 0.0f, 0.0f), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
+    glm::vec4 light_position = glm::vec4(glm::vec3(0.0f, 0.0f, light_radius), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
+    //SPECULAR
+    glm::vec3 main_light_specular = glm::vec3(1.0f);
+    glm::vec3 main_material_specular = glm::vec3(1.0f);
 
     Light mLight;
     mLight.light_ambient        = main_light_ambient;
     mLight.light_diffuse        = main_light_diffuse;
     mLight.light_position       = light_position;
+    mLight.light_specular       = main_light_specular;
 
     Material mMaterial;
     mMaterial.material_ambient  = main_material_ambient;
     mMaterial.material_diffuse  = main_light_diffuse;
+    mMaterial.material_specular = main_material_specular;
     /*==========================================================================================================================================*/
 
 
@@ -451,8 +456,7 @@ int main(int argc, char* args[])
                     {
                         ColoredBoxTextureOn = 1;
                     }
-                }
-                
+                }     
                 break;
             }
         }
