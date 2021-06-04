@@ -10,6 +10,7 @@ out vec4 normal_cameraspace;
 uniform mat4 u_M;
 uniform mat4 u_V;
 uniform mat4 u_P;
+uniform vec4 lightPosition;
 
 void main()
 {
