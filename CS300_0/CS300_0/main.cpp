@@ -452,20 +452,7 @@ int main(int argc, char* args[])
                         ColoredBoxTextureOn = 1;
                     }
                 }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_P)
-                {
-                //Debug
-                    //move the lightsource
-                    //rotate on xz plane
-                    //translate back to origin,
-                    light_XY_Angle_Rad += light_XY_Angle_Rad_increment;
-                    float x = light_radius * glm::cos(light_XY_Angle_Rad);
-                    float z = light_radius * glm::sin(light_XY_Angle_Rad);
-                    glm::vec3 t(x, 0.0f, z);
-                    glm::mat4 Light_translationMatrix = glm::translate(glm::mat4(1.0f), t);
-                    LIGHT_ModelMatrix = LIGHT_ModelMatrix * Light_translationMatrix;
-                    LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
-                }
+                
                 break;
             }
         }
