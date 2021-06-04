@@ -13,4 +13,5 @@ struct Material
     glm::vec3 material_ambient;
     glm::vec3 material_diffuse;
     glm::vec3 material_specular;
+    float ns;
 };

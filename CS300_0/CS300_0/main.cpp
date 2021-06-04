@@ -267,6 +267,9 @@ int main(int argc, char* args[])
 
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
+    ViewDirection = glm::normalize(ViewDirection);
+
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
@@ -283,6 +286,7 @@ int main(int argc, char* args[])
     //SPECULAR
     glm::vec3 main_light_specular = glm::vec3(1.0f);
     glm::vec3 main_material_specular = glm::vec3(1.0f);
+    float main_ns = 10.0f;
 
     Light mLight;
     mLight.light_ambient        = main_light_ambient;
@@ -294,6 +298,7 @@ int main(int argc, char* args[])
     mMaterial.material_ambient  = main_material_ambient;
     mMaterial.material_diffuse  = main_light_diffuse;
     mMaterial.material_specular = main_material_specular;
+    mMaterial.ns = main_ns;
     /*==========================================================================================================================================*/
 
 
