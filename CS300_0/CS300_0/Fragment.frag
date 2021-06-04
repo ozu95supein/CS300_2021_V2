@@ -10,9 +10,12 @@ uniform int texture_toggle;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
+uniform vec3 lightSpecular;
 
 uniform vec3 materialAmbient;
 uniform vec3 materialDiffuse;
+uniform vec3 materialSpecular;
+uniform float materialSpecularNS;
 
 void main()
 {
@@ -29,6 +32,13 @@ void main()
 		NL_result = max(NL_result, 0.0f);
 		vec3 I_diffuse = lightDiffuse * K_d * NL_result;
 
+		//vec3 K_s = meshColor3 * materialSpecular;
+		//vec4 R4 = (2.0f * (NL_result) * normal_cameraspace) - L;
+		////build a canonical camera
+		//vec3 V_camera(0.0f);
+		//vec3 V_camera.z = -1.0f;
+		//vec3 R(R4.x, R4.y, R4.z);
+		//float RV_result = dot(R, V_camera);
 
 		vec3 I_total = I_ambient + I_diffuse;
 		outputColor = vec4(I_total, 1.0f);

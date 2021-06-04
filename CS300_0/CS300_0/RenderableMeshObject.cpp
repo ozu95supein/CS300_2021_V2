@@ -51,7 +51,7 @@ void RenderableMeshObject::Renderable_InitAllBuffers()
     Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
 }
-void RenderableMeshObject::Renderable_InitializeMeshBuffers(GLuint &vbo, GLuint &vao, Mesh& mesh, )
+void RenderableMeshObject::Renderable_InitializeMeshBuffers(GLuint &vbo, GLuint &vao, Mesh& mesh)
 {
     unsigned long stride = sizeof(Vertex);
     // create buffer for VAO
@@ -164,11 +164,18 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLuint MATERIALDIFFUSE = glGetUniformLocation(shader, "materialDiffuse");
     glUniform3fv(MATERIALDIFFUSE, 1, &(CurrentMaterial.material_diffuse[0]));
 
+    //SPECULAR
+    GLuint LIGHTSPECULAR = glGetUniformLocation(shader, "lightSpecular");
+    glUniform3fv(LIGHTSPECULAR, 1, &(CurrentLight.light_specular[0]));
+    GLuint MATERIALSPECULAR = glGetUniformLocation(shader, "materialSpecular");
+    glUniform3fv(LIGHTSPECULAR, 1, &(CurrentMaterial.material_specular[0]));
+    GLuint MATERIALSPECULAR_NS = glGetUniformLocation(shader, "materialSpecularNS");
+    glUniform1f(MATERIALSPECULAR_NS, (CurrentMaterial.ns));
 }
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight, Material & CurrentMaterial)
 {
     ////////////////////////////////////////////////////////////////////////////////
-        // Bind the glsl program and this object's VAO
+    // Bind the glsl program and this object's VAO
     glUseProgram(shader);
     //pass them to program
     GLint model = glGetUniformLocation(shader, "u_M");
