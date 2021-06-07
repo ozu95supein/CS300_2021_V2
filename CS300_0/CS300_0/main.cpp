@@ -281,11 +281,11 @@ int main(int argc, char* args[])
     /*==========================================================================================================================================*/
     //HARD CODED for now
     //AMBIENT
-    glm::vec3 main_material_ambient(0.5f);
-    glm::vec3 main_light_ambient(0.5f);
+    glm::vec3 main_material_ambient(1.0f);
+    glm::vec3 main_light_ambient(0.0f);
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
-    glm::vec3 main_light_diffuse(1.0f);
+    glm::vec3 main_light_diffuse(0.5f);
     glm::vec4 light_position = glm::vec4(glm::vec3(0.0f, 0.0f, light_radius), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
     //SPECULAR
     glm::vec3 main_light_specular = glm::vec3(1.0f);
