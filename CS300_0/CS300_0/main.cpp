@@ -266,13 +266,23 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
 
     //view matrix
-    float CameraRadius = 50.f;
-    float alpha_rad = 0.0f;
-    float gamma_angle = 0.0f;
+    float CameraRadius = 50.f;  //radius of the camera from origin
+    float alpha_rad = 0.0f;     //angle of the camera on the xz plane, y axis
+    float gamma_rad = 0.0f;   //angle of the camera from the top
 
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
     ViewDirection = glm::normalize(ViewDirection);
+
+    gamma_rad = -PIValue / 2;
+    float x = CameraRadius * glm::sin(gamma_rad) * glm::cos(alpha_rad);
+    float y = CameraRadius * glm::sin(gamma_rad) * glm::sin(alpha_rad);
+    float z = CameraRadius * glm::sin(gamma_rad);
+
+    glm::vec3 cam_pos(x, y, z);
+    glm::mat4 Cam_TranslateMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
+    glm::mat4 Cam_RotateMatris = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 Cam_Matrix = Cam_TranslateMatrix * Cam_RotateMatris;
 
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;

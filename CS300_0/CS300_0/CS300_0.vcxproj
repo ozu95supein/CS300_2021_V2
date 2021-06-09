@@ -18,6 +18,7 @@
     <ClCompile Include="ShaderUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraObject.h" />
     <ClInclude Include="LightSourceObject.h" />
     <ClInclude Include="Light_And_Material.h" />
     <ClInclude Include="Mesh.h" />
