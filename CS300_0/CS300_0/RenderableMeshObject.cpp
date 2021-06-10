@@ -292,6 +292,10 @@ void RenderableMeshObject::SetMaterial(Material m)
 {
     mMaterial = m;
 }
+void RenderableMeshObject::Translate(glm::vec3 newPosition)
+{
+    mModelMatrix = glm::translate(mModelMatrix, newPosition);
+}
 Material& RenderableMeshObject::GetMaterialRefference()
 {
     return mMaterial;

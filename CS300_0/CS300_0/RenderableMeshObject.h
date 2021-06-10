@@ -40,6 +40,7 @@ public:
     glm::mat4 GetModel();
     void SetModel(glm::mat4 m);
     void SetMaterial(Material m);
+    void Translate(glm::vec3 newPosition);
     Material& GetMaterialRefference();
 private:
 

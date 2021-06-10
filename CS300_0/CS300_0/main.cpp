@@ -15,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "RenderableMeshObject.h"
+#include "LightSourceObject.h"
 
 static int     winID;
 static GLsizei WIDTH = 1280;
@@ -256,7 +257,7 @@ int main(int argc, char* args[])
     float light_Phi_Angle_Rad = 0.0f;
     float light_Phi_increment = 0.001f;
     float light_Amplitude = 14.0f;
-    float light_XY_Angle_Rad_increment = 0.0005f;
+    float light_Theta_increment = 0.0002f;
     float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
     float light_y = 0.0f;
     float light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
@@ -266,6 +267,34 @@ int main(int argc, char* args[])
     //model matrix
     glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
     RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, current_slices, LIGHT_ModelMatrix);
+    /*==========================================================================================================================================*/
+    //HARD CODED for now
+    //AMBIENT
+    glm::vec3 main_material_ambient(1.0f);
+    glm::vec3 main_light_ambient(0.0f);
+    //DIFFUSE
+    glm::vec3 main_material_diffuse(1.0f);
+    glm::vec3 main_light_diffuse(0.5f);
+    glm::vec4 light_position = glm::vec4(glm::vec3(0.0f, 0.0f, light_radius), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
+    //SPECULAR
+    glm::vec3 main_light_specular = glm::vec3(1.0f);
+    glm::vec3 main_material_specular = glm::vec3(1.0f);
+    float main_ns = 10.0f;
+    Light mLight;
+    mLight.light_ambient = main_light_ambient;
+    mLight.light_diffuse = main_light_diffuse;
+    mLight.light_position = light_position;
+    mLight.light_specular = main_light_specular;
+    Material mMaterial;
+    mMaterial.material_ambient = main_material_ambient;
+    mMaterial.material_diffuse = main_light_diffuse;
+    mMaterial.material_specular = main_material_specular;
+    mMaterial.ns = main_ns;
+    /*=========================================================================================================================================*/
+    //MAKE LIGHTSOURCE OBJECT
+    LightSourceObject Light_1(LIGHT_ModelMatrix, mLight, LIGHT_sphereObject);
+
+    /*=========================================================================================================================================*/
 
     /*******************************************************************************************************************************************/
     //view matrix
@@ -287,33 +316,8 @@ int main(int argc, char* args[])
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 150.0f);
-    /*==========================================================================================================================================*/
-    //HARD CODED for now
-    //AMBIENT
-    glm::vec3 main_material_ambient(1.0f);
-    glm::vec3 main_light_ambient(0.0f);
-    //DIFFUSE
-    glm::vec3 main_material_diffuse(1.0f);
-    glm::vec3 main_light_diffuse(0.5f);
-    glm::vec4 light_position = glm::vec4(glm::vec3(0.0f, 0.0f, light_radius), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
-    //SPECULAR
-    glm::vec3 main_light_specular = glm::vec3(1.0f);
-    glm::vec3 main_material_specular = glm::vec3(1.0f);
-    float main_ns = 10.0f;
+    /*******************************************************************************************************************************************/
 
-    Light mLight;
-    mLight.light_ambient        = main_light_ambient;
-    mLight.light_diffuse        = main_light_diffuse;
-    mLight.light_position       = light_position;
-    mLight.light_specular       = main_light_specular;
-
-    Material mMaterial;
-    mMaterial.material_ambient  = main_material_ambient;
-    mMaterial.material_diffuse  = main_light_diffuse;
-    mMaterial.material_specular = main_material_specular;
-    mMaterial.ns = main_ns;
-
-    /*==========================================================================================================================================*/
 
     planeObject.SetMaterial(mMaterial);
     cubeObject.SetMaterial(mMaterial);
@@ -542,14 +546,17 @@ int main(int argc, char* args[])
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
         // update light
-        light_Theta_Angle_Rad += light_XY_Angle_Rad_increment;
+        light_Theta_Angle_Rad += light_Theta_increment;
         light_Phi_Angle_Rad += light_Phi_increment;
         light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
         light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
         light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
-        LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-        LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
-        LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+        glm::vec3 lvec(light_x, light_y, light_z);
+        // LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+        // LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+        // LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+         
+        Light_1.TranslateEntireLightSource(lvec, glm::vec3(0.0f, 0.0f, 0.0f));
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -639,7 +646,9 @@ int main(int argc, char* args[])
             break;
         }
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
+        //LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
+        Light lightVar = Light_1.GetLightSourceAttributes();
+        Light_1.GetLightSourceSphere().Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, lightVar);
         SDL_GL_SwapWindow(window);    
         
     }
