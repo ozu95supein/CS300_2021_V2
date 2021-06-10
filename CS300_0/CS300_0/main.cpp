@@ -59,7 +59,6 @@ GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 
     return shader;
 }
-
 GLuint CreateProgram(const std::vector<GLuint>& shaderList)
 {
     GLuint program = glCreateProgram();
@@ -87,8 +86,6 @@ GLuint CreateProgram(const std::vector<GLuint>& shaderList)
 
     return program;
 }
-
-
 GLuint InitializeProgram()
 {
     GLuint theProgram = ShaderUtils::CreateShaderProgram("Vertex.vert", "Fragment.frag");
@@ -171,6 +168,7 @@ GLuint& makeTexture(GLuint& t)
 
     return t;
 }
+
 #undef main
 int main(int argc, char* args[])
 {
@@ -219,16 +217,12 @@ int main(int argc, char* args[])
     std::cout << "GL_VENDOR: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
- 
-
     glEnable(GL_DEPTH_TEST);
-
     GLuint texture = makeTexture(texture);
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
 
     /*******************************************************************************************************************************************/
-
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
@@ -271,7 +265,7 @@ int main(int argc, char* args[])
     //HARD CODED for now
     //AMBIENT
     glm::vec3 main_material_ambient(1.0f);
-    glm::vec3 main_light_ambient(0.0f);
+    glm::vec3 main_light_ambient(0.2f);
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
     glm::vec3 main_light_diffuse(0.5f);
@@ -545,7 +539,6 @@ int main(int argc, char* args[])
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
-        // update light
         // update light
         light_Theta_Angle_Rad += light_Theta_increment;
         light_Phi_Angle_Rad += light_Phi_increment;
