@@ -28,13 +28,15 @@ struct LightSourceObject
 	{
 		mLightSphere = sph;
 	}
-	RenderableMeshObject GetLightSourceSphere()
+	RenderableMeshObject & GetLightSourceSphereRefference()
 	{
 		return mLightSphere;
 	}
 	void TranslateEntireLightSource(glm::vec3 TranslationPosition, glm::vec3 LookAtPoint)
 	{
-		model = glm::translate(model, TranslationPosition);
+		glm::mat4 translateMat = glm::translate(model, TranslationPosition);
+		model = model * translateMat;
+		//model = glm::translate(model, TranslationPosition);
 		mLight.light_position = glm::vec4(TranslationPosition, 1.0f);
 		mLightSphere.Translate(TranslationPosition);
 	}

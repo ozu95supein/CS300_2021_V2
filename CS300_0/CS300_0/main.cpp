@@ -275,7 +275,7 @@ int main(int argc, char* args[])
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
     glm::vec3 main_light_diffuse(0.5f);
-    glm::vec4 light_position = glm::vec4(glm::vec3(0.0f, 0.0f, light_radius), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
+    glm::vec4 light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
     //SPECULAR
     glm::vec3 main_light_specular = glm::vec3(1.0f);
     glm::vec3 main_material_specular = glm::vec3(1.0f);
@@ -648,7 +648,7 @@ int main(int argc, char* args[])
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
         //LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
         Light lightVar = Light_1.GetLightSourceAttributes();
-        Light_1.GetLightSourceSphere().Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, lightVar);
+        Light_1.GetLightSourceSphereRefference().Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, lightVar);
         SDL_GL_SwapWindow(window);    
         
     }
