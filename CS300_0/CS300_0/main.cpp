@@ -266,27 +266,26 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
 
     //view matrix
-    float CameraRadius = 50.f;  //radius of the camera from origin
-    float alpha_rad = 0.0f;     //angle of the camera on the xz plane, y axis
-    float gamma_rad = 0.0f;   //angle of the camera from the top
-
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
     ViewDirection = glm::normalize(ViewDirection);
 
-    gamma_rad = -PIValue / 2;
-    float x = CameraRadius * glm::sin(gamma_rad) * glm::cos(alpha_rad);
-    float y = CameraRadius * glm::sin(gamma_rad) * glm::sin(alpha_rad);
-    float z = CameraRadius * glm::sin(gamma_rad);
-
-    glm::vec3 cam_pos(x, y, z);
-    glm::mat4 Cam_TranslateMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
-    glm::mat4 Cam_RotateMatris = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 Cam_Matrix = Cam_TranslateMatrix * Cam_RotateMatris;
+    float CameraRadius = 50.f;  //radius of the camera from origin
+    float CameraRadius_increment = 0.5;  //radius of the camera from origin
+    float alpha_rad = 0.0f;     //angle of the camera on the xz plane, y axis
+    float gamma_rad = 0.0f;   //angle of the camera from the top
+    float alpha_increment = 0.05f;
+    float gamma_increment = 0.05f;
+    
+    float cam_x = CameraRadius * glm::cos(gamma_rad) * glm::sin(alpha_rad);
+    float cam_y = CameraRadius * glm::sin(gamma_rad);
+    float cam_z = CameraRadius * glm::cos(gamma_rad) * glm::cos(alpha_rad);
+    glm::vec3 cam_pos(cam_x, cam_y, cam_z);
+    glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
-    glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
+    glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 150.0f);
 
     /*==========================================================================================================================================*/
     //HARD CODED for now
@@ -313,6 +312,7 @@ int main(int argc, char* args[])
     mMaterial.material_diffuse  = main_light_diffuse;
     mMaterial.material_specular = main_material_specular;
     mMaterial.ns = main_ns;
+
     /*==========================================================================================================================================*/
 
     planeObject.SetMaterial(mMaterial);
@@ -484,26 +484,62 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_W)
                 {
-                    //glm::rotate();
-                    //mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    //
+                    gamma_rad += gamma_increment;
+                    if (gamma_rad > (PIValue / 2.0f))
+                    {
+                        gamma_rad = (PIValue / 2.0f);
+                    }
+                    
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                 {
-
+                    gamma_rad -= gamma_increment;
+                    if (gamma_rad < -(PIValue / 2.0f))
+                    {
+                        gamma_rad = -(PIValue / 2.0f);
+                    }
+                    glm::clamp(gamma_rad, -(PIValue / 2.0f), (PIValue / 2.0f));
+                    
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_A)
                 {
-
+                    alpha_rad -= alpha_increment;
+                   
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_D)
                 {
-
+                    alpha_rad += alpha_increment;
+                    
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_Q)
+                {
+                    //closer
+                    CameraRadius -= CameraRadius_increment;
+                    if (CameraRadius < 0.1f)
+                    {
+                        CameraRadius = 0.1f;
+                    }
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_E)
+                {
+                    //further
+                    CameraRadius += CameraRadius_increment;
+                    if (CameraRadius > 100.0f)
+                    {
+                        CameraRadius = 100.0f;
+                    }
                 }
                 break;
             }
         }
-        
+        ////////////////////////////////////////////////////////////////////////////////
+        //update camera
+        cam_x = CameraRadius * glm::cos(gamma_rad) * glm::sin(alpha_rad);
+        cam_y = CameraRadius * glm::sin(gamma_rad);
+        cam_z = CameraRadius * glm::cos(gamma_rad) * glm::cos(alpha_rad);
+        glm::vec3 cam_pos(cam_x, cam_y, cam_z);
+        glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
