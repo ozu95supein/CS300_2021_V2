@@ -292,7 +292,7 @@ int main(int argc, char* args[])
     mMaterial.ns = main_ns;
     /*=========================================================================================================================================*/
     //MAKE LIGHTSOURCE OBJECT
-    LightSourceObject Light_1(LIGHT_ModelMatrix, mLight, LIGHT_sphereObject);
+    
 
     /*=========================================================================================================================================*/
 
@@ -546,17 +546,16 @@ int main(int argc, char* args[])
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
         // update light
+        // update light
         light_Theta_Angle_Rad += light_Theta_increment;
         light_Phi_Angle_Rad += light_Phi_increment;
         light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
         light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
         light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
-        glm::vec3 lvec(light_x, light_y, light_z);
-        // LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-        // LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
-        // LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
-         
-        Light_1.TranslateEntireLightSource(lvec, glm::vec3(0.0f, 0.0f, 0.0f));
+        LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+        LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+        LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+        mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -646,9 +645,7 @@ int main(int argc, char* args[])
             break;
         }
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
-        //LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
-        Light lightVar = Light_1.GetLightSourceAttributes();
-        Light_1.GetLightSourceSphereRefference().Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, lightVar);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
         SDL_GL_SwapWindow(window);    
         
     }
