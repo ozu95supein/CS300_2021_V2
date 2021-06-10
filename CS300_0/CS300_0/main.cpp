@@ -248,23 +248,26 @@ int main(int argc, char* args[])
     //model matrix
     glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
     GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    /*******************************************************************************************************************************************/
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
     //LIGHTS
     float light_radius = 20.0f;
-    float light_XY_Angle_Rad= 0.0f;
-    float light_XY_Angle_Rad_increment = 0.0001f;
-    float light_x = light_radius * glm::cos(light_XY_Angle_Rad);
-    float light_z = light_radius * glm::sin(light_XY_Angle_Rad);
-
-    glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_radius, 0.0f, 0.0f));
-    glm::mat4 LIGHT_rotationMatrix = glm::rotate(glm::mat4(1.0f), light_XY_Angle_Rad, glm::vec3(0.0, 0.0, 1.0));
+    float light_Theta_Angle_Rad = 0.0f;
+    float light_Phi_Angle_Rad = 0.0f;
+    float light_Phi_increment = 0.001f;
+    float light_Amplitude = 14.0f;
+    float light_XY_Angle_Rad_increment = 0.0005f;
+    float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
+    float light_y = 0.0f;
+    float light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+    
+    glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
     glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
     //model matrix
-    glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_rotationMatrix * LIGHT_scaleMatrix;//world space
+    glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
     RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, current_slices, LIGHT_ModelMatrix);
 
     /*******************************************************************************************************************************************/
-
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
@@ -281,12 +284,9 @@ int main(int argc, char* args[])
     float cam_y = CameraRadius * glm::sin(gamma_rad);
     float cam_z = CameraRadius * glm::cos(gamma_rad) * glm::cos(alpha_rad);
     glm::vec3 cam_pos(cam_x, cam_y, cam_z);
-    glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 150.0f);
-
     /*==========================================================================================================================================*/
     //HARD CODED for now
     //AMBIENT
@@ -541,10 +541,20 @@ int main(int argc, char* args[])
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
+        // update light
+        light_Theta_Angle_Rad += light_XY_Angle_Rad_increment;
+        light_Phi_Angle_Rad += light_Phi_increment;
+        light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
+        light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
+        light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+        LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+        LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+        LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+        ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        ////////////////////////////////////////////////////////////////////////////////
         switch (current_mesh_to_display)
         {
             case 1:
