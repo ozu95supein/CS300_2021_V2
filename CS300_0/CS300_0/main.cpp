@@ -545,8 +545,13 @@ int main(int argc, char* args[])
         light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
         light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
         light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+
+        //LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+        // LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+
         LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-        LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+        LIGHT_ModelMatrix = LIGHT_translationMatrix;
+
         LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
         mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
         ////////////////////////////////////////////////////////////////////////////////
