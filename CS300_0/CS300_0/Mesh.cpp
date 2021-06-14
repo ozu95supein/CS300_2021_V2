@@ -45,6 +45,9 @@ void Mesh::ConstructPlane()
 	mVertexArray.push_back(v2);
 
 	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructCube()
 {
@@ -176,6 +179,9 @@ void Mesh::ConstructCube()
 	mVertexArray.push_back(v35);
 	std::cout << "CUBE" << std::endl;
 	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructCylinder(int slices)
 {
@@ -359,6 +365,9 @@ void Mesh::ConstructCylinder(int slices)
 	SetFaceNum(int(mVertexArray.size() / 3));
 
 	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructCone(int slices)
 {
@@ -496,6 +505,8 @@ void Mesh::ConstructCone(int slices)
 	SetFaceNum(int(mVertexArray.size() / 3));
 
 	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
 
 }
 void Mesh::ConstructSphere(int slices)
@@ -796,6 +807,8 @@ void Mesh::ConstructSphere(int slices)
 	SetFaceNum(int(mVertexArray.size() / 3));
 
 	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
 
 }
 void Mesh::CleanupAndReset()
