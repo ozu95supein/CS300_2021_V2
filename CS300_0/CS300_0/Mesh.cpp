@@ -960,6 +960,7 @@ void Mesh::ConstructAveragedNormals()
 		averagedNormals.clear();
 	}
 }
+
 //NOTE: check if making things vec4 instead of vec3 messes things up
 void Mesh::AveragedNormal_ComputeTangentBasis()
 {
@@ -990,12 +991,12 @@ void Mesh::AveragedNormal_ComputeTangentBasis()
 		glm::vec3 B = (uv2.x * v1 - uv1.x * v2) * invDenominator;
 
 		// Accumulate tangent/bitangent for the 3 vertices of the triangle (to average after)
-		mVertexArray[u0].AveragedNormal_tangents += T;
-		mVertexArray[u1].AveragedNormal_tangents += T;
-		mVertexArray[u2].AveragedNormal_tangents += T;
-		mVertexArray[u0].AveragedNormal_bi_tangents += B;
-		mVertexArray[u1].AveragedNormal_bi_tangents += B;
-		mVertexArray[u2].AveragedNormal_bi_tangents += B;
+		mVertexArray[u0].AveragedNormal_tangents += glm::vec4(T, 0.0f);
+		mVertexArray[u1].AveragedNormal_tangents += glm::vec4(T, 0.0f);
+		mVertexArray[u2].AveragedNormal_tangents += glm::vec4(T, 0.0f);
+		mVertexArray[u0].AveragedNormal_bi_tangents += glm::vec4(B, 0.0f);
+		mVertexArray[u1].AveragedNormal_bi_tangents += glm::vec4(B, 0.0f);
+		mVertexArray[u2].AveragedNormal_bi_tangents += glm::vec4(B, 0.0f);
 	}
 	// Loop through every vertex
 	for (int i = 0; i < mVertexNum; i += 1)
@@ -1027,6 +1028,7 @@ void Mesh::AveragedNormal_ComputeTangentBasis()
 		mVertexArray[i].AveragedNormal_bi_tangents = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
 	}
 }
+
 void Mesh::ComputeTangetBasis()
 {
 	glm::vec3 T;
