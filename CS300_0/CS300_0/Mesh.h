@@ -68,7 +68,8 @@ public:
 	void ConstructAveragedNormals();
 	void GenerateAveragedNormalLines();
 
-	void ComputeTangentBasis();
+	void AveragedNormal_ComputeTangentBasis();
+	void ComputeTangetBasis();
 
 private:
 	std::vector<Vertex> mVertexArray;

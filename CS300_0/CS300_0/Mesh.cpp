@@ -961,42 +961,135 @@ void Mesh::ConstructAveragedNormals()
 	}
 }
 //NOTE: check if making things vec4 instead of vec3 messes things up
-void Mesh::ComputeTangentBasis()
+void Mesh::AveragedNormal_ComputeTangentBasis()
 {
-	// Clear and initialize tangent and bitangent containers from the vector of vertices
-	for (std::vector<Vertex>::iterator it = std::begin(mVertexArray); it != std::end(mVertexArray); ++it)
+	// Clear and initialize tangent and bitangent containers
+	for (int i = 0; i < mVertexNum; i++)
 	{
-		it->tangents = glm::vec4(0.0f);
-		it->bi_tangents = glm::vec4(0.0f);
+		mVertexArray[i].AveragedNormal_tangents = glm::vec4(0.0f);
+		mVertexArray[i].AveragedNormal_bi_tangents = glm::vec4(0.0f);
 	}
-	// Loop through the triangles (All of the vertices, 3 by 3 for each triangle)
-	for (int i = 0; i < mVertexArray.size(); i += 3)
+	// Loop through the triangles (using the index buffer)
+	for (int i = 0; i < mVertexNum; i += 3)
 	{
-		//get the vectors for the CCW order of vertices of each triangle
-		// unsigned short u0 = indices[i + 0];
+		//get indices of the triangle in CCW order
 		unsigned short u0 = i + 0;
 		unsigned short u1 = i + 1;
 		unsigned short u2 = i + 2;
 		//0 to 1
-		glm::vec4 v1 = mVertexArray[u1].position - mVertexArray[u0].position;
+		glm::vec3 v1 = mVertexArray[u1].position - mVertexArray[u0].position;
 		glm::vec2 uv1 = mVertexArray[u1].UV - mVertexArray[u0].UV;
 		//0 to 2
-		glm::vec4 v2 = mVertexArray[u1].position - mVertexArray[u0].position;
+		glm::vec3 v2 = mVertexArray[u2].position - mVertexArray[u0].position;
+		glm::vec2 uv2 = mVertexArray[u2].UV - mVertexArray[u0].UV;
+		
+		float denominator = (uv1.y * uv2.x) - (uv2.y * uv1.x);
+		//calculating T and B taking into account that denominator could end up == 0
+		float     invDenominator = denominator == 0.0f ? 0.0f : 1.0f / denominator;
+		glm::vec3 T = (uv1.y * v2 - uv2.y * v1) * invDenominator;
+		glm::vec3 B = (uv2.x * v1 - uv1.x * v2) * invDenominator;
+
+		// Accumulate tangent/bitangent for the 3 vertices of the triangle (to average after)
+		mVertexArray[u0].AveragedNormal_tangents += T;
+		mVertexArray[u1].AveragedNormal_tangents += T;
+		mVertexArray[u2].AveragedNormal_tangents += T;
+		mVertexArray[u0].AveragedNormal_bi_tangents += B;
+		mVertexArray[u1].AveragedNormal_bi_tangents += B;
+		mVertexArray[u2].AveragedNormal_bi_tangents += B;
+	}
+	// Loop through every vertex
+	for (int i = 0; i < mVertexNum; i += 1)
+	{
+		// Gram-Schmidt orthogonalization of tangent respect to normal and normalize tangent
+		glm::vec3 GS_u1 = mVertexArray[i].AveragedNormal;
+		glm::vec3 v2;
+		glm::vec3 GS_u2;
+		// Set tangent to (1,0,0) when lenght is 0
+		if (mVertexArray[i].AveragedNormal_tangents.length() == 0)
+		{
+			v2 = glm::vec3(1, 0, 0);
+			GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+		}
+		else
+		{
+			v2 = mVertexArray[i].AveragedNormal_tangents;
+			GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+		}
+		glm::vec3 v3 = mVertexArray[i].AveragedNormal_bi_tangents;
+		glm::vec3 GS_u3 = v3 - (glm::dot(v3, GS_u1) * GS_u1) - (glm::dot(v3, GS_u2) * GS_u2);
+		GS_u1 = glm::normalize(GS_u1);
+		GS_u2 = glm::normalize(GS_u2);
+		GS_u3 = glm::normalize(GS_u3);
+		// Compute the new perpendicular bitangent maintaining the original handeness of the previously
+		// computed one (T,B,N need to be normalized and orthogonal at this point)
+		mVertexArray[i].AveragedNormal = glm::vec4(GS_u1.x, GS_u1.y, GS_u1.z, 0.0f);
+		mVertexArray[i].AveragedNormal_tangents = glm::vec4(GS_u2.x, GS_u2.y, GS_u2.z, 0.0f);
+		mVertexArray[i].AveragedNormal_bi_tangents = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
+	}
+}
+void Mesh::ComputeTangetBasis()
+{
+	glm::vec3 T;
+	glm::vec3 B;
+	// Clear and initialize tangent and bitangent containers
+	for (int i = 0; i < mVertexNum; i++)
+	{
+		mVertexArray[i].tangents = glm::vec4(0.0f);
+		mVertexArray[i].bi_tangents = glm::vec4(0.0f);
+	}
+	// Loop through the triangles (using the index buffer)
+	for (int i = 0; i < mVertexNum; i += 3)
+	{
+		//get indices of the triangle in CCW order
+		unsigned short u0 = i + 0;
+		unsigned short u1 = i + 1;
+		unsigned short u2 = i + 2;
+		//0 to 1
+		glm::vec3 v1 = mVertexArray[u1].position - mVertexArray[u0].position;
+		glm::vec2 uv1 = mVertexArray[u1].UV - mVertexArray[u0].UV;
+		//0 to 2
+		glm::vec3 v2 = mVertexArray[u2].position - mVertexArray[u0].position;
 		glm::vec2 uv2 = mVertexArray[u2].UV - mVertexArray[u0].UV;
 
 		float denominator = (uv1.y * uv2.x) - (uv2.y * uv1.x);
 		//calculating T and B taking into account that denominator could end up == 0
 		float     invDenominator = denominator == 0.0f ? 0.0f : 1.0f / denominator;
-		glm::vec4 T = (uv1.y * v2 - uv2.y * v1) * invDenominator;
-		glm::vec4 B = (uv2.x * v1 - uv1.x * v2) * invDenominator;
-		// Accumulate tangent/bitangent for the 3 vertices of the triangle (to average after)
-		mVertexArray[u0].tangents = T;
-		mVertexArray[u1].tangents = T;
-		mVertexArray[u2].tangents = T;
-		mVertexArray[u0].bi_tangents = B;
-		mVertexArray[u1].bi_tangents = B;
-		mVertexArray[u2].bi_tangents = B;
+		T = (uv1.y * v2 - uv2.y * v1) * invDenominator;
+		B = (uv2.x * v1 - uv1.x * v2) * invDenominator;
 
+		//set Tan and Bitan for each of the 3 vertices
+		for (int j = 0; j < 3; j++)
+		{
+			// Gram-Schmidt orthogonalization of tangent respect to normal and normalize tangent
+			glm::vec3 GS_u1 = mVertexArray[i + j].normal;
+			glm::vec3 v2;
+			glm::vec3 GS_u2;
+			// Set tangent to (1,0,0) when lenght is 0
+			if (mVertexArray[i + j].AveragedNormal_tangents.length() == 0)
+			{
+				v2 = glm::vec3(1, 0, 0);
+				GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+			}
+			else
+			{
+				v2 = mVertexArray[i + j].AveragedNormal_tangents;
+				GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+			}
+			glm::vec3 v3 = mVertexArray[i + j].AveragedNormal_bi_tangents;
+			glm::vec3 GS_u3 = v3 - (glm::dot(v3, GS_u1) * GS_u1) - (glm::dot(v3, GS_u2) * GS_u2);
+			GS_u1 = glm::normalize(GS_u1);
+			GS_u2 = glm::normalize(GS_u2);
+			GS_u3 = glm::normalize(GS_u3);
+			// Compute the new perpendicular bitangent maintaining the original handeness of the previously
+			// computed one (T,B,N need to be normalized and orthogonal at this point)
+			glm::vec4 vec_1 = glm::vec4(GS_u1.x, GS_u1.y, GS_u1.z, 0.0f);
+			glm::vec4 vec_2 = glm::vec4(GS_u2.x, GS_u2.y, GS_u2.z, 0.0f);
+			glm::vec4 vec_3 = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
+
+			mVertexArray[i + j].normal = glm::vec4(GS_u1.x, GS_u1.y, GS_u1.z, 0.0f);
+			mVertexArray[i + j].tangents = glm::vec4(GS_u2.x, GS_u2.y, GS_u2.z, 0.0f);
+			mVertexArray[i + j].bi_tangents = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
+		}
+		
 	}
-
 }
