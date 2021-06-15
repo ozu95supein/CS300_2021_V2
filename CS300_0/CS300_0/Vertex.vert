@@ -12,6 +12,10 @@ out vec2 outUV;
 out vec4 position_cameraspace;
 out vec4 normal_cameraspace;
 out vec4 lightPosition_cameraspace;
+out vec4 T_cameraspace;
+out vec4 BT_cameraspace;
+out vec4 AvgT_cameraspace;
+out vec4 AvgBT_cameraspace;
 
 uniform mat4 u_M;
 uniform mat4 u_V;
@@ -30,6 +34,10 @@ void main()
 	lightPosition_cameraspace = u_V * lightPosition;
 
 	normal_cameraspace = Q * aNormal;
+	T_cameraspace = u_V * u_M * aTangents;
+	BT_cameraspace = u_V * u_M * aBiTangents;
+	AvgT_cameraspace = u_V * u_M * aAvgTangents;
+	AvgBT_cameraspace = u_V * u_M * aAvgBiTangents;
 
     gl_Position = MVP * aPosition;
 }
