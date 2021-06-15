@@ -2,8 +2,14 @@
 out vec4 outputColor;
 in vec2 outUV;
 in vec4 position_cameraspace;
-in vec4 normal_cameraspace;
 in vec4 lightPosition_cameraspace;
+
+in vec4 normal_cameraspace;
+in vec4 Avg_normal_camerapsace;
+in vec4 Tangent_Cameraspace;
+in vec4 BiTangent_Cameraspace;
+in vec4 Avg_Tangent_Cameraspace;
+in vec4 Avg_BiTangent_Cameraspace;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform int texture_toggle;

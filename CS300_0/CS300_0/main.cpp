@@ -252,8 +252,10 @@ int main(int argc, char* args[])
     GLuint texture = makeTexture(texture);
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
+
     //Make a normal map for the height maps
     GLuint NormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
+
     /*******************************************************************************************************************************************/
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));

@@ -12,8 +12,14 @@ layout(location = 7) in vec4 aAvgBiTangent;
 
 out vec2 outUV;
 out vec4 position_cameraspace;
-out vec4 normal_cameraspace;
 out vec4 lightPosition_cameraspace;
+
+out vec4 normal_cameraspace;
+out vec4 Avg_normal_camerapsace;
+out vec4 Tangent_Cameraspace;
+out vec4 BiTangent_Cameraspace;
+out vec4 Avg_Tangent_Cameraspace;
+out vec4 Avg_BiTangent_Cameraspace;
 
 uniform mat4 u_M;
 uniform mat4 u_V;
@@ -34,4 +40,6 @@ void main()
 	normal_cameraspace = Q * aNormal;
 	
     gl_Position = MVP * aPosition;
+	//Tangent and Bitangent Calculations
+
 }
