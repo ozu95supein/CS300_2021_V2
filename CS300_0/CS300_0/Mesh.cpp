@@ -17,10 +17,10 @@ void Mesh::ConstructPlane()
 	glm::vec4 p2 = glm::vec4(0.5, -0.5, 0, 1);
 	glm::vec4 p3 = glm::vec4(0.5, 0.5, 0, 1);
 
-	glm::vec4 n0 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
-	glm::vec4 n1 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
-	glm::vec4 n2 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
-	glm::vec4 n3 = glm::vec4(0.0f, 0.0f, 0.5f, 0);
+	glm::vec4 n0 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 n1 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 n2 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
+	glm::vec4 n3 = glm::vec4(0.0f, 0.0f, 1.0f, 0);
 	 
 	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
 	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
@@ -44,6 +44,10 @@ void Mesh::ConstructPlane()
 	mVertexArray.push_back(v0);
 	mVertexArray.push_back(v2);
 
+	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructCube()
 {
@@ -60,17 +64,17 @@ void Mesh::ConstructCube()
 	glm::vec4 p7 = glm::vec4(0.5, 0.5, -0.5, 1);
 
 	//front
-	glm::vec4 N_front = glm::vec4(0.0f, 0.0f, 0.5f, 0);
+	glm::vec4 N_front = glm::vec4(0.0f, 0.0f, 1.0f, 0);
 	//right
-	glm::vec4 N_right = glm::vec4(0.5f, 0.0f, 0.0f, 0);
+	glm::vec4 N_right = glm::vec4(1.0f, 0.0f, 0.0f, 0);
 	//back
-	glm::vec4 N_back = glm::vec4(0.0f, 0.0f, -0.5f, 0);
+	glm::vec4 N_back = glm::vec4(0.0f, 0.0f, -1.0f, 0);
 	//left
-	glm::vec4 N_left = glm::vec4(-0.5f, 0.0f, 0.0f, 0);
+	glm::vec4 N_left = glm::vec4(-1.0f, 0.0f, 0.0f, 0);
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 	//UVs
 	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
 	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
@@ -173,6 +177,11 @@ void Mesh::ConstructCube()
 	mVertexArray.push_back(v33);
 	mVertexArray.push_back(v34);
 	mVertexArray.push_back(v35);
+	std::cout << "CUBE" << std::endl;
+	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructCylinder(int slices)
 {
@@ -190,9 +199,9 @@ void Mesh::ConstructCylinder(int slices)
 	
 	//TODO, MAKE NORMALS
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 	std::vector<glm::vec4> NormalsForSides;
 	//make the top-bottom pairs of all positions on the same y axis
 	for (int i = 0; i < slices; i++)
@@ -207,19 +216,15 @@ void Mesh::ConstructCylinder(int slices)
 		//std::cout << down.x << ", "<< down.y << ", "<< down.z << ", "<< down.w << std::endl;
 		positions.push_back(up);
 		positions.push_back(down);
+
+		float u = angle_rad / (2 * PI);
+		U_coords.push_back(u);
+
 		angle_rad += rad_increment;
 		//U coord calculations
 		//TODO make PI better
-		float u = angle_rad / (2 * PI);
-		U_coords.push_back(u);
+		
 	}
-	
-	//UVs
-	glm::vec2 uv0 = glm::vec2(0.0, 0.0);
-	glm::vec2 uv1 = glm::vec2(0.0, 1.0);
-	glm::vec2 uv2 = glm::vec2(1.0, 1.0);
-	glm::vec2 uv3 = glm::vec2(1.0, 0.0);
-
 	//NOTE ORDER has to be CENTER SECOND FIRST Vert due to weirdness in XZ plane to
 	// 	   make this entire thing counterclockwise
 	//top faces of the cylinder
@@ -358,6 +363,11 @@ void Mesh::ConstructCylinder(int slices)
 	SetType(MeshType::CYLINDER);
 	SetVertexNum(int(mVertexArray.size()));
 	SetFaceNum(int(mVertexArray.size() / 3));
+
+	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructCone(int slices)
 {
@@ -374,9 +384,9 @@ void Mesh::ConstructCone(int slices)
 
 	//TODO, MAKE NORMALS
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 
 	//make the positions of the cone bottom
 	for (int i = 0; i < slices; i++)
@@ -389,11 +399,12 @@ void Mesh::ConstructCone(int slices)
 		//std::cout << "Angle: " << angle_rad << std::endl;
 		//std::cout << current.x << ", " << current.y << ", " << current.z << ", " << current.w << std::endl;
 		positions.push_back(current);
+		float u = angle_rad / (2 * PI);
+		U_coords.push_back(u);
 		angle_rad += rad_increment;
 		//U coord calculations
 		//TODO make PI better
-		float u = angle_rad / (2 * PI);
-		U_coords.push_back(u);
+		
 	}
 	//Do Bottom part of cone
 	//p1, p2, p3
@@ -492,6 +503,11 @@ void Mesh::ConstructCone(int slices)
 	SetType(MeshType::CONE);
 	SetVertexNum(int(mVertexArray.size()));
 	SetFaceNum(int(mVertexArray.size() / 3));
+
+	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::ConstructSphere(int slices)
 {
@@ -518,9 +534,9 @@ void Mesh::ConstructSphere(int slices)
 
 	//TODO, MAKE NORMALS
 	//top
-	glm::vec4 N_top = glm::vec4(0.0f, 0.5f, 0.0f, 0);
+	glm::vec4 N_top = glm::vec4(0.0f, 1.0f, 0.0f, 0);
 	//bottom
-	glm::vec4 N_bottom = glm::vec4(0.0f, -0.5f, 0.0f, 0);
+	glm::vec4 N_bottom = glm::vec4(0.0f, -1.0f, 0.0f, 0);
 
 	/************************************************************************************************************/
 	//make the positions of first ring (top)
@@ -540,11 +556,12 @@ void Mesh::ConstructSphere(int slices)
 		//std::cout << current.x << ", " << current.y << ", " << current.z << ", " << current.w << std::endl;
 		positions.push_back(current);
 		pos_index += 1;
-		alpha_rad += alpha_increment;
 		//U coord calculations
 		//TODO make PI better
 		float u = alpha_rad / (2 * PI);
 		U_coords.push_back(u);
+		alpha_rad += alpha_increment;
+		
 	}
 	//calculate the V coord values
 	V_coords.push_back(0.0f);
@@ -744,8 +761,8 @@ void Mesh::ConstructSphere(int slices)
 			glm::vec4 higherNum = positions[b];
 
 			//make normals through cross product
-			glm::vec3 v_1 = (lowerNum - higherNum);
-			glm::vec3 v_2 = (higherNum - higherNum);
+			glm::vec3 v_1 = (lowerNum - center);
+			glm::vec3 v_2 = (higherNum - center);
 			glm::vec3 v_3 = glm::cross(v_2, v_1);
 			glm::vec3 v_4 = glm::normalize(v_3);
 			glm::vec4 n = glm::vec4(v_4.x, v_4.y, v_4.z, 0.0f);
@@ -788,11 +805,17 @@ void Mesh::ConstructSphere(int slices)
 	SetType(MeshType::SPHERE);
 	SetVertexNum(int(mVertexArray.size()));
 	SetFaceNum(int(mVertexArray.size() / 3));
+
+	ConstructAveragedNormals();
+	AveragedNormal_ComputeTangentBasis();
+	ComputeTangetBasis();
+
 }
 void Mesh::CleanupAndReset()
 {
 	mVertexArray.clear();
 	mNormalArray.clear();
+	mAveragedNormalArray.clear();
 	mVertexNum = 0;
 	mFaceNum = 0;
 }
@@ -806,6 +829,12 @@ void* Mesh::GetNormals()
 {
 	//IS THIS OK?
 	auto ptr = &(*(mNormalArray.begin()));
+	return (void*)(ptr);
+}
+void* Mesh::GetAveragedNormals()
+{
+	//IS THIS OK?
+	auto ptr = &(*(mAveragedNormalArray.begin()));
 	return (void*)(ptr);
 }
 int Mesh::GetVertexNum()
@@ -848,5 +877,234 @@ void Mesh::GenerateNormalLines()
 		glm::vec4 end = v.position + v.normal;
 		NormalLine n(start, end);
 		mNormalArray.push_back(n);
+	}
+}
+void Mesh::GenerateAveragedNormalLines()
+{
+	int vertex_num = GetVertexNum();
+	for (int i = 0; i < vertex_num; i++)
+	{
+		Vertex v = mVertexArray[i];
+		glm::vec4 start = v.position;
+		glm::vec4 end = v.position + v.AveragedNormal;
+		NormalLine n(start, end);
+		mAveragedNormalArray.push_back(n);
+	}
+}
+
+void Mesh::ConstructAveragedNormals()
+{
+	//create a temporary vector for the averaged normals
+	std::vector<glm::vec4> averagedNormals;
+	int i = 0;
+	int j = 0;
+	//loop through each vertex in mVertexArrays using currentVertex
+	for (std::vector<Vertex>::iterator currentVertex = mVertexArray.begin(); currentVertex != mVertexArray.end(); ++currentVertex)
+	{
+		//std::cout << "currentVertex = vertex " << i++ << std::endl;
+		//push the current vertex normal into the array
+		averagedNormals.push_back(currentVertex->normal);
+		//with this currentVertex  selected we loop through the vertex array again and add those vertices that
+		//share the same position as currentVertex, but ignoring those that have exactly the same Normal vector value
+		for (std::vector<Vertex>::iterator it = mVertexArray.begin(); it != mVertexArray.end(); ++it)
+		{
+			//std::cout << "it = vertex " << j << std::endl;
+			//skip if its the same vertex
+			if (it == currentVertex)
+			{
+				j++;
+				continue;
+			}
+			//check if position is equal
+			glm::vec4 var = (currentVertex)->position;
+			glm::vec4 var2 = (it)->position;
+			//std::cout << "currentVertex: " << var.x <<", "<< var.y << ", " << var.z << ", " << var.w << ", " << std::endl;
+			//std::cout << "it           : " << var2.x <<", "<< var2.y << ", " << var2.z << ", " << var2.w << ", " << std::endl;
+			if ((currentVertex)->position == (it)->position)
+			{
+				//Check if Normal is exactly the same, if so, skip
+ 				if ((currentVertex)->normal == (it)->normal)
+				{
+					j++;
+					continue;
+				}
+				bool found = false;
+				//iterated through the current averaged normals and check if the value of this normal is already in it
+				for (std::vector<glm::vec4>::iterator temp = averagedNormals.begin(); temp != averagedNormals.end(); ++temp)
+				{
+					//if the normal at 'it' already exists in averaged normals, we break and skip it
+					if ((*temp) == it->normal)
+					{
+						found = true;
+						break;
+					}
+				}
+				//if we found the normal, we skip
+				if (found)
+				{
+					j++;
+					continue;
+				}
+				else
+				{
+					//push the iterator normal into the array
+					averagedNormals.push_back(it->normal);
+				}
+				
+			}
+			j++;
+		}
+		j = 0;
+		//once you are done, average the normals
+		glm::vec4 result(0.0f, 0.0f, 0.0f, 0.0f);
+		for (std::vector<glm::vec4>::iterator it2 = averagedNormals.begin(); it2 != averagedNormals.end(); ++it2)
+		{
+			result += (*it2);
+		}
+
+		//once all of those are added to the temporary vector we average them, then set the Average normal of the current vertex to the value obtained
+		//set this new normal as the averaged nomal on currentVertex
+		if (glm::length(result) < 0.01f)
+		{
+			int k = 0;
+		}
+		result = glm::normalize(result);
+		currentVertex->AveragedNormal = result;
+		averagedNormals.clear();
+	}
+}
+
+//NOTE: check if making things vec4 instead of vec3 messes things up
+void Mesh::AveragedNormal_ComputeTangentBasis()
+{
+	// Clear and initialize tangent and bitangent containers
+	for (int i = 0; i < mVertexNum; i++)
+	{
+		mVertexArray[i].AveragedNormal_tangents = glm::vec4(0.0f);
+		mVertexArray[i].AveragedNormal_bi_tangents = glm::vec4(0.0f);
+	}
+	// Loop through the triangles (using the index buffer)
+	for (int i = 0; i < mVertexNum; i += 3)
+	{
+		//get indices of the triangle in CCW order
+		unsigned short u0 = i + 0;
+		unsigned short u1 = i + 1;
+		unsigned short u2 = i + 2;
+		//0 to 1
+		glm::vec3 v1 = mVertexArray[u1].position - mVertexArray[u0].position;
+		glm::vec2 uv1 = mVertexArray[u1].UV - mVertexArray[u0].UV;
+		//0 to 2
+		glm::vec3 v2 = mVertexArray[u2].position - mVertexArray[u0].position;
+		glm::vec2 uv2 = mVertexArray[u2].UV - mVertexArray[u0].UV;
+		
+		float denominator = (uv1.y * uv2.x) - (uv2.y * uv1.x);
+		//calculating T and B taking into account that denominator could end up == 0
+		float     invDenominator = denominator == 0.0f ? 0.0f : 1.0f / denominator;
+		glm::vec3 T = (uv1.y * v2 - uv2.y * v1) * invDenominator;
+		glm::vec3 B = (uv2.x * v1 - uv1.x * v2) * invDenominator;
+
+		// Accumulate tangent/bitangent for the 3 vertices of the triangle (to average after)
+		mVertexArray[u0].AveragedNormal_tangents += glm::vec4(T, 0.0f);
+		mVertexArray[u1].AveragedNormal_tangents += glm::vec4(T, 0.0f);
+		mVertexArray[u2].AveragedNormal_tangents += glm::vec4(T, 0.0f);
+		mVertexArray[u0].AveragedNormal_bi_tangents += glm::vec4(B, 0.0f);
+		mVertexArray[u1].AveragedNormal_bi_tangents += glm::vec4(B, 0.0f);
+		mVertexArray[u2].AveragedNormal_bi_tangents += glm::vec4(B, 0.0f);
+	}
+	// Loop through every vertex
+	for (int i = 0; i < mVertexNum; i += 1)
+	{
+		// Gram-Schmidt orthogonalization of tangent respect to normal and normalize tangent
+		glm::vec3 GS_u1 = mVertexArray[i].AveragedNormal;
+		glm::vec3 v2;
+		glm::vec3 GS_u2;
+		// Set tangent to (1,0,0) when lenght is 0
+		if (mVertexArray[i].AveragedNormal_tangents.length() == 0)
+		{
+			v2 = glm::vec3(1, 0, 0);
+			GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+		}
+		else
+		{
+			v2 = mVertexArray[i].AveragedNormal_tangents;
+			GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+		}
+		glm::vec3 v3 = mVertexArray[i].AveragedNormal_bi_tangents;
+		glm::vec3 GS_u3 = v3 - (glm::dot(v3, GS_u1) * GS_u1) - (glm::dot(v3, GS_u2) * GS_u2);
+		GS_u1 = glm::normalize(GS_u1);
+		GS_u2 = glm::normalize(GS_u2);
+		GS_u3 = glm::normalize(GS_u3);
+		// Compute the new perpendicular bitangent maintaining the original handeness of the previously
+		// computed one (T,B,N need to be normalized and orthogonal at this point)
+		mVertexArray[i].AveragedNormal = glm::vec4(GS_u1.x, GS_u1.y, GS_u1.z, 0.0f);
+		mVertexArray[i].AveragedNormal_tangents = glm::vec4(GS_u2.x, GS_u2.y, GS_u2.z, 0.0f);
+		mVertexArray[i].AveragedNormal_bi_tangents = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
+	}
+}
+
+void Mesh::ComputeTangetBasis()
+{
+	glm::vec3 T;
+	glm::vec3 B;
+	// Clear and initialize tangent and bitangent containers
+	for (int i = 0; i < mVertexNum; i++)
+	{
+		mVertexArray[i].tangents = glm::vec4(0.0f);
+		mVertexArray[i].bi_tangents = glm::vec4(0.0f);
+	}
+	// Loop through the triangles (using the index buffer)
+	for (int i = 0; i < mVertexNum; i += 3)
+	{
+		//get indices of the triangle in CCW order
+		unsigned short u0 = i + 0;
+		unsigned short u1 = i + 1;
+		unsigned short u2 = i + 2;
+		//0 to 1
+		glm::vec3 v1 = mVertexArray[u1].position - mVertexArray[u0].position;
+		glm::vec2 uv1 = mVertexArray[u1].UV - mVertexArray[u0].UV;
+		//0 to 2
+		glm::vec3 v2 = mVertexArray[u2].position - mVertexArray[u0].position;
+		glm::vec2 uv2 = mVertexArray[u2].UV - mVertexArray[u0].UV;
+
+		float denominator = (uv1.y * uv2.x) - (uv2.y * uv1.x);
+		//calculating T and B taking into account that denominator could end up == 0
+		float     invDenominator = denominator == 0.0f ? 0.0f : 1.0f / denominator;
+		T = (uv1.y * v2 - uv2.y * v1) * invDenominator;
+		B = (uv2.x * v1 - uv1.x * v2) * invDenominator;
+
+		//set Tan and Bitan for each of the 3 vertices
+		for (int j = 0; j < 3; j++)
+		{
+			// Gram-Schmidt orthogonalization of tangent respect to normal and normalize tangent
+			glm::vec3 GS_u1 = mVertexArray[i + j].normal;
+			glm::vec3 v2;
+			glm::vec3 GS_u2;
+			// Set tangent to (1,0,0) when lenght is 0
+			if (mVertexArray[i + j].AveragedNormal_tangents.length() == 0)
+			{
+				v2 = glm::vec3(1, 0, 0);
+				GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+			}
+			else
+			{
+				v2 = mVertexArray[i + j].AveragedNormal_tangents;
+				GS_u2 = v2 - (glm::dot(v2, GS_u1) * GS_u1);
+			}
+			glm::vec3 v3 = mVertexArray[i + j].AveragedNormal_bi_tangents;
+			glm::vec3 GS_u3 = v3 - (glm::dot(v3, GS_u1) * GS_u1) - (glm::dot(v3, GS_u2) * GS_u2);
+			GS_u1 = glm::normalize(GS_u1);
+			GS_u2 = glm::normalize(GS_u2);
+			GS_u3 = glm::normalize(GS_u3);
+			// Compute the new perpendicular bitangent maintaining the original handeness of the previously
+			// computed one (T,B,N need to be normalized and orthogonal at this point)
+			glm::vec4 vec_1 = glm::vec4(GS_u1.x, GS_u1.y, GS_u1.z, 0.0f);
+			glm::vec4 vec_2 = glm::vec4(GS_u2.x, GS_u2.y, GS_u2.z, 0.0f);
+			glm::vec4 vec_3 = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
+
+			mVertexArray[i + j].normal = glm::vec4(GS_u1.x, GS_u1.y, GS_u1.z, 0.0f);
+			mVertexArray[i + j].tangents = glm::vec4(GS_u2.x, GS_u2.y, GS_u2.z, 0.0f);
+			mVertexArray[i + j].bi_tangents = glm::vec4(GS_u3.x, GS_u3.y, GS_u3.z, 0.0f);
+		}
+		
 	}
 }

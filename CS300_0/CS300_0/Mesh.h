@@ -9,10 +9,20 @@ struct Vertex
 		position = p;
 		normal = n;
 		UV = uv;
+		AveragedNormal = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		tangents = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		bi_tangents = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		AveragedNormal_tangents = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		AveragedNormal_bi_tangents = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	glm::vec4 position;
 	glm::vec4 normal;
 	glm::vec2 UV;
+	glm::vec4 AveragedNormal;
+	glm::vec4 tangents;
+	glm::vec4 bi_tangents;
+	glm::vec4 AveragedNormal_tangents;
+	glm::vec4 AveragedNormal_bi_tangents;
 };
 
 enum class MeshType {PLANE = 0, CUBE = 1, CYLINDER = 2, CONE = 3, SPHERE = 4};
@@ -41,6 +51,7 @@ public:
 	void CleanupAndReset();
 	void* GetVertices();
 	void* GetNormals();
+	void* GetAveragedNormals();
 	int GetVertexNum();
 	int GetNormalsNum();
 	void SetVertexNum(int v);
@@ -53,9 +64,17 @@ public:
 
 
 	void GenerateNormalLines();
+
+	void ConstructAveragedNormals();
+	void GenerateAveragedNormalLines();
+
+	void AveragedNormal_ComputeTangentBasis();
+	void ComputeTangetBasis();
+
 private:
 	std::vector<Vertex> mVertexArray;
 	std::vector<NormalLine> mNormalArray;
+	std::vector<NormalLine> mAveragedNormalArray;
 	int mVertexNum;
 	int mFaceNum;
 	MeshType mType;

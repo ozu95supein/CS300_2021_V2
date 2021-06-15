@@ -6,21 +6,22 @@
 #include <GL/glew.h>
 #include <GL/GL.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "OGLDebug.h"
 #include "ShaderUtils.h"
-
-#include "Mesh.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "RenderableMeshObject.h"
+#include "LightSourceObject.h"
 
 static int     winID;
 static GLsizei WIDTH = 1280;
 static GLsizei HEIGHT = 720;
-
+float PIValue = glm::atan(1) * 4;
 GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 {
     GLuint       shader = glCreateShader(eShaderType);
@@ -59,7 +60,6 @@ GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 
     return shader;
 }
-
 GLuint CreateProgram(const std::vector<GLuint>& shaderList)
 {
     GLuint program = glCreateProgram();
@@ -87,9 +87,6 @@ GLuint CreateProgram(const std::vector<GLuint>& shaderList)
 
     return program;
 }
-
-
-
 GLuint InitializeProgram()
 {
     GLuint theProgram = ShaderUtils::CreateShaderProgram("Vertex.vert", "Fragment.frag");
@@ -100,123 +97,21 @@ GLuint InitializeNormalProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("NormalVertex.vert", "NormalFragment.frag");
     return theProgram;
 }
-
-void InitializeMeshBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh)
-{
-    unsigned long stride = sizeof(Vertex);
-    // create buffer for VAO
-    glGenVertexArrays(1, &vao);
-    // create buffer for VBO
-    glGenBuffers(1, &vbo);
-    //bind so we are now doing stuff to the vao
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, (sizeof(Vertex) * mesh.GetVertexNum()), mesh.GetVertices(), GL_STATIC_DRAW);
-    
-    //positions
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
-    //normals
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, normal)));
-    //uv
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, UV)));
-
-    // Unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
-void InitializeNormalBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
-{
-    unsigned long stride = sizeof(glm::vec4);
-    // create buffer for VAO
-    glGenVertexArrays(1, &vao);
-    // create buffer for VBO
-    glGenBuffers(1, &vbo);
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, (sizeof(Mesh::NormalLine) * mesh.GetNormalsNum()), mesh.GetNormals(), GL_STATIC_DRAW);
-
-    //start
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
-}
-
-//Called to update the display.
-//You should call SDL_GL_SwapWindow after all of your rendering to display what you rendered.
-//TODO place clear and SD
-void displayMesh(glm::mat4& ModelMatrix, glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint & current_vao, GLuint& shader, GLuint & texture, bool display_wiremesh, int ColoredBoxTextureOn, Mesh& mesh)
-{
-    ////////////////////////////////////////////////////////////////////////////////
-        // Bind the glsl program and this object's VAO
-    glUseProgram(shader);
-    //pass them to program
-    GLint model = glGetUniformLocation(shader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(ModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(shader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(shader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    //ColoredBoxTextureOn
-    GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
-    glUniform1i(texture_tog, ColoredBoxTextureOn);
-
-    //texture stuff
-    glActiveTexture(GL_TEXTURE0); //activate bucket 0
-    glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
-    GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
-    glUniform1i(loc, 0);    //use stuff from bucket 0
-
-    // Draw
-    if (display_wiremesh == false)
-    {
-        glBindVertexArray(current_vao);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawArrays(GL_TRIANGLES, 0, mesh.GetVertexNum());
-    }
-    else
-    {
-        glBindVertexArray(current_vao);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_TRIANGLES, 0, mesh.GetVertexNum());
-    }
-}
-
-void displayNormals(glm::mat4 & ModelMatrix, glm::mat4 & ViewMatrix, glm::mat4 & ProjectionMatrix, GLuint & normalVAO, GLuint & normalShader, Mesh& mesh)
-{
-    // Bind the glsl program and this object's VAO
-    glUseProgram(normalShader);
-
-    //pass them to program
-    GLint model = glGetUniformLocation(normalShader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(ModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(normalShader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(normalShader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    glBindVertexArray(normalVAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    int s = 2 * mesh.GetVertexNum();
-    glDrawArrays(GL_LINES, 0, s);
-}
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
     glDeleteBuffers(1, &vbo);
     // Delete the VAO
     glDeleteVertexArrays(1, &vao);
-    mesh.CleanupAndReset();
-    
+    mesh.CleanupAndReset(); 
 }
-void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao)
+void ChangeSlices(GLuint& vbo, GLuint& vao, RenderableMeshObject & RenderableMesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao, GLuint& average_normal_vbo, GLuint& average_normal_vao)
 {
+    Mesh& mesh = RenderableMesh.GetMesh();
     //reset the Mesh object and clean up the buffers
     CleanUpObjectAndBuffers(vbo, vao, mesh);
     CleanUpObjectAndBuffers(normal_vbo, normal_vao, mesh);
+    CleanUpObjectAndBuffers(average_normal_vbo, average_normal_vao, mesh);
     //reconstruct mesh with new slices
     switch (t)
     {
@@ -232,9 +127,12 @@ void ChangeSlices(GLuint& vbo, GLuint& vao, Mesh& mesh, int new_slices, MeshType
     default:
         break;
     }
-    InitializeMeshBuffers(vbo, vao, mesh);
+    
+    RenderableMesh.Renderable_InitializeMeshBuffers(vbo, vao, mesh);
     mesh.GenerateNormalLines();
-    InitializeNormalBuffers(normal_vbo, normal_vao, mesh);
+    mesh.GenerateAveragedNormalLines();
+    RenderableMesh.Renderable_InitializeNormalBuffers(normal_vbo, normal_vao, mesh);
+    RenderableMesh.Renderable_InitializeAveragedNormalBuffers(average_normal_vbo, average_normal_vao, mesh);
 }
 GLuint& makeTexture(GLuint& t)
 {
@@ -271,6 +169,37 @@ GLuint& makeTexture(GLuint& t)
 
     return t;
 }
+GLuint makeNormalMapTexture(const std::string& filename)
+{
+    //load texture from filename
+    SDL_Surface* normalMap = IMG_Load(filename.c_str());
+    if (normalMap == nullptr)
+    {
+        std::cout << "Could not load texture: " + filename << std::endl;
+        return 0;
+    }
+    GLuint texture;
+    // Create texture
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // Select pixel format from surface
+    int pixelFormat = GL_RGB;
+    if (normalMap->format->BytesPerPixel == 4)
+    {
+        pixelFormat = GL_RGBA;
+    }
+    // Give pixel data to opengl
+    glTexImage2D(GL_TEXTURE_2D, 0, pixelFormat, normalMap->w, normalMap->h, 0, pixelFormat, GL_UNSIGNED_BYTE, normalMap->pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // Free surface because OpenGL already has the data
+    SDL_FreeSurface(normalMap);
+
+    return texture;
+}
 #undef main
 int main(int argc, char* args[])
 {
@@ -290,7 +219,7 @@ int main(int argc, char* args[])
         exit(1);
     }
     //ASK ABOUT THIS
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     //CREATE the Context, ask about this
     SDL_GLContext context_ = SDL_GL_CreateContext(window);
@@ -301,7 +230,6 @@ int main(int argc, char* args[])
         SDL_Quit();
         exit(1);
     }
-
     glewExperimental = true;
     if (glewInit() != GLEW_OK)
     {
@@ -316,85 +244,114 @@ int main(int argc, char* args[])
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);
 #endif
-
     // print GPU data
     std::cout << "GL_VENDOR: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
-    
     glEnable(GL_DEPTH_TEST);
-
     GLuint texture = makeTexture(texture);
-
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
-
+    //Make a normal map for the height maps
+    GLuint NormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
+    /*******************************************************************************************************************************************/
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f));
     //model matrix
     glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
+    int current_slices = 6;
+    //create objects to swap when pressing buttons
+    RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
+    RenderableMeshObject cubeObject(MeshType::CUBE, current_slices, ModelMatrix);
+    RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices, ModelMatrix);
+    RenderableMeshObject coneObject(MeshType::CONE, current_slices, ModelMatrix);
+    RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices, ModelMatrix);
+    //GROUND
+    glm::mat4 GROUND_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -15.0f, 0.0f));
+    glm::mat4 GROUND_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f, 50.0f, 50.0f));
+    //model matrix
+    glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
+    GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    /*******************************************************************************************************************************************/
+    RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
+    //LIGHTS
+    float light_radius = 20.0f;
+    float light_Theta_Angle_Rad = 0.0f;
+    float light_Phi_Angle_Rad = 0.0f;
+    float light_Phi_increment = 0.001f;
+    float light_Amplitude = 14.0f;
+    float light_Theta_increment = 0.0002f;
+    float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
+    float light_y = 0.0f;
+    float light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+    
+    glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+    glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
+    //model matrix
+    glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
+    RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, current_slices, LIGHT_ModelMatrix);
+    /*==========================================================================================================================================*/
+    //HARD CODED for now
+    //AMBIENT
+    glm::vec3 main_material_ambient(1.0f);
+    glm::vec3 main_light_ambient(0.2f);
+    //DIFFUSE
+    glm::vec3 main_material_diffuse(1.0f);
+    glm::vec3 main_light_diffuse(0.5f);
+    glm::vec4 light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
+    //SPECULAR
+    glm::vec3 main_light_specular = glm::vec3(1.0f);
+    glm::vec3 main_material_specular = glm::vec3(1.0f);
+    float main_ns = 10.0f;
+    Light mLight;
+    mLight.light_ambient = main_light_ambient;
+    mLight.light_diffuse = main_light_diffuse;
+    mLight.light_position = light_position;
+    mLight.light_specular = main_light_specular;
+    Material mMaterial;
+    mMaterial.material_ambient = main_material_ambient;
+    mMaterial.material_diffuse = main_light_diffuse;
+    mMaterial.material_specular = main_material_specular;
+    mMaterial.ns = main_ns;
+    /*=========================================================================================================================================*/
+    //MAKE LIGHTSOURCE OBJECT
+    
 
+    /*=========================================================================================================================================*/
+
+    /*******************************************************************************************************************************************/
     //view matrix
-    glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
+    ViewDirection = glm::normalize(ViewDirection);
 
+    float CameraRadius = 50.f;  //radius of the camera from origin
+    float CameraRadius_increment = 0.5;  //radius of the camera from origin
+    float alpha_rad = 0.0f;     //angle of the camera on the xz plane, y axis
+    float gamma_rad = 0.0f;   //angle of the camera from the top
+    float alpha_increment = 0.05f;
+    float gamma_increment = 0.05f;
+    
+    float cam_x = CameraRadius * glm::cos(gamma_rad) * glm::sin(alpha_rad);
+    float cam_y = CameraRadius * glm::sin(gamma_rad);
+    float cam_z = CameraRadius * glm::cos(gamma_rad) * glm::cos(alpha_rad);
+    glm::vec3 cam_pos(cam_x, cam_y, cam_z);
     //projection matrix
     float aspect = (float)WIDTH / HEIGHT;
-    glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
+    glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 150.0f);
+    /*******************************************************************************************************************************************/
 
-    
-    //change shader program to receive matrices as inputs
-    Mesh plane = Mesh();
-    GLuint plane_VBO;
-    GLuint plane_VAO;
-    GLuint plane_Normal_VBO;
-    GLuint plane_Normal_VAO;
-    plane.ConstructPlane();
-    plane.GenerateNormalLines();
-    InitializeMeshBuffers(plane_VBO, plane_VAO, plane);
-    InitializeNormalBuffers(plane_Normal_VBO, plane_Normal_VAO, plane);
 
-    Mesh cube = Mesh();
-    GLuint cube_VBO;
-    GLuint cube_VAO;
-    GLuint cube_Normal_VBO;
-    GLuint cube_Normal_VAO;
-    cube.ConstructCube();
-    cube.GenerateNormalLines();
-    InitializeMeshBuffers(cube_VBO, cube_VAO, cube);
-    InitializeNormalBuffers(cube_Normal_VBO, cube_Normal_VAO, cube);
-
-    int current_slices = 6;
-    Mesh cylinder = Mesh();
-    GLuint cylinder_VBO;
-    GLuint cylinder_VAO;
-    GLuint cylinder_Normal_VBO;
-    GLuint cylinder_Normal_VAO;
-    cylinder.ConstructCylinder(current_slices);
-    cylinder.GenerateNormalLines();
-    InitializeMeshBuffers(cylinder_VBO, cylinder_VAO, cylinder);
-    InitializeNormalBuffers(cylinder_Normal_VBO, cylinder_Normal_VAO, cylinder);
-
-    Mesh cone = Mesh();
-    GLuint cone_VBO;
-    GLuint cone_VAO;
-    GLuint cone_Normal_VBO;
-    GLuint cone_Normal_VAO;
-    cone.ConstructCone(current_slices);
-    cone.GenerateNormalLines();
-    InitializeMeshBuffers(cone_VBO, cone_VAO, cone);
-    InitializeNormalBuffers(cone_Normal_VBO, cone_Normal_VAO, cone);
-
-    Mesh sphere = Mesh();
-    GLuint sphere_VBO;
-    GLuint sphere_VAO;
-    GLuint sphere_Normal_VBO;
-    GLuint sphere_Normal_VAO;
-    sphere.ConstructSphere(current_slices);
-    sphere.GenerateNormalLines();
-    InitializeMeshBuffers(sphere_VBO, sphere_VAO, sphere);
-    InitializeNormalBuffers(sphere_Normal_VBO, sphere_Normal_VAO, sphere);
+    planeObject.SetMaterial(mMaterial);
+    cubeObject.SetMaterial(mMaterial);
+    cylinderObject.SetMaterial(mMaterial);
+    coneObject.SetMaterial(mMaterial);
+    sphereObject.SetMaterial(mMaterial);
+    GROUND_planeObject.SetMaterial(mMaterial);
+    sphereObject.SetMaterial(mMaterial);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -405,6 +362,7 @@ int main(int argc, char* args[])
     int Display_Normals = 0;
     bool Display_Wireframe = false;
     int ColoredBoxTextureOn = 1;
+    int UsingFaceNormals = 1;
     SDL_Event event;
     bool      quit = false;
     while (!quit)
@@ -423,21 +381,55 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
                 {
-                    //down along y axis
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mPlane = planeObject.GetModelRefference();
+                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));             
+                    glm::mat4& mCube = cubeObject.GetModelRefference();
+                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCone = coneObject.GetModelRefference();
+                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mSphere = sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
                 {
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mPlane = planeObject.GetModelRefference();
+                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCube = cubeObject.GetModelRefference();
+                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCone = coneObject.GetModelRefference();
+                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mSphere = sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
                 {
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mPlane = planeObject.GetModelRefference();
+                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCube = cubeObject.GetModelRefference();
+                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCone = coneObject.GetModelRefference();
+                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mSphere = sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
                 {
-                    //right
-                    ModelMatrix = glm::rotate(ModelMatrix, glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mPlane = planeObject.GetModelRefference();
+                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCube = cubeObject.GetModelRefference();
+                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCone = coneObject.GetModelRefference();
+                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mSphere = sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_1)
                 {
@@ -459,6 +451,17 @@ int main(int argc, char* args[])
                 {
                     current_mesh_to_display = 5;
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_F)
+                {
+                    if (UsingFaceNormals == 1)
+                    {
+                        UsingFaceNormals = 0;
+                    }
+                    else
+                    {
+                        UsingFaceNormals = 1;
+                    }
+                }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_M)
                 {
                     Display_Wireframe = !Display_Wireframe;
@@ -477,13 +480,12 @@ int main(int argc, char* args[])
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
                 {
                     current_slices += 1;
-                    MeshType cy = cylinder.GetType();
-                    MeshType cn = cone.GetType();
-                    MeshType sp = sphere.GetType();
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinder, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, cone, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphere, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO);
-
+                    MeshType cy = MeshType::CYLINDER;
+                    MeshType cn = MeshType::CONE;
+                    MeshType sp = MeshType::SPHERE;
+                    cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    sphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -492,12 +494,12 @@ int main(int argc, char* args[])
                         break;
                     }
                     current_slices -= 1;
-                    MeshType cy = cylinder.GetType();
-                    MeshType cn = cone.GetType();
-                    MeshType sp = sphere.GetType();
-                    ChangeSlices(cylinder_VBO, cylinder_VAO, cylinder, current_slices, cy, cylinder_Normal_VBO, cylinder_Normal_VAO);
-                    ChangeSlices(cone_VBO, cone_VAO, cone, current_slices, cn, cone_Normal_VBO, cone_Normal_VAO);
-                    ChangeSlices(sphere_VBO, sphere_VAO, sphere, current_slices, sp, sphere_Normal_VBO, sphere_Normal_VAO);
+                    MeshType cy = MeshType::CYLINDER;
+                    MeshType cn = MeshType::CONE;
+                    MeshType sp = MeshType::SPHERE;
+                    cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    sphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
@@ -510,72 +512,173 @@ int main(int argc, char* args[])
                         ColoredBoxTextureOn = 1;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_W)
+                {
+                    gamma_rad += gamma_increment;
+                    if (gamma_rad > (PIValue / 2.0f))
+                    {
+                        gamma_rad = (PIValue / 2.0f);
+                    }
+                    
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_S)
+                {
+                    gamma_rad -= gamma_increment;
+                    if (gamma_rad < -(PIValue / 2.0f))
+                    {
+                        gamma_rad = -(PIValue / 2.0f);
+                    }
+                    glm::clamp(gamma_rad, -(PIValue / 2.0f), (PIValue / 2.0f));
+                    
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_A)
+                {
+                    alpha_rad -= alpha_increment;
+                   
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_D)
+                {
+                    alpha_rad += alpha_increment;
+                    
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_Q)
+                {
+                    //closer
+                    CameraRadius -= CameraRadius_increment;
+                    if (CameraRadius < 0.1f)
+                    {
+                        CameraRadius = 0.1f;
+                    }
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_E)
+                {
+                    //further
+                    CameraRadius += CameraRadius_increment;
+                    if (CameraRadius > 100.0f)
+                    {
+                        CameraRadius = 100.0f;
+                    }
+                }
                 break;
             }
         }
-        
+        ////////////////////////////////////////////////////////////////////////////////
+        //update camera
+        cam_x = CameraRadius * glm::cos(gamma_rad) * glm::sin(alpha_rad);
+        cam_y = CameraRadius * glm::sin(gamma_rad);
+        cam_z = CameraRadius * glm::cos(gamma_rad) * glm::cos(alpha_rad);
+        glm::vec3 cam_pos(cam_x, cam_y, cam_z);
+        glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        ViewMatrix = ViewMatrix2;
+        ////////////////////////////////////////////////////////////////////////////////
+        // update light
+        light_Theta_Angle_Rad += light_Theta_increment;
+        light_Phi_Angle_Rad += light_Phi_increment;
+        light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
+        light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
+        light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+
+        //LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+        // LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+
+        LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+        LIGHT_ModelMatrix = LIGHT_translationMatrix;
+
+        LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+        mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        ////////////////////////////////////////////////////////////////////////////////
         switch (current_mesh_to_display)
         {
             case 1:
             {
-                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, plane);
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, plane_Normal_VAO, NormalshaderProgram, plane);
+                    if (UsingFaceNormals)
+                    {
+                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
+                    else
+                    {
+                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
                 }
             }
             break;
             case 2:
             {
-                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, cube_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, cube);
+                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cube_Normal_VAO, NormalshaderProgram, cube);
+                    if (UsingFaceNormals)
+                    {
+                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
+                    else
+                    {
+                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
                 }
             }
             break;
             case 3:
             {
-                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, cylinder_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, cylinder);
+                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cylinder_Normal_VAO, NormalshaderProgram, cylinder);
+                    if (UsingFaceNormals)
+                    {
+                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
+                    else
+                    {
+                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
                 }
             }
             break;
             case 4:
             {
-                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, cone_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, cone);
+                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, cone_Normal_VAO, NormalshaderProgram, cone);
+                    if (UsingFaceNormals)
+                    {
+                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
+                    else
+                    {
+                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
                 }
             }
             break;
             case 5:
             {
-                displayMesh(ModelMatrix, ViewMatrix, ProjectionMatrix, sphere_VAO, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, sphere);
+                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
                 if (Display_Normals)
                 {
-                    displayNormals(ModelMatrix, ViewMatrix, ProjectionMatrix, sphere_Normal_VAO, NormalshaderProgram, sphere);
+                    if (UsingFaceNormals)
+                    {
+                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
+                    else
+                    {
+                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                    }
                 }
             }
             break;
         }
-
-        SDL_GL_SwapWindow(window);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight);
+        SDL_GL_SwapWindow(window);    
+        
     }
-    //cleanup meshes and buffers
-    CleanUpObjectAndBuffers(plane_VBO, plane_VAO, plane);
-    CleanUpObjectAndBuffers(cube_VBO, cube_VAO, cube);
-    CleanUpObjectAndBuffers(cylinder_VBO, cylinder_VAO, cylinder);
-    CleanUpObjectAndBuffers(cone_VBO, cone_VAO, cone);
-    CleanUpObjectAndBuffers(sphere_VBO, sphere_VAO, sphere);
 
     glDeleteProgram(shaderProgram);
     SDL_GL_DeleteContext(context_);
