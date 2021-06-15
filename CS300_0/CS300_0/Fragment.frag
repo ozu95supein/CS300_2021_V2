@@ -4,10 +4,6 @@ in vec2 outUV;
 in vec4 position_cameraspace;
 in vec4 normal_cameraspace;
 in vec4 lightPosition_cameraspace;
-in vec4 T_cameraspace;
-in vec4 BT_cameraspace;
-in vec4 AvgT_cameraspace;
-in vec4 AvgBT_cameraspace;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform int texture_toggle;
