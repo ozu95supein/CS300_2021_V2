@@ -187,7 +187,7 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLuint MATERIALSPECULAR_NS = glGetUniformLocation(shader, "materialSpecularNS");
     glUniform1f(MATERIALSPECULAR_NS, (CurrentMaterial.ns));
 }
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight)
+void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int ColoredBoxTextureOn, Light & CurrentLight, GLuint& NormalMap)
 {
     ////////////////////////////////////////////////////////////////////////////////
     // Bind the glsl program and this object's VAO
