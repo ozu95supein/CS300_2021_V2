@@ -30,11 +30,13 @@ void main()
 {
 	vec4 L = lightPosition_cameraspace - position_cameraspace;
 	vec4 NormalMap4 = texture(normalMap_data, outUV); 
-	vec3 NormalMap3 = vec3(NormalMap4.x, NormalMap4.y, NormalMap4.z);	//this is in [0, 1] format
+	vec3 NormalMap3 = vec3(NormalMap4.x, NormalMap4.y, NormalMap4.z);	
+
 	float nx = (NormalMap3.x * 2.0f) - 1.0f;
 	float ny = (NormalMap3.y * 2.0f) - 1.0f;
 	float nz = (NormalMap3.z * 2.0f) - 1.0f;
-	vec3 new_NormalMap3(nx, ny, nz);
+
+	vec4 newNormal4 = vec4(nx, ny, nz, 0.0f);
 
 	if(texture_toggle == 1)
 	{
