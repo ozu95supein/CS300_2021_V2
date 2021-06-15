@@ -597,7 +597,7 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -613,7 +613,7 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
+                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -629,7 +629,7 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
+                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -645,7 +645,7 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
+                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -661,7 +661,7 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
+                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -676,8 +676,8 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
         SDL_GL_SwapWindow(window);    
         
     }

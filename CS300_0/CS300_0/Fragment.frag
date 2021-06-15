@@ -16,6 +16,7 @@ in mat4 Avg_TBN_mat;
 uniform sampler2D texture_data; // smallColors.png
 uniform sampler2D normalMap_data;
 uniform int texture_toggle;
+uniform int faceNormal_toggle;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
@@ -37,6 +38,8 @@ void main()
 	float nz = (NormalMap3.z * 2.0f) - 1.0f;
 
 	vec4 newNormal4 = vec4(nx, ny, nz, 0.0f);
+	vec4 TBN_Normal = TBN_mat * newNormal4;
+	vec4 AvgTBN_Normal = Avg_TBN_mat * newNormal4;
 
 	if(texture_toggle == 1)
 	{
