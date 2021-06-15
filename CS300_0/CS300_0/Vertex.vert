@@ -3,6 +3,13 @@ layout(location = 0) in vec4 aPosition;
 layout(location = 1) in vec4 aNormal;
 layout(location = 2) in vec2 aUV;
 
+layout(location = 3) in vec4 aAvgNormal;
+layout(location = 4) in vec4 aTangent;
+layout(location = 5) in vec4 aBiTangent;
+layout(location = 6) in vec4 aAvgTangent;
+layout(location = 7) in vec4 aAvgBiTangent;
+
+
 out vec2 outUV;
 out vec4 position_cameraspace;
 out vec4 normal_cameraspace;
