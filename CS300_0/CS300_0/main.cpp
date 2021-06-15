@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include <GL/GL.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "OGLDebug.h"
 #include "ShaderUtils.h"
@@ -168,7 +169,37 @@ GLuint& makeTexture(GLuint& t)
 
     return t;
 }
+GLuint makeNormalMapTexture(const std::string& filename)
+{
+    //load texture from filename
+    SDL_Surface* normalMap = IMG_Load(filename.c_str());
+    if (normalMap == nullptr)
+    {
+        std::cout << "Could not load texture: " + filename << std::endl;
+        return 0;
+    }
+    GLuint texture;
+    // Create texture
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // Select pixel format from surface
+    int pixelFormat = GL_RGB;
+    if (normalMap->format->BytesPerPixel == 4)
+    {
+        pixelFormat = GL_RGBA;
+    }
+    // Give pixel data to opengl
+    glTexImage2D(GL_TEXTURE_2D, 0, pixelFormat, normalMap->w, normalMap->h, 0, pixelFormat, GL_UNSIGNED_BYTE, normalMap->pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+    // Free surface because OpenGL already has the data
+    SDL_FreeSurface(normalMap);
+
+    return texture;
+}
 #undef main
 int main(int argc, char* args[])
 {
@@ -221,7 +252,8 @@ int main(int argc, char* args[])
     GLuint texture = makeTexture(texture);
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
-
+    //Make a normal map for the height maps
+    GLuint NormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
     /*******************************************************************************************************************************************/
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
