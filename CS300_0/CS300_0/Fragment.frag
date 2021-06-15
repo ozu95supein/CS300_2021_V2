@@ -10,6 +10,8 @@ in vec4 Tangent_Cameraspace;
 in vec4 BiTangent_Cameraspace;
 in vec4 Avg_Tangent_Cameraspace;
 in vec4 Avg_BiTangent_Cameraspace;
+in mat4 TBN_mat;
+in mat4 Avg_TBN_mat;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform int texture_toggle;
