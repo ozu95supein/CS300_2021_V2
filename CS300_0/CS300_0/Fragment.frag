@@ -14,6 +14,7 @@ in mat4 TBN_mat;
 in mat4 Avg_TBN_mat;
 
 uniform sampler2D texture_data; // smallColors.png
+uniform sampler2D normalMap_data;
 uniform int texture_toggle;
 
 uniform vec3 lightAmbient;
@@ -28,6 +29,13 @@ uniform float materialSpecularNS;
 void main()
 {
 	vec4 L = lightPosition_cameraspace - position_cameraspace;
+	vec4 NormalMap4 = texture(normalMap_data, outUV); 
+	vec3 NormalMap3 = vec3(NormalMap4.x, NormalMap4.y, NormalMap4.z);	//this is in [0, 1] format
+	float nx = (NormalMap3.x * 2.0f) - 1.0f;
+	float ny = (NormalMap3.y * 2.0f) - 1.0f;
+	float nz = (NormalMap3.z * 2.0f) - 1.0f;
+	vec3 new_NormalMap3(nx, ny, nz);
+
 	if(texture_toggle == 1)
 	{
 		vec4 meshColor4 = texture(texture_data, outUV); 

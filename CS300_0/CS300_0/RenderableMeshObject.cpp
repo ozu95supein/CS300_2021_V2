@@ -212,6 +212,11 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
     glUniform1i(loc, 0);    //use stuff from bucket 0
 
+    glActiveTexture(GL_TEXTURE1); //activate bucket 1
+    glBindTexture(GL_TEXTURE_2D, NormalMap);
+    GLuint loc1 = glGetUniformLocation(shader, "normalMap_data");   //get uniform of frag shader
+    glUniform1i(loc1, 1);    //use stuff from bucket 1
+
     // Draw
     if (display_wiremesh == false)
     {
