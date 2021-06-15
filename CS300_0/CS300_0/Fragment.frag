@@ -40,7 +40,8 @@ void main()
 	vec4 newNormal4 = vec4(nx, ny, nz, 0.0f);
 	vec4 TBN_Normal = TBN_mat * newNormal4;
 	vec4 AvgTBN_Normal = Avg_TBN_mat * newNormal4;
-
+	//debug
+	//outputColor = TBN_Normal;
 	if(texture_toggle == 1)
 	{
 		if(faceNormal_toggle == 1)
@@ -54,7 +55,7 @@ void main()
 			float NL_result = dot(TBN_Normal, L);
 			NL_result = max(NL_result, 0.0f);
 			vec3 I_diffuse = lightDiffuse * K_d * NL_result;
-
+	
 			vec3 K_s = materialSpecular;
 			//calculate R as a vec4
 			vec4 R4 = ((2 * NL_result) * TBN_Normal) - L;
@@ -63,7 +64,7 @@ void main()
 			RV_Result = max(RV_Result, 0.0f);
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
-
+	
 			vec3 I_total = I_ambient + I_diffuse + I_specular;
 			outputColor = vec4(I_total, 1.0f);
 		}
@@ -78,7 +79,7 @@ void main()
 			float NL_result = dot(AvgTBN_Normal, L);
 			NL_result = max(NL_result, 0.0f);
 			vec3 I_diffuse = lightDiffuse * K_d * NL_result;
-
+	
 			vec3 K_s = materialSpecular;
 			//calculate R as a vec4
 			vec4 R4 = ((2 * NL_result) * AvgTBN_Normal) - L;
@@ -87,7 +88,7 @@ void main()
 			RV_Result = max(RV_Result, 0.0f);
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
-
+	
 			vec3 I_total = I_ambient + I_diffuse + I_specular;
 			outputColor = vec4(I_total, 1.0f);
 		}
@@ -99,12 +100,12 @@ void main()
 			vec3 meshColor3 = vec3(outUV.x, outUV.y, 0);
 			vec3 K_a = meshColor3 * materialAmbient;
 			vec3 I_ambient = lightAmbient * K_a;
-
+	
 			vec3 K_d = meshColor3 * materialDiffuse;
 			float NL_result = dot(TBN_Normal, L);
 			NL_result = max(NL_result, 0.0f);
 			vec3 I_diffuse = lightDiffuse * K_d * NL_result;
-
+	
 			vec3 K_s = materialSpecular;
 			//calculate R as a vec4
 			vec4 R4 = ((2 * NL_result) * TBN_Normal) - L;
@@ -113,7 +114,7 @@ void main()
 			RV_Result = max(RV_Result, 0.0f);
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
-
+	
 			vec3 I_total = I_ambient + I_diffuse + I_specular;
 			outputColor = vec4(I_total, 1.0f);
 		}
@@ -122,12 +123,12 @@ void main()
 			vec3 meshColor3 = vec3(outUV.x, outUV.y, 0);
 			vec3 K_a = meshColor3 * materialAmbient;
 			vec3 I_ambient = lightAmbient * K_a;
-
+	
 			vec3 K_d = meshColor3 * materialDiffuse;
 			float NL_result = dot(AvgTBN_Normal, L);
 			NL_result = max(NL_result, 0.0f);
 			vec3 I_diffuse = lightDiffuse * K_d * NL_result;
-
+	
 			vec3 K_s = materialSpecular;
 			//calculate R as a vec4
 			vec4 R4 = ((2 * NL_result) * AvgTBN_Normal) - L;
@@ -136,7 +137,7 @@ void main()
 			RV_Result = max(RV_Result, 0.0f);
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
-
+	
 			vec3 I_total = I_ambient + I_diffuse + I_specular;
 			outputColor = vec4(I_total, 1.0f);
 		}
