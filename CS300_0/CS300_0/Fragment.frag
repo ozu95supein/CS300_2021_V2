@@ -99,15 +99,15 @@ void main()
 	}
 	else if(Render_Mode == 1)
 	{
-		outputColor = normalize(TBN_Normal);
+		outputColor = vec4(normalize(normal_cameraspace).xyz, 1.0f);
 	}
 	else if(Render_Mode == 2)
 	{
-		outputColor = normalize(Tangent_Cameraspace);
+		outputColor = vec4(normalize(Tangent_Cameraspace).xyz, 1.0f);
 	}
 	else if(Render_Mode == 3)
 	{
-		outputColor = normalize(BiTangent_Cameraspace);
+		outputColor = vec4(normalize(BiTangent_Cameraspace).xyz, 1.0f);
 	}
 
 }
