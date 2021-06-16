@@ -52,9 +52,12 @@ void main()
 	vec4 AvgTBN_Normal = Avg_TBN_mat * newNormal4;
 	vec4 NORMALIZED_TBN_Normal = normalize(TBN_Normal);
 	vec4 NORMALIZED_AvgTBN_Normal = normalize(AvgTBN_Normal);
-	//debug
-	outputColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
-	return;
+
+	//outputColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
+	//return;
+	float dl = L.length();
+	float att_denominator = lightAttenuation.x + lightAttenuation.y * dl + (lightAttenuation.y * pow(dl, 2));
+	float att = min(1.0f/att_denominator, 1.0f);
 	if(Render_Mode == 0)
 	{
 		if(faceNormal_toggle == 1)
@@ -80,7 +83,7 @@ void main()
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
 	
-			vec3 I_total = I_ambient + I_diffuse + I_specular;
+			vec3 I_total = att * (I_ambient + I_diffuse + I_specular);
 			outputColor = vec4(I_total, 1.0f);
 		}
 		else
@@ -105,7 +108,7 @@ void main()
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
 	
-			vec3 I_total = I_ambient + I_diffuse + I_specular;
+			vec3 I_total = att * (I_ambient + I_diffuse + I_specular);
 			outputColor = vec4(I_total, 1.0f);
 		}
 	}
