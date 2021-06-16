@@ -186,6 +186,11 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     glUniform3fv(LIGHTSPECULAR, 1, &(CurrentMaterial.material_specular[0]));
     GLuint MATERIALSPECULAR_NS = glGetUniformLocation(shader, "materialSpecularNS");
     glUniform1f(MATERIALSPECULAR_NS, (CurrentMaterial.ns));
+
+    //ATTENUATION
+    GLuint LIGHTATTENUATION = glGetUniformLocation(shader, "lightAttenuation");
+    glUniform3fv(LIGHTATTENUATION, 1, &(CurrentLight.light_attenuation[0]));
+
 }
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
 {

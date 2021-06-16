@@ -6,6 +6,7 @@ struct Light
     glm::vec3 light_ambient;
     glm::vec3 light_diffuse;
     glm::vec3 light_specular;
+    glm::vec3 light_attenuation;
     glm::vec4 light_position;    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
 };
 struct Material

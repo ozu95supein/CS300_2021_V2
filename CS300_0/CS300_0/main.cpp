@@ -299,7 +299,7 @@ int main(int argc, char* args[])
     //HARD CODED for now
     //AMBIENT
     glm::vec3 main_material_ambient(1.0f);
-    glm::vec3 main_light_ambient(0.2f);
+    glm::vec3 main_light_ambient(0.0f);
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
     glm::vec3 main_light_diffuse(0.5f);
@@ -307,12 +307,16 @@ int main(int argc, char* args[])
     //SPECULAR
     glm::vec3 main_light_specular = glm::vec3(1.0f);
     glm::vec3 main_material_specular = glm::vec3(1.0f);
+    //ATTENUATION
+    glm::vec3 main_light_attenuation = glm::vec3(0.0f, 0.0f, 0.005f);
+
     float main_ns = 10.0f;
     Light mLight;
     mLight.light_ambient = main_light_ambient;
     mLight.light_diffuse = main_light_diffuse;
     mLight.light_position = light_position;
     mLight.light_specular = main_light_specular;
+    mLight.light_attenuation = main_light_attenuation;
     Material mMaterial;
     mMaterial.material_ambient = main_material_ambient;
     mMaterial.material_diffuse = main_light_diffuse;
