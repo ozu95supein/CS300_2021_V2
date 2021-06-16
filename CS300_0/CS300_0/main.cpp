@@ -285,7 +285,7 @@ int main(int argc, char* args[])
     float light_Phi_Angle_Rad = 0.0f;
     float light_Phi_increment = 0.001f;
     float light_Amplitude = 14.0f;
-    float light_Theta_increment = 0.0002f;
+    float light_Theta_increment = 0.0007f;  //MAGIC NUMBER
     float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
     float light_y = 0.0f;
     float light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
@@ -363,8 +363,9 @@ int main(int argc, char* args[])
     int current_mesh_to_display = 1;
     int Display_Normals = 0;
     bool Display_Wireframe = false;
-    int ColoredBoxTextureOn = 1;
+    int RenderMode = 0;
     int UsingFaceNormals = 1;
+    int PlayingLightAnimation = 1;
     SDL_Event event;
     bool      quit = false;
     while (!quit)
@@ -453,6 +454,34 @@ int main(int argc, char* args[])
                 {
                     current_mesh_to_display = 5;
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_7)
+                {
+                    //TO DO
+                    // Turn all lights to point lights
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_8)
+                {
+                    //TO DO
+                    // turn all lights to spot lights
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_9)
+                {
+                    //TO DO
+                    // turn all lights to directional lights
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_P)
+                {
+                    //TO DO
+                    // Toggle to pause/start the light animation
+                    if (PlayingLightAnimation == 1)
+                    {
+                        PlayingLightAnimation = 0;
+                    }
+                    else
+                    {
+                        PlayingLightAnimation = 1;
+                    }
+                }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_F)
                 {
                     if (UsingFaceNormals == 1)
@@ -505,13 +534,10 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
-                    if (ColoredBoxTextureOn == 1)
+                    RenderMode += 1;
+                    if (RenderMode > 3)
                     {
-                        ColoredBoxTextureOn = 0;
-                    }
-                    else
-                    {
-                        ColoredBoxTextureOn = 1;
+                        RenderMode = 0;
                     }
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_W)
@@ -574,20 +600,21 @@ int main(int argc, char* args[])
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
         // update light
-        light_Theta_Angle_Rad += light_Theta_increment;
-        light_Phi_Angle_Rad += light_Phi_increment;
-        light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
-        light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
-        light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+        if (PlayingLightAnimation)
+        {
+            light_Theta_Angle_Rad += light_Theta_increment;
+            light_Phi_Angle_Rad += light_Phi_increment;
+            light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
+            light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
+            light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
 
-        //LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-        // LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_translationMatrix;
+            LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
+            LIGHT_ModelMatrix = LIGHT_translationMatrix;
 
-        LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-        LIGHT_ModelMatrix = LIGHT_translationMatrix;
-
-        LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
-        mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
+            LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
+            mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
+        }
+        
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -597,7 +624,7 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -613,7 +640,7 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -629,7 +656,7 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -645,7 +672,7 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -661,7 +688,7 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -676,8 +703,8 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, ColoredBoxTextureOn, mLight, mNormalMap, UsingFaceNormals);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
         SDL_GL_SwapWindow(window);    
         
     }

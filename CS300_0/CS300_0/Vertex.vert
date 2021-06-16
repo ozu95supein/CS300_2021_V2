@@ -20,8 +20,7 @@ out vec4 Tangent_Cameraspace;
 out vec4 BiTangent_Cameraspace;
 out vec4 Avg_Tangent_Cameraspace;
 out vec4 Avg_BiTangent_Cameraspace;
-out mat4 TBN_mat;
-out mat4 Avg_TBN_mat;
+
 
 uniform mat4 u_M;
 uniform mat4 u_V;
@@ -33,7 +32,7 @@ void main()
 	mat4 MVP = u_P * u_V * u_M;
 	mat4 MV = u_V * u_M;
 
-	mat4 Q = transpose(inverse(MV));
+	mat3 Q = transpose(inverse(mat3(MV)));
 
 	outUV = aUV;
 	position_cameraspace = u_V * u_M * aPosition;
@@ -42,15 +41,10 @@ void main()
     gl_Position = MVP * aPosition;
 
 	//Tangent and Bitangent Calculations
-	normal_cameraspace = Q * aNormal;
-	Avg_normal_camerapsace = Q * aAvgNormal;
+	normal_cameraspace = vec4(Q * aNormal.xyz, 0.0f);
+	Avg_normal_camerapsace = vec4(Q * aAvgNormal.xyz, 0.0f);
 	Tangent_Cameraspace	= u_V * u_M * aTangent;
 	BiTangent_Cameraspace = u_V * u_M * aBiTangent;
 	Avg_Tangent_Cameraspace	= u_V * u_M * aAvgTangent;
 	Avg_BiTangent_Cameraspace = u_V * u_M * aAvgBiTangent;
-
-	//make the matrices that go from tangent space to cameraspace
-	TBN_mat = mat4(Tangent_Cameraspace, BiTangent_Cameraspace, normal_cameraspace, vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	Avg_TBN_mat = mat4(Avg_Tangent_Cameraspace, Avg_BiTangent_Cameraspace, Avg_normal_camerapsace, vec4(0.0f, 0.0f, 0.0f, 1.0f));
-
 }
