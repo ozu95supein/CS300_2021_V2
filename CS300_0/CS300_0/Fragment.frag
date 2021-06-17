@@ -30,12 +30,31 @@ uniform float materialSpecularNS;
 
 void main()
 {
-	vec4 NORMALIZED_normal_cameraspace = normalize(normal_cameraspace);
-	vec4 NORMALIZED_Avg_normal_camerapsace = normalize(Avg_normal_camerapsace);
-	vec4 NORMALIZED_Tangent_Cameraspace = normalize(Tangent_Cameraspace);
-	vec4 NORMALIZED_BiTangent_Cameraspace = normalize(BiTangent_Cameraspace);
-	vec4 NORMALIZED_Avg_Tangent_Cameraspace = normalize(Avg_Tangent_Cameraspace);
-	vec4 NORMALIZED_Avg_BiTangent_Cameraspace = normalize(Avg_BiTangent_Cameraspace);
+	vec4 temp_normal_cameraspace = normal_cameraspace;
+	temp_normal_cameraspace.w = 0.0f;
+	vec4 NORMALIZED_normal_cameraspace = normalize(temp_normal_cameraspace);
+
+	vec4 temp_Avg_normal_camerapsace = Avg_normal_camerapsace;
+	temp_Avg_normal_camerapsace.w = 0.0f;
+	vec4 NORMALIZED_Avg_normal_camerapsace = normalize(temp_Avg_normal_camerapsace);
+
+	vec4 temp_Tangent_Cameraspace = Tangent_Cameraspace;
+	temp_Tangent_Cameraspace.w = 0.0f;
+	vec4 NORMALIZED_Tangent_Cameraspace = normalize(temp_Tangent_Cameraspace);
+
+	vec4 temp_BiTangent_Cameraspace = BiTangent_Cameraspace;
+	temp_BiTangent_Cameraspace.w = 0.0f;
+	vec4 NORMALIZED_BiTangent_Cameraspace = normalize(temp_BiTangent_Cameraspace);
+
+	vec4 temp_Avg_Tangent_Cameraspace = Avg_Tangent_Cameraspace;
+	temp_Avg_Tangent_Cameraspace.w = 0.0f;
+	vec4 NORMALIZED_Avg_Tangent_Cameraspace = normalize(temp_Avg_Tangent_Cameraspace);
+
+	vec4 temp_Avg_BiTangent_Cameraspace = Avg_BiTangent_Cameraspace;
+	temp_Avg_BiTangent_Cameraspace.w = 0.0f;
+	vec4 NORMALIZED_Avg_BiTangent_Cameraspace = normalize(temp_Avg_BiTangent_Cameraspace);
+
+
 	//make the matrices that go from tangent space to cameraspace
 	mat4 TBN_mat = mat4(NORMALIZED_Tangent_Cameraspace, NORMALIZED_BiTangent_Cameraspace, NORMALIZED_normal_cameraspace, vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	mat4 Avg_TBN_mat = mat4(NORMALIZED_Avg_Tangent_Cameraspace, NORMALIZED_Avg_BiTangent_Cameraspace, NORMALIZED_Avg_normal_camerapsace, vec4(0.0f, 0.0f, 0.0f, 1.0f));
