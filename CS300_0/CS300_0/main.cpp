@@ -261,7 +261,7 @@ int main(int argc, char* args[])
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
     //model matrix
     glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
     int current_slices = 6;
@@ -274,7 +274,7 @@ int main(int argc, char* args[])
     //GROUND
     glm::mat4 GROUND_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -15.0f, 0.0f));
     glm::mat4 GROUND_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f, 50.0f, 50.0f));
+    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f, 1.0f, 50.0f));
     //model matrix
     glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
     GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -624,7 +624,7 @@ int main(int argc, char* args[])
             light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
 
             LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-            LIGHT_ModelMatrix = LIGHT_translationMatrix;
+            LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;
 
             LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
             mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
