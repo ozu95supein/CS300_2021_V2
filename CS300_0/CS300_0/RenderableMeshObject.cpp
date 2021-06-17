@@ -194,6 +194,14 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     //LIGHTSOURCETYPE
     GLuint LIGHTSOURCETYPE = glGetUniformLocation(shader, "light_type");
     glUniform1i(LIGHTSOURCETYPE, CurrentLight.light_type);
+
+    //SPOTLIGHT
+    GLuint LIGHTINNERANGLE = glGetUniformLocation(shader, "lightInner");
+    glUniform1f(LIGHTINNERANGLE, (CurrentLight.inner));
+    GLuint LIGHTOUTERANGLE = glGetUniformLocation(shader, "lightOuter");
+    glUniform1f(LIGHTOUTERANGLE, (CurrentLight.outer));
+    GLuint LIGHTFALLOFF = glGetUniformLocation(shader, "lightFalloff");
+    glUniform1f(LIGHTFALLOFF, (CurrentLight.falloff));
 }
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
 {

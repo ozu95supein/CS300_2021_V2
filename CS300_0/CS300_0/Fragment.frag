@@ -27,9 +27,9 @@ uniform vec3 materialAmbient;
 uniform vec3 materialDiffuse;
 uniform vec3 materialSpecular;
 uniform float materialSpecularNS;
-uniform float inner = 30.0f;
-uniform float outer = 35.0f;
-uniform float falloff = 1.0f;
+uniform float lightInner;
+uniform float lightOuter;
+uniform float lightFalloff;
 
 void main()
 {
@@ -75,12 +75,17 @@ void main()
 	
 	float SpotlightEffect = 1.0f;
 
-	vec3 neg_L =  - L;
-	vec3 D = vec3(0.0f, 0.0f, 0.0f) - lightPosition_cameraspace.xyz;
-	D = normalize(D);
-	float var = (dot(neg_L, D) / (neg_L.length() * D.length()));
-	float alpha_rad = acos(var);
-
+	if(light_type == 1)	//spotlight
+	{
+		vec3 neg_L =  - NORMALIZED_L;
+		vec3 D = vec3(0.0f, 0.0f, 0.0f) - lightPosition_cameraspace.xyz;
+		D = normalize(D);
+		float var = (dot(neg_L, D) / (neg_L.length() * D.length()));
+		float alpha_rad = acos(var);
+		float theta_rad = radians(lightInner);
+		float phi_rad = radians(lightOuter);
+		SpotlightEffect = pow(((cos(alpha_rad) - cos(phi_rad)) / (cos(theta_rad) - cos(phi_rad))), lightFalloff);
+	}
 	if(Render_Mode == 0)
 	{
 		if(faceNormal_toggle == 1)
