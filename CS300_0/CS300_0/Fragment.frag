@@ -27,6 +27,9 @@ uniform vec3 materialAmbient;
 uniform vec3 materialDiffuse;
 uniform vec3 materialSpecular;
 uniform float materialSpecularNS;
+uniform float inner = 30.0f;
+uniform float outer = 35.0f;
+uniform float falloff = 1.0f;
 
 void main()
 {
@@ -69,6 +72,15 @@ void main()
 	float dl = L.length();
 	float att_denominator = lightAttenuation.x + lightAttenuation.y * dl + (lightAttenuation.y * pow(dl, 2));
 	float att = min(1.0f/att_denominator, 1.0f);
+	
+	float SpotlightEffect = 1.0f;
+
+	vec3 neg_L =  - L;
+	vec3 D = vec3(0.0f, 0.0f, 0.0f) - lightPosition_cameraspace.xyz;
+	D = normalize(D);
+	float var = (dot(neg_L, D) / (neg_L.length() * D.length()));
+	float alpha_rad = acos(var);
+
 	if(Render_Mode == 0)
 	{
 		if(faceNormal_toggle == 1)
@@ -95,7 +107,7 @@ void main()
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
 			
-			vec3 I_total = (I_ambient + I_diffuse + I_specular);
+			vec3 I_total = att * (I_ambient + SpotlightEffect * (I_diffuse + I_specular));
 			outputColor = vec4(I_total, 1.0f);
 		}
 		else
@@ -122,7 +134,7 @@ void main()
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
 			
-			vec3 I_total = (I_ambient + I_diffuse + I_specular);
+			vec3 I_total = att * (I_ambient + SpotlightEffect * (I_diffuse + I_specular));
 			outputColor = vec4(I_total, 1.0f);
 		}
 	}

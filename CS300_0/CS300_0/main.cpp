@@ -190,7 +190,8 @@ GLuint makeNormalMapTexture(const std::string& filename)
     }
     // Give pixel data to opengl
     glTexImage2D(GL_TEXTURE_2D, 0, pixelFormat, normalMap->w, normalMap->h, 0, pixelFormat, GL_UNSIGNED_BYTE, normalMap->pixels);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -318,6 +319,9 @@ int main(int argc, char* args[])
     mLight.light_specular = main_light_specular;
     mLight.light_attenuation = main_light_attenuation;
     mLight.light_type = 0;
+    mLight.inner = 30.0f;
+    mLight.outer = 35.0f;
+    mLight.falloff = 1.0f;
 
     Material mMaterial;
     mMaterial.material_ambient = main_material_ambient;
