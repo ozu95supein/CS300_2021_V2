@@ -85,6 +85,12 @@ void main()
 		float theta_rad = radians(lightInner);
 		float phi_rad = radians(lightOuter);
 		SpotlightEffect = pow(((cos(alpha_rad) - cos(phi_rad)) / (cos(theta_rad) - cos(phi_rad))), lightFalloff);
+		SpotlightEffect = clamp(SpotlightEffect, 0.0f, 1.0f);
+	}
+	if(light_type == 2) //directional light_type{
+	{
+		//attenuation is not considered when dealing with directional light
+		att = 1.0f;
 	}
 	if(Render_Mode == 0)
 	{
