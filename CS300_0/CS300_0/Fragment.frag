@@ -60,6 +60,7 @@ void main()
 	mat4 Avg_TBN_mat = mat4(NORMALIZED_Avg_Tangent_Cameraspace, NORMALIZED_Avg_BiTangent_Cameraspace, NORMALIZED_Avg_normal_camerapsace, vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	vec4 L = lightPosition_cameraspace - position_cameraspace;
+	L.w = 0.0f;
 	vec4 NORMALIZED_L = normalize(L);
 	vec4 NormalMap4 = texture(normalMap_data, outUV); 
 	
@@ -70,7 +71,9 @@ void main()
 	vec4 newNormal4 = vec4(nx, ny, nz, 0.0f);
 	vec4 TBN_Normal = TBN_mat * newNormal4;
 	vec4 AvgTBN_Normal = Avg_TBN_mat * newNormal4;
+	TBN_Normal.w = 0.0f;
 	vec4 NORMALIZED_TBN_Normal = normalize(TBN_Normal);
+	AvgTBN_Normal.w = 0.0f;
 	vec4 NORMALIZED_AvgTBN_Normal = normalize(AvgTBN_Normal);
 
 	//outputColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -96,8 +99,10 @@ void main()
 			vec3 K_s = materialSpecular;
 			//calculate R as a vec4
 			vec4 R4 = ((2 * NL_result) * NORMALIZED_TBN_Normal) - NORMALIZED_L;
+			R4.w = 0.0f;
 			vec4 NORMALIZED_R4 = normalize(R4);
 			vec4 ViewVector = vec4(0.0f, 0.0f, 0.0f, 1.0f) - position_cameraspace;
+			ViewVector.w = 0.0f;
 			vec4 NORMALIZED_ViewVector = normalize(ViewVector);
 			float RV_Result = dot(NORMALIZED_R4, NORMALIZED_ViewVector);
 			RV_Result = max(RV_Result, 0.0f);
@@ -122,8 +127,10 @@ void main()
 			vec3 K_s = materialSpecular;
 			//calculate R as a vec4
 			vec4 R4 = ((2 * NL_result) * NORMALIZED_AvgTBN_Normal) - NORMALIZED_L;
+			R4.w = 0.0f;
 			vec4 NORMALIZED_R4 = normalize(R4);
 			vec4 ViewVector = vec4(0.0f, 0.0f, 0.0f, 1.0f) - position_cameraspace;
+			ViewVector.w = 0.0f;
 			vec4 NORMALIZED_ViewVector = normalize(ViewVector);
 			float RV_Result = dot(NORMALIZED_R4, NORMALIZED_ViewVector);
 			RV_Result = max(RV_Result, 0.0f);
