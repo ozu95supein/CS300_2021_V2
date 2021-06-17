@@ -317,6 +317,8 @@ int main(int argc, char* args[])
     mLight.light_position = light_position;
     mLight.light_specular = main_light_specular;
     mLight.light_attenuation = main_light_attenuation;
+    mLight.light_type = 0;
+
     Material mMaterial;
     mMaterial.material_ambient = main_material_ambient;
     mMaterial.material_diffuse = main_light_diffuse;
@@ -462,16 +464,21 @@ int main(int argc, char* args[])
                 {
                     //TO DO
                     // Turn all lights to point lights
+                    mLight.light_type = 0;
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_8)
                 {
                     //TO DO
                     // turn all lights to spot lights
+                    mLight.light_type = 1;
+
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_9)
                 {
                     //TO DO
                     // turn all lights to directional lights
+                    mLight.light_type = 2;
+
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_P)
                 {

@@ -16,6 +16,7 @@ uniform sampler2D texture_data; // smallColors.png
 uniform sampler2D normalMap_data;
 uniform int Render_Mode;
 uniform int faceNormal_toggle;
+uniform int light_type;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
