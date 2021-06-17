@@ -183,7 +183,7 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLuint LIGHTSPECULAR = glGetUniformLocation(shader, "lightSpecular");
     glUniform3fv(LIGHTSPECULAR, 1, &(CurrentLight.light_specular[0]));
     GLuint MATERIALSPECULAR = glGetUniformLocation(shader, "materialSpecular");
-    glUniform3fv(LIGHTSPECULAR, 1, &(CurrentMaterial.material_specular[0]));
+    glUniform3fv(MATERIALSPECULAR, 1, &(CurrentMaterial.material_specular[0]));
     GLuint MATERIALSPECULAR_NS = glGetUniformLocation(shader, "materialSpecularNS");
     glUniform1f(MATERIALSPECULAR_NS, (CurrentMaterial.ns));
 
