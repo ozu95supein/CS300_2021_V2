@@ -67,6 +67,10 @@ public:
 
 	void ConstructAveragedNormals();
 	void GenerateAveragedNormalLines();
+	void GenerateTangentLines();
+	void GenerateAveragedTangentLines();
+	void GenerateBiTangentLines();
+	void GenerateAveragedBiTangentLines();
 
 	void AveragedNormal_ComputeTangentBasis();
 	void ComputeTangetBasis();

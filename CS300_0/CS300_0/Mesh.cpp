@@ -48,6 +48,10 @@ void Mesh::ConstructPlane()
 	AveragedNormal_ComputeTangentBasis();
 	ComputeTangetBasis();
 
+	GenerateTangentLines();
+	GenerateAveragedTangentLines();
+	GenerateBiTangentLines();
+	GenerateAveragedBiTangentLines();
 }
 void Mesh::ConstructCube()
 {
@@ -891,7 +895,54 @@ void Mesh::GenerateAveragedNormalLines()
 		mAveragedNormalArray.push_back(n);
 	}
 }
-
+void Mesh::GenerateTangentLines()
+{
+	int vertex_num = GetVertexNum();
+	for (int i = 0; i < vertex_num; i++)
+	{
+		Vertex v = mVertexArray[i];
+		glm::vec4 start = v.position;
+		glm::vec4 end = v.position + v.tangents;
+		NormalLine n(start, end);
+		mTangentArray.push_back(n);
+	}
+}
+void Mesh::GenerateAveragedTangentLines()
+{
+	int vertex_num = GetVertexNum();
+	for (int i = 0; i < vertex_num; i++)
+	{
+		Vertex v = mVertexArray[i];
+		glm::vec4 start = v.position;
+		glm::vec4 end = v.position + v.AveragedNormal_tangents;
+		NormalLine n(start, end);
+		mAveragedTangentArray.push_back(n);
+	}
+}
+void Mesh::GenerateBiTangentLines()
+{
+	int vertex_num = GetVertexNum();
+	for (int i = 0; i < vertex_num; i++)
+	{
+		Vertex v = mVertexArray[i];
+		glm::vec4 start = v.position;
+		glm::vec4 end = v.position + v.tangents;
+		NormalLine n(start, end);
+		mTangentArray.push_back(n);
+	}
+}
+void Mesh::GenerateAveragedBiTangentLines()
+{
+	int vertex_num = GetVertexNum();
+	for (int i = 0; i < vertex_num; i++)
+	{
+		Vertex v = mVertexArray[i];
+		glm::vec4 start = v.position;
+		glm::vec4 end = v.position + v.AveragedNormal_tangents;
+		NormalLine n(start, end);
+		mAveragedTangentArray.push_back(n);
+	}
+}
 void Mesh::ConstructAveragedNormals()
 {
 	//create a temporary vector for the averaged normals
