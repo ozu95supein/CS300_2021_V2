@@ -60,5 +60,6 @@
   <ItemGroup>
     <None Include="White.vert" />
     <None Include="White.frag" />
+    <None Include="SingleColor.frag" />
   </ItemGroup>
 </Project>
