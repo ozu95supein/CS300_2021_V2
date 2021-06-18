@@ -75,6 +75,10 @@ private:
 	std::vector<Vertex> mVertexArray;
 	std::vector<NormalLine> mNormalArray;
 	std::vector<NormalLine> mAveragedNormalArray;
+	std::vector<NormalLine> mTangentArray;
+	std::vector<NormalLine> mAveragedTangentArray;
+	std::vector<NormalLine> mBiTangentArray;
+	std::vector<NormalLine> mAveragedBiTangentArray;
 	int mVertexNum;
 	int mFaceNum;
 	MeshType mType;
