@@ -34,6 +34,11 @@ RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, glm::mat4 Mod
     //generateNormal lines for the Mesh Object
     mObjectMesh.GenerateNormalLines();
     mObjectMesh.GenerateAveragedNormalLines();
+    mObjectMesh.GenerateTangentLines();
+    mObjectMesh.GenerateAveragedTangentLines();
+    mObjectMesh.GenerateBiTangentLines();
+    mObjectMesh.GenerateAveragedBiTangentLines();
+
     //initialize buffers for vbo and vaos
     Renderable_InitAllBuffers();
 }
@@ -42,6 +47,10 @@ RenderableMeshObject::~RenderableMeshObject()
     Renderable_CleanUpObjectAndBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
     Renderable_CleanUpObjectAndBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_CleanUpObjectAndBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectTangent_VBO, mObjectTangent_VAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectAveragedTangent_VBO, mObjectAveragedTangent_VAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectBiTangent_VBO, mObjectBiTangent_VAO, mObjectMesh);
+    Renderable_CleanUpObjectAndBuffers(mObjectAveragedBiTangent_VBO, mObjectAveragedBiTangent_VAO, mObjectMesh);
     mObjectMesh.~Mesh();
 }
 
@@ -50,7 +59,10 @@ void RenderableMeshObject::Renderable_InitAllBuffers()
     Renderable_InitializeMeshBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
     Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
-    
+    Renderable_InitializeTangentBuffers(mObjectTangent_VBO, mObjectTangent_VAO, mObjectMesh);
+    Renderable_InitializeAveragedTangentBuffers(mObjectAveragedTangent_VBO, mObjectAveragedTangent_VAO, mObjectMesh);
+    Renderable_InitializeBiTangentBuffers(mObjectBiTangent_VBO, mObjectBiTangent_VAO, mObjectMesh);
+    Renderable_InitializeAveragedBiTangentBuffers(mObjectAveragedBiTangent_VBO, mObjectAveragedBiTangent_VAO, mObjectMesh);
 }
 void RenderableMeshObject::Renderable_InitializeMeshBuffers(GLuint &vbo, GLuint &vao, Mesh& mesh)
 {
@@ -155,11 +167,33 @@ void RenderableMeshObject::Renderable_InitializeAveragedTangentBuffers(GLuint& v
 }
 void RenderableMeshObject::Renderable_InitializeBiTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
+    unsigned long stride = sizeof(glm::vec4);
+    // create buffer for VAO
+    glGenVertexArrays(1, &vao);
+    // create buffer for VBO
+    glGenBuffers(1, &vbo);
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(Mesh::NormalLine) * mesh.GetNormalsNum()), mesh.GetBiTangents(), GL_STATIC_DRAW);
 
+    //start
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 }
-void RenderableMeshObject::Renderable_InitializeAveragedBuTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
+void RenderableMeshObject::Renderable_InitializeAveragedBiTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
+    unsigned long stride = sizeof(glm::vec4);
+    // create buffer for VAO
+    glGenVertexArrays(1, &vao);
+    // create buffer for VBO
+    glGenBuffers(1, &vbo);
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(Mesh::NormalLine) * mesh.GetNormalsNum()), mesh.GetAveragedBiTangents(), GL_STATIC_DRAW);
 
+    //start
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 }
 
 

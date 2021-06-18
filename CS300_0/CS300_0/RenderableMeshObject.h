@@ -27,7 +27,7 @@ public:
     void Renderable_InitializeAveragedTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
 
     void Renderable_InitializeBiTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
-    void Renderable_InitializeAveragedBuTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
+    void Renderable_InitializeAveragedBiTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
 
     Mesh & GetMesh();
     GLuint& GetVBO();
