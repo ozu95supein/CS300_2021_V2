@@ -27,6 +27,10 @@
     <ClInclude Include="RenderableMeshObject.h" />
     <ClInclude Include="ShaderUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="White.frag" />
+    <None Include="White.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

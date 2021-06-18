@@ -835,6 +835,28 @@ void* Mesh::GetNormals()
 	auto ptr = &(*(mNormalArray.begin()));
 	return (void*)(ptr);
 }
+void* Mesh::GetTangents()
+{
+	//IS THIS OK?
+	auto ptr = &(*(mTangentArray.begin()));
+	return (void*)(ptr);
+}
+void* Mesh::GetAveragedTangents()
+{
+	auto ptr = &(*(mAveragedTangentArray.begin()));
+	return (void*)(ptr);
+}
+void* Mesh::GetBiTangents()
+{
+	//IS THIS OK?
+	auto ptr = &(*(mBiTangentArray.begin()));
+	return (void*)(ptr);
+}
+void* Mesh::GetAveragedBiTangents()
+{
+	auto ptr = &(*(mAveragedBiTangentArray.begin()));
+	return (void*)(ptr);
+}
 void* Mesh::GetAveragedNormals()
 {
 	//IS THIS OK?

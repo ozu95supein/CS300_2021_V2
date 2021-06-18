@@ -19,8 +19,15 @@ public:
     
     void Renderable_InitAllBuffers();
     void Renderable_InitializeMeshBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
+
     void Renderable_InitializeNormalBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
     void Renderable_InitializeAveragedNormalBuffers(GLuint & vbo, GLuint & vao, Mesh & mesh);
+
+    void Renderable_InitializeTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
+    void Renderable_InitializeAveragedTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
+
+    void Renderable_InitializeBiTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
+    void Renderable_InitializeAveragedBuTangentBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh);
 
     Mesh & GetMesh();
     GLuint& GetVBO();
@@ -47,10 +54,22 @@ private:
     Mesh mObjectMesh;
     GLuint mObjectVBO;
     GLuint mObjectVAO;
+
     GLuint mObjectNormal_VBO;
     GLuint mObjectNormal_VAO;
     GLuint mObjectAveragedNormal_VBO;
     GLuint mObjectAveragedNormal_VAO;
+
+    GLuint mObjectTangent_VBO;
+    GLuint mObjectTangent_VAO;
+    GLuint mObjectAveragedTangent_VBO;
+    GLuint mObjectAveragedTangent_VAO;
+
+    GLuint mObjectBiTangent_VBO;
+    GLuint mObjectBiTangent_VAO;
+    GLuint mObjectAveragedBiTangent_VBO;
+    GLuint mObjectAveragedBiTangent_VAO;
+
     glm::mat4 mModelMatrix;
     Material mMaterial;
 };

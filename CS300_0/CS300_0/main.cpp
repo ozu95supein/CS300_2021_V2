@@ -92,6 +92,11 @@ GLuint InitializeProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("Vertex.vert", "Fragment.frag");
     return theProgram;
 }
+GLuint InitializeWhiteProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "White.frag");
+    return theProgram;
+}
 GLuint InitializeNormalProgram()
 {
     GLuint theProgram = ShaderUtils::CreateShaderProgram("NormalVertex.vert", "NormalFragment.frag");
@@ -253,6 +258,7 @@ int main(int argc, char* args[])
     GLuint texture = makeTexture(texture);
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
+    GLuint WhiteShaderProgram = InitializeWhiteProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
@@ -721,7 +727,7 @@ int main(int argc, char* args[])
             break;
         }
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, NormalshaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
         SDL_GL_SwapWindow(window);    
         
     }

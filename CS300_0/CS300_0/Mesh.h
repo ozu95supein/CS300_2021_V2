@@ -50,8 +50,14 @@ public:
 	void ConstructSphere(int slices);
 	void CleanupAndReset();
 	void* GetVertices();
+
 	void* GetNormals();
 	void* GetAveragedNormals();
+	void* GetTangents();
+	void* GetAveragedTangents();
+	void* GetBiTangents();
+	void* GetAveragedBiTangents();
+
 	int GetVertexNum();
 	int GetNormalsNum();
 	void SetVertexNum(int v);
