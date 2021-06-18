@@ -1,46 +1,19 @@
 #pragma once
 #include "RenderableMeshObject.h"
-struct LightSourceObject
+
+class LightSourceObject
 {
-	LightSourceObject(glm::mat4& m, Light& l, RenderableMeshObject& sph) 
-	{
-		model = m;
-		mLight = l;
-		mLightSphere = sph;
-	}
-	void SetLightSourceModel(glm::mat4 m)
-	{
-		model = m;
-	}
-	glm::mat4 GetLightSourceModel()
-	{
-		return model;
-	}
-	void SetLightSourceLightAttributes(Light l)
-	{
-		mLight = l;
-	}
-	Light GetLightSourceAttributes()
-	{
-		return mLight;
-	}
-	void SetLightSourceSphere(RenderableMeshObject sph)
-	{
-		mLightSphere = sph;
-	}
-	RenderableMeshObject & GetLightSourceSphereRefference()
-	{
-		return mLightSphere;
-	}
-	void TranslateEntireLightSource(glm::vec3 TranslationPosition, glm::vec3 LookAtPoint)
-	{
-		glm::mat4 translateMat = glm::translate(model, TranslationPosition);
-		model = model * translateMat;
-		//model = glm::translate(model, TranslationPosition);
-		mLight.light_position = glm::vec4(TranslationPosition, 1.0f);
-		mLightSphere.Translate(TranslationPosition);
-	}
-	glm::mat4 model;
+public:
+	LightSourceObject();
+	LightSourceObject(RenderableMeshObject R, Light L, glm::mat4 S, glm::mat4 T);
+	~LightSourceObject();
+	void SetModelMatrix(glm::mat4 M);
+	glm::mat4 GetModelMatrix();
+	glm::vec4 GetLightPosition();
+	void SetLightPosition(glm::vec4 pos);
+	void TranslateLightSourceObject(glm::vec4 v);
+private:
+	glm::mat4 mScaleMatrix;
+	RenderableMeshObject mRenderable;
 	Light mLight;
-	RenderableMeshObject mLightSphere;
 };
