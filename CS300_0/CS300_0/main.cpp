@@ -652,11 +652,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                     else
                     {
-                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                 }
             }
@@ -668,11 +668,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                     else
                     {
-                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                 }
             }
@@ -684,11 +684,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                     else
                     {
-                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                 }
             }
@@ -700,11 +700,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                     else
                     {
-                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                 }
             }
@@ -716,11 +716,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                     else
                     {
-                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, NormalshaderProgram);
+                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
                     }
                 }
             }
