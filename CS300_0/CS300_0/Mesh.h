@@ -53,8 +53,10 @@ public:
 
 	void* GetNormals();
 	void* GetAveragedNormals();
+
 	void* GetTangents();
 	void* GetAveragedTangents();
+
 	void* GetBiTangents();
 	void* GetAveragedBiTangents();
 
