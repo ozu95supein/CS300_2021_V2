@@ -94,12 +94,17 @@ GLuint InitializeProgram()
 }
 GLuint InitializeWhiteProgram()
 {
-    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "White.frag");
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "SingleColor.frag");
     return theProgram;
 }
 GLuint InitializeNormalProgram()
 {
     GLuint theProgram = ShaderUtils::CreateShaderProgram("NormalVertex.vert", "NormalFragment.frag");
+    return theProgram;
+}
+GLuint InitializeSingleColorProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "White.frag");
     return theProgram;
 }
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
@@ -259,6 +264,7 @@ int main(int argc, char* args[])
     GLuint shaderProgram = InitializeProgram();
     GLuint NormalshaderProgram = InitializeNormalProgram();
     GLuint WhiteShaderProgram = InitializeWhiteProgram();
+    GLuint SingleColorShaderProgram = InitializeSingleColorProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
