@@ -13,6 +13,7 @@ layout(location = 7) in vec4 aAvgBiTangent;
 out vec2 outUV;
 out vec4 position_cameraspace;
 out vec4 lightPosition_cameraspace;
+out vec4 lightDirection_cameraspace;
 
 out vec4 normal_cameraspace;
 out vec4 Avg_normal_camerapsace;
@@ -26,6 +27,7 @@ uniform mat4 u_M;
 uniform mat4 u_V;
 uniform mat4 u_P;
 uniform vec4 lightPosition;
+uniform vec4 lightDirection;
 
 void main()
 {
@@ -37,6 +39,7 @@ void main()
 	outUV = aUV;
 	position_cameraspace = u_V * u_M * aPosition;
 	lightPosition_cameraspace = u_V * lightPosition;
+	lightDirection_cameraspace = u_V * lightDirection;
 
     gl_Position = MVP * aPosition;
 

@@ -264,7 +264,7 @@ int main(int argc, char* args[])
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
     //model matrix
     glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
-    int current_slices = 6;
+    int current_slices = 20;
     //create objects to swap when pressing buttons
     RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
     RenderableMeshObject cubeObject(MeshType::CUBE, current_slices, ModelMatrix);
@@ -295,7 +295,7 @@ int main(int argc, char* args[])
     glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
     //model matrix
     glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
-    RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, current_slices, LIGHT_ModelMatrix);
+    RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, 6, LIGHT_ModelMatrix);
     /*==========================================================================================================================================*/
     //HARD CODED for now
     //AMBIENT
@@ -316,6 +316,7 @@ int main(int argc, char* args[])
     mLight.light_ambient = main_light_ambient;
     mLight.light_diffuse = main_light_diffuse;
     mLight.light_position = light_position;
+    mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
     mLight.light_specular = main_light_specular;
     mLight.light_attenuation = main_light_attenuation;
     mLight.light_type = 0;
@@ -628,6 +629,7 @@ int main(int argc, char* args[])
 
             LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
             mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
+            mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
         }
         
         ////////////////////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@ out vec4 outputColor;
 in vec2 outUV;
 in vec4 position_cameraspace;
 in vec4 lightPosition_cameraspace;
+in vec4 lightDirection_cameraspace;
 
 in vec4 normal_cameraspace;
 in vec4 Avg_normal_camerapsace;
@@ -56,6 +57,8 @@ void main()
 	mat3 Avg_TBN_mat3 = mat3(NORMALIZED_Avg_Tangent_Cameraspace, NORMALIZED_Avg_BiTangent_Cameraspace, NORMALIZED_Avg_normal_camerapsace);
 
 	vec3 L = (lightPosition_cameraspace - position_cameraspace).xyz;
+	vec3 D = lightDirection_cameraspace.xyz;
+	vec3 NORMALIZED_D = normalize(D);
 	vec3 NORMALIZED_L = normalize(L);
 	vec3 NormalMap4 = texture(normalMap_data, outUV).xyz; 
 	
@@ -78,9 +81,7 @@ void main()
 	if(light_type == 1)	//spotlight
 	{
 		vec3 neg_L =  - NORMALIZED_L;
-		vec3 D = vec3(0.0f, 0.0f, 0.0f) - lightPosition_cameraspace.xyz;
-		D = normalize(D);
-		float var = (dot(neg_L, D) / (neg_L.length() * D.length()));
+		float var = (dot(neg_L, NORMALIZED_D));
 		float alpha_rad = acos(var);
 		float theta_rad = radians(lightInner);
 		float phi_rad = radians(lightOuter);
@@ -91,7 +92,10 @@ void main()
 	{
 		//attenuation is not considered when dealing with directional light
 		att = 1.0f;
+		//in directional light L will be equal to -D
+		NORMALIZED_L = -NORMALIZED_D;
 	}
+	
 	if(Render_Mode == 0)
 	{
 		if(faceNormal_toggle == 1)

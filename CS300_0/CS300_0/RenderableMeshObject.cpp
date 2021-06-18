@@ -202,6 +202,10 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     glUniform1f(LIGHTOUTERANGLE, (CurrentLight.outer));
     GLuint LIGHTFALLOFF = glGetUniformLocation(shader, "lightFalloff");
     glUniform1f(LIGHTFALLOFF, (CurrentLight.falloff));
+
+    //DIRECTION
+    GLuint LIGHTDIRECTION = glGetUniformLocation(shader, "lightDirection");
+    glUniform4fv(LIGHTDIRECTION, 1, &(CurrentLight.light_direction[0]));
 }
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
 {
