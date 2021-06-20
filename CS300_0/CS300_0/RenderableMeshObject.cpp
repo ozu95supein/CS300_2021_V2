@@ -346,6 +346,24 @@ void RenderableMeshObject::Renderable_displayNormals(glm::mat4& ViewMatrix, glm:
     int s = 2 * mObjectMesh.GetVertexNum();
     glDrawArrays(GL_LINES, 0, s);
 }
+void RenderableMeshObject::Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(normalShader);
+
+    //pass them to program
+    GLint model = glGetUniformLocation(normalShader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(normalShader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(normalShader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    glBindVertexArray(mObjectNormal_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    int s = 2 * mObjectMesh.GetVertexNum();
+    glDrawArrays(GL_LINES, 0, s);
+}
 void RenderableMeshObject::Renderable_displayAveragedNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader)
 {
     // Bind the glsl program and this object's VAO

@@ -97,6 +97,21 @@ GLuint InitializeWhiteProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "White.frag");
     return theProgram;
 }
+GLuint InitializeRedProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("wWhite.vert", "red.frag");
+    return theProgram;
+}
+GLuint InitializeGreenProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "green.frag");
+    return theProgram;
+}
+GLuint InitializeBlueProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "blue.frag");
+    return theProgram;
+}
 GLuint InitializeNormalProgram()
 {
     GLuint theProgram = ShaderUtils::CreateShaderProgram("NormalVertex.vert", "NormalFragment.frag");
@@ -265,6 +280,9 @@ int main(int argc, char* args[])
     GLuint NormalshaderProgram = InitializeNormalProgram();
     GLuint WhiteShaderProgram = InitializeWhiteProgram();
     GLuint SingleColorShaderProgram = InitializeSingleColorProgram();
+    GLuint RedShaderProgram = InitializeRedProgram();
+    GLuint GreenShaderProgram = InitializeGreenProgram();
+    GLuint BlueShaderProgram = InitializeBlueProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
@@ -658,11 +676,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                     else
                     {
-                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                 }
             }
@@ -674,11 +692,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                     else
                     {
-                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                 }
             }
@@ -690,11 +708,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                     else
                     {
-                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                 }
             }
@@ -706,11 +724,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                     else
                     {
-                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                 }
             }
@@ -722,11 +740,11 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                     else
                     {
-                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, WhiteShaderProgram);
+                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                     }
                 }
             }

@@ -28,6 +28,9 @@
     <ClInclude Include="ShaderUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="blue.frag" />
+    <None Include="green.frag" />
+    <None Include="red.frag" />
     <None Include="SingleColor.frag" />
     <None Include="White.frag" />
     <None Include="White.vert" />
