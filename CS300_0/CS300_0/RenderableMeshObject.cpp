@@ -346,6 +346,24 @@ void RenderableMeshObject::Renderable_displayTangents(glm::mat4& ViewMatrix, glm
     int s = 2 * mObjectMesh.GetVertexNum();
     glDrawArrays(GL_LINES, 0, s);
 }
+void RenderableMeshObject::Renderable_displayAveragedTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& tangentShader)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(tangentShader);
+
+    //pass them to program
+    GLint model = glGetUniformLocation(tangentShader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(tangentShader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(tangentShader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    glBindVertexArray(mObjectAveragedBiTangent_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    int s = 2 * mObjectMesh.GetVertexNum();
+    glDrawArrays(GL_LINES, 0, s);
+}
 void RenderableMeshObject::Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader)
 {
     // Bind the glsl program and this object's VAO
@@ -378,6 +396,42 @@ void RenderableMeshObject::Renderable_displayAveragedNormals(glm::mat4& ViewMatr
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
 
     glBindVertexArray(mObjectAveragedNormal_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    int s = 2 * mObjectMesh.GetVertexNum();
+    glDrawArrays(GL_LINES, 0, s);
+}
+void RenderableMeshObject::Renderable_displayBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(bitangentShader);
+
+    //pass them to program
+    GLint model = glGetUniformLocation(bitangentShader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(bitangentShader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(bitangentShader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    glBindVertexArray(mObjectBiTangent_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    int s = 2 * mObjectMesh.GetVertexNum();
+    glDrawArrays(GL_LINES, 0, s);
+}
+void RenderableMeshObject::Renderable_displayAveragedBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(bitangentShader);
+
+    //pass them to program
+    GLint model = glGetUniformLocation(bitangentShader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(bitangentShader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(bitangentShader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    glBindVertexArray(mObjectAveragedBiTangent_VAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     int s = 2 * mObjectMesh.GetVertexNum();
     glDrawArrays(GL_LINES, 0, s);

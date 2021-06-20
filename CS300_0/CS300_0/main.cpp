@@ -99,7 +99,7 @@ GLuint InitializeWhiteProgram()
 }
 GLuint InitializeRedProgram()
 {
-    GLuint theProgram = ShaderUtils::CreateShaderProgram("wWhite.vert", "red.frag");
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "red.frag");
     return theProgram;
 }
 GLuint InitializeGreenProgram()
@@ -280,6 +280,7 @@ int main(int argc, char* args[])
     GLuint NormalshaderProgram = InitializeNormalProgram();
     GLuint WhiteShaderProgram = InitializeWhiteProgram();
     GLuint SingleColorShaderProgram = InitializeSingleColorProgram();
+
     GLuint RedShaderProgram = InitializeRedProgram();
     GLuint GreenShaderProgram = InitializeGreenProgram();
     GLuint BlueShaderProgram = InitializeBlueProgram();
@@ -676,11 +677,15 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
                         planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -692,11 +697,15 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
-                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -708,11 +717,15 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
-                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -724,11 +737,15 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
-                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -740,17 +757,36 @@ int main(int argc, char* args[])
                 {
                     if (UsingFaceNormals)
                     {
-                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
-                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
             break;
         }
         GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+        if (Display_Normals)
+        {
+            if (UsingFaceNormals)
+            {
+                GROUND_planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                GROUND_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+            }
+            else
+            {
+                GROUND_planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                GROUND_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+            }
+        }
         LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
         SDL_GL_SwapWindow(window);    
         
