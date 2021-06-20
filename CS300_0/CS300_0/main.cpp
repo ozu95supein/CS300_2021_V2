@@ -94,7 +94,7 @@ GLuint InitializeProgram()
 }
 GLuint InitializeWhiteProgram()
 {
-    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "SingleColor.frag");
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "White.frag");
     return theProgram;
 }
 GLuint InitializeNormalProgram()
@@ -104,7 +104,7 @@ GLuint InitializeNormalProgram()
 }
 GLuint InitializeSingleColorProgram()
 {
-    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "White.frag");
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "SingleColor.frag");
     return theProgram;
 }
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
