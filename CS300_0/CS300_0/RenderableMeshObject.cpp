@@ -328,20 +328,20 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
         glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
     }
 }
-void RenderableMeshObject::Renderable_displayNormals(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& normalShader)
+void RenderableMeshObject::Renderable_displayTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& tangentShader)
 {
     // Bind the glsl program and this object's VAO
-    glUseProgram(normalShader);
+    glUseProgram(tangentShader);
 
     //pass them to program
-    GLint model = glGetUniformLocation(normalShader, "u_M");
+    GLint model = glGetUniformLocation(tangentShader, "u_M");
     glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(normalShader, "u_V");
+    GLint view = glGetUniformLocation(tangentShader, "u_V");
     glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(normalShader, "u_P");
+    GLint projection = glGetUniformLocation(tangentShader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
 
-    glBindVertexArray(mObjectNormal_VAO);
+    glBindVertexArray(mObjectTangent_VAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     int s = 2 * mObjectMesh.GetVertexNum();
     glDrawArrays(GL_LINES, 0, s);
