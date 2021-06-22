@@ -477,6 +477,11 @@ void RenderableMeshObject::Renderable_ChangeSlices(int new_slices, MeshType& t)
     Renderable_InitializeNormalBuffers(mObjectNormal_VBO, mObjectNormal_VAO, mObjectMesh);
     Renderable_InitializeAveragedNormalBuffers(mObjectAveragedNormal_VBO, mObjectAveragedNormal_VAO, mObjectMesh);
 }
+void RenderableMeshObject::Renderable_RotateModel(float rotation_radians, glm::vec3 axis)
+{
+    glm::mat4& model = this->GetModelRefference();
+    model = glm::rotate(model, rotation_radians, axis);
+}
 void RenderableMeshObject::SetMaterial(Material m)
 {
     mMaterial = m;
