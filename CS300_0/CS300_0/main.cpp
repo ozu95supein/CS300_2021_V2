@@ -280,7 +280,6 @@ int main(int argc, char* args[])
     GLuint NormalshaderProgram = InitializeNormalProgram();
     GLuint WhiteShaderProgram = InitializeWhiteProgram();
     GLuint SingleColorShaderProgram = InitializeSingleColorProgram();
-
     GLuint RedShaderProgram = InitializeRedProgram();
     GLuint GreenShaderProgram = InitializeGreenProgram();
     GLuint BlueShaderProgram = InitializeBlueProgram();
@@ -291,28 +290,47 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
     //create matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 LeftTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, 0.0f, 0.0f));
+    glm::mat4 RightTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+    glm::mat4 MainScaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+    glm::mat4 SecondaryScaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
     //model matrix
-    glm::mat4 MainModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
-    int current_slices = 20;
+    glm::mat4 MainModelMatrix = translationMatrix * rotationMatrix * MainScaleMatrix;//world space
+    glm::mat4 LeftModelMatrix = LeftTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
+    glm::mat4 RightModelMatrix = RightTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
+
+    int current_slices = 8;
     //create objects to swap when pressing buttons
     RenderableMeshObject MainPlaneObject(MeshType::PLANE, current_slices, MainModelMatrix);
     RenderableMeshObject MainCubeObject(MeshType::CUBE, current_slices, MainModelMatrix);
     RenderableMeshObject MainCylinderObject(MeshType::CYLINDER, current_slices, MainModelMatrix);
     RenderableMeshObject MainConeObject(MeshType::CONE, current_slices, MainModelMatrix);
     RenderableMeshObject MainSphereObject(MeshType::SPHERE, current_slices, MainModelMatrix);
+
+    RenderableMeshObject LeftPlaneObject(MeshType::PLANE, current_slices, LeftModelMatrix);
+    RenderableMeshObject LeftCubeObject(MeshType::CUBE, current_slices, LeftModelMatrix);
+    RenderableMeshObject LeftCylinderObject(MeshType::CYLINDER, current_slices, LeftModelMatrix);
+    RenderableMeshObject LeftConeObject(MeshType::CONE, current_slices, LeftModelMatrix);
+    RenderableMeshObject LeftSphereObject(MeshType::SPHERE, current_slices, LeftModelMatrix);
+
+    RenderableMeshObject RightPlaneObject(MeshType::PLANE, current_slices, RightModelMatrix);
+    RenderableMeshObject RightCubeObject(MeshType::CUBE, current_slices, RightModelMatrix);
+    RenderableMeshObject RightCylinderObject(MeshType::CYLINDER, current_slices, RightModelMatrix);
+    RenderableMeshObject RightConeObject(MeshType::CONE, current_slices, RightModelMatrix);
+    RenderableMeshObject RightSphereObject(MeshType::SPHERE, current_slices, RightModelMatrix);
+
     //GROUND
     glm::mat4 GROUND_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -15.0f, 0.0f));
     glm::mat4 GROUND_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f, 1.0f, 50.0f));
+    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(100.0f, 1.0f, 100.0f));
     //model matrix
     glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
     GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     /*******************************************************************************************************************************************/
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
     //LIGHTS
-    float light_radius = 20.0f;
+    float light_radius = 30.0f;
     float light_Theta_Angle_Rad = 0.0f;
     float light_Phi_Angle_Rad = 0.0f;
     float light_Phi_increment = 0.001f;
@@ -350,7 +368,7 @@ int main(int argc, char* args[])
     mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
     mLight.light_specular = main_light_specular;
     mLight.light_attenuation = main_light_attenuation;
-    mLight.light_type = 0;
+    mLight.light_type = 1; //Spotlight for this demo only
     mLight.inner = 30.0f;
     mLight.outer = 35.0f;
     mLight.falloff = 1.0f;
@@ -360,12 +378,7 @@ int main(int argc, char* args[])
     mMaterial.material_diffuse = main_light_diffuse;
     mMaterial.material_specular = main_material_specular;
     mMaterial.ns = main_ns;
-    /*=========================================================================================================================================*/
-    //MAKE LIGHTSOURCE OBJECT
     
-
-    /*=========================================================================================================================================*/
-
     /*******************************************************************************************************************************************/
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -388,14 +401,26 @@ int main(int argc, char* args[])
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 150.0f);
     /*******************************************************************************************************************************************/
 
-
+    //Setting Materials for all of the objects
     MainPlaneObject.SetMaterial(mMaterial);
     MainCubeObject.SetMaterial(mMaterial);
     MainCylinderObject.SetMaterial(mMaterial);
     MainConeObject.SetMaterial(mMaterial);
     MainSphereObject.SetMaterial(mMaterial);
+
+    LeftPlaneObject.SetMaterial(mMaterial);
+    LeftCubeObject.SetMaterial(mMaterial);
+    LeftCylinderObject.SetMaterial(mMaterial);
+    LeftConeObject.SetMaterial(mMaterial);
+    LeftSphereObject.SetMaterial(mMaterial);
+
+    RightPlaneObject.SetMaterial(mMaterial);
+    RightCubeObject.SetMaterial(mMaterial);
+    RightCylinderObject.SetMaterial(mMaterial);
+    RightConeObject.SetMaterial(mMaterial);
+    RightSphereObject.SetMaterial(mMaterial);
+
     GROUND_planeObject.SetMaterial(mMaterial);
-    sphereObject.SetMaterial(mMaterial);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -495,26 +520,6 @@ int main(int argc, char* args[])
                 else if (event.key.keysym.scancode == SDL_SCANCODE_5)
                 {
                     current_mesh_to_display = 5;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_7)
-                {
-                    //TO DO
-                    // Turn all lights to point lights
-                    mLight.light_type = 0;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_8)
-                {
-                    //TO DO
-                    // turn all lights to spot lights
-                    mLight.light_type = 1;
-
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_9)
-                {
-                    //TO DO
-                    // turn all lights to directional lights
-                    mLight.light_type = 2;
-
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_P)
                 {
@@ -673,6 +678,8 @@ int main(int argc, char* args[])
             case 1:
             {
                 MainPlaneObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftPlaneObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightPlaneObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -680,12 +687,28 @@ int main(int argc, char* args[])
                         MainPlaneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainPlaneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainPlaneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftPlaneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftPlaneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftPlaneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightPlaneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightPlaneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightPlaneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
                         MainPlaneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
                         MainPlaneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainPlaneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftPlaneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        LeftPlaneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftPlaneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightPlaneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                        RightPlaneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightPlaneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -693,6 +716,8 @@ int main(int argc, char* args[])
             case 2:
             {
                 MainCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -700,12 +725,28 @@ int main(int argc, char* args[])
                         MainCubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainCubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainCubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftCubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftCubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftCubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightCubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightCubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightCubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
                         MainCubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainCubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainCubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftCubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftCubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftCubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightCubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightCubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightCubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -713,6 +754,8 @@ int main(int argc, char* args[])
             case 3:
             {
                 MainCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -720,12 +763,28 @@ int main(int argc, char* args[])
                         MainCylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainCylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainCylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftCylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftCylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftCylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightCylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightCylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightCylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
                         MainCylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainCylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainCylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftCylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftCylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftCylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightCylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightCylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightCylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -733,6 +792,8 @@ int main(int argc, char* args[])
             case 4:
             {
                 MainConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -740,12 +801,28 @@ int main(int argc, char* args[])
                         MainConeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainConeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainConeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftConeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftConeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftConeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightConeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightConeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightConeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
                         MainConeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainConeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainConeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftConeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftConeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftConeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightConeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightConeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightConeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
@@ -753,6 +830,8 @@ int main(int argc, char* args[])
             case 5:
             {
                 MainSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -760,12 +839,28 @@ int main(int argc, char* args[])
                         MainSphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainSphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainSphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftSphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftSphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftSphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightSphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightSphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightSphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                     else
                     {
                         MainSphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                         MainSphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
                         MainSphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        LeftSphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        LeftSphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        LeftSphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+
+                        RightSphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                        RightSphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                        RightSphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     }
                 }
             }
