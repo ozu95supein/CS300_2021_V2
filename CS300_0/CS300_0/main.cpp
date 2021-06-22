@@ -451,8 +451,8 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
                 {
-                    glm::mat4& mPlane = MainPlaneObject.GetModelRefference();
-                    mPlane = glm::rotate(MainPlaneObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    //glm::mat4& mPlane = MainPlaneObject.GetModelRefference();
+                    //mPlane = glm::rotate(MainPlaneObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                     glm::mat4& mCube = MainCubeObject.GetModelRefference();
                     mCube = glm::rotate(MainCubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                     glm::mat4& mCylinder = MainCylinderObject.GetModelRefference();
@@ -461,6 +461,10 @@ int main(int argc, char* args[])
                     mCone = glm::rotate(MainConeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                     glm::mat4& mSphere = MainSphereObject.GetModelRefference();
                     mSphere = glm::rotate(MainSphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+
+                    MainPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    LeftPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    RightPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
                 {
