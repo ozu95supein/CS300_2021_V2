@@ -281,7 +281,17 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLuint LIGHTDIRECTION = glGetUniformLocation(shader, "lightDirection");
     glUniform4fv(LIGHTDIRECTION, 1, &(CurrentLight.light_direction[0]));
 }
+
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
+{
+    //Renderable_firstPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals);
+    Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals);
+}
+void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
+{
+
+}
+void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
 {
     ////////////////////////////////////////////////////////////////////////////////
     // Bind the glsl program and this object's VAO
