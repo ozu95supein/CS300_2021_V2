@@ -603,8 +603,14 @@ int main(int argc, char* args[])
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
                     MainCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightCylinderObject.Renderable_ChangeSlices(current_slices, cy);
                     MainConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightConeObject.Renderable_ChangeSlices(current_slices, cn);
                     MainSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightSphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -617,8 +623,14 @@ int main(int argc, char* args[])
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
                     MainCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightCylinderObject.Renderable_ChangeSlices(current_slices, cy);
                     MainConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightConeObject.Renderable_ChangeSlices(current_slices, cn);
                     MainSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightSphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
@@ -919,10 +931,8 @@ int main(int argc, char* args[])
             }
         }
         LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-        SDL_GL_SwapWindow(window);    
-        
+        SDL_GL_SwapWindow(window);        
     }
-
     glDeleteProgram(shaderProgram);
     SDL_GL_DeleteContext(context_);
     SDL_DestroyWindow(window);
