@@ -122,6 +122,11 @@ GLuint InitializeSingleColorProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "SingleColor.frag");
     return theProgram;
 }
+GLuint InitializeDepthBufferProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("depth.vert", "depth.frag");
+    return theProgram;
+}
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -229,7 +234,6 @@ GLuint makeNormalMapTexture(const std::string& filename)
 #undef main
 int main(int argc, char* args[])
 {
-    
     //init SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -283,6 +287,7 @@ int main(int argc, char* args[])
     GLuint RedShaderProgram = InitializeRedProgram();
     GLuint GreenShaderProgram = InitializeGreenProgram();
     GLuint BlueShaderProgram = InitializeBlueProgram();
+    GLuint DepthBufferShaderProgram = InitializeDepthBufferProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");

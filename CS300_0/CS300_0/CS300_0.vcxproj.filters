@@ -64,5 +64,6 @@
     <None Include="red.frag" />
     <None Include="blue.frag" />
     <None Include="green.frag" />
+    <None Include="depth.frag" />
   </ItemGroup>
 </Project>
