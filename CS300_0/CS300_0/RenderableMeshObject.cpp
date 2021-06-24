@@ -284,8 +284,8 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
 
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& depthshader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, glm::vec2 shadowmapDimensions, GLuint& shadowMapFBO)
 {
-    Renderable_firstPass(LightViewMatrix, LightProjectionMatrix, depthshader, shadowmapDimensions.x, shadowmapDimensions.y, shadowMapFBO);
-    //Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals);
+    //Renderable_firstPass(LightViewMatrix, LightProjectionMatrix, depthshader, shadowmapDimensions.x, shadowmapDimensions.y, shadowMapFBO);
+    Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals);
 }
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight, GLuint& shadowMapFBO)
 {
@@ -304,6 +304,8 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
     glBindVertexArray(mObjectVAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    //unbind
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
 {

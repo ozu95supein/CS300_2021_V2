@@ -203,20 +203,6 @@ GLuint& makeTexture(GLuint& t)
 
     return t;
 }
-GLuint& makeDepthTexture(GLuint& t)
-{
-    glGenFramebuffers(1, &t);
-    
-    unsigned int depthMap;
-    glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    return t;
-}
 GLuint makeNormalMapTexture(const std::string& filename)
 {
     //load texture from filename
@@ -454,18 +440,34 @@ int main(int argc, char* args[])
     glFrontFace(GL_CCW);
 
     /*******************************************************************************************************************************************/
-    //depth texture and depth data for shadowmapping
-    //make a frame buffer object for the depth map
-    GLuint depthMapFBO;
-    glGenFramebuffers(1, &depthMapFBO);
+    //DEPTH BUFFER AND SHADOWMAP TEXTURE
     //create a 2D texture to use as the framebuffer's depth buffer
-    GLuint depthTexture = makeDepthTexture(depthTexture);
-    //With the generated depth texture we can attach it as the framebuffer's depth buffer:
+    GLuint depthTex;
+    GLuint depthMapFBO;
+    glGenTextures(1, &depthTex);
+    glBindTexture(GL_TEXTURE_2D, depthTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    // Create and set up the FBO
+    glGenFramebuffers(1, &depthMapFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+        GL_TEXTURE_2D, depthTex, 0);
+
+    GLenum drawBuffers[] = { GL_NONE };
+    glDrawBuffers(1, drawBuffers);
+
+    GLenum result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (result == GL_FRAMEBUFFER_COMPLETE) {
+        printf("Framebuffer is complete.\n");
+    }
+    else {
+        printf("Framebuffer is not complete.\n");
+    }
     /*******************************************************************************************************************************************/
 
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
