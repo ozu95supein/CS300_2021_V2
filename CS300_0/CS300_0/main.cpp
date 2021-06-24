@@ -21,6 +21,10 @@
 static int     winID;
 static GLsizei WIDTH = 1280;
 static GLsizei HEIGHT = 720;
+//arbitrary numbers for width and height
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+glm::vec2 SHADOW_DIM(SHADOW_WIDTH, SHADOW_HEIGHT);
+
 float PIValue = glm::atan(1) * 4;
 GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 {
@@ -199,6 +203,20 @@ GLuint& makeTexture(GLuint& t)
 
     return t;
 }
+GLuint& makeDepthTexture(GLuint& t)
+{
+    glGenFramebuffers(1, &t);
+    
+    unsigned int depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    return t;
+}
 GLuint makeNormalMapTexture(const std::string& filename)
 {
     //load texture from filename
@@ -249,7 +267,7 @@ int main(int argc, char* args[])
         exit(1);
     }
     //ASK ABOUT THIS
-     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     //CREATE the Context, ask about this
     SDL_GLContext context_ = SDL_GL_CreateContext(window);
@@ -384,12 +402,16 @@ int main(int argc, char* args[])
     mMaterial.material_specular = main_material_specular;
     mMaterial.ns = main_ns;
     
+    //render from lights point of view and store it in a depth buffer texture
+    glm::vec3 light_pos3(mLight.light_position.x, mLight.light_position.y, mLight.light_position.z);
+    glm::mat4 light_ViewMatrix = glm::lookAt(light_pos3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 light_ProjectionMatrix = glm::perspective(glm::radians(mLight.outer), 1.0f, 0.1f, 150.0f);
+    
     /*******************************************************************************************************************************************/
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
-    ViewDirection = glm::normalize(ViewDirection);
-
+    
     float CameraRadius = 50.f;  //radius of the camera from origin
     float CameraRadius_increment = 0.5;  //radius of the camera from origin
     float alpha_rad = 0.0f;     //angle of the camera on the xz plane, y axis
@@ -430,6 +452,21 @@ int main(int argc, char* args[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+    /*******************************************************************************************************************************************/
+    //depth texture and depth data for shadowmapping
+    //make a frame buffer object for the depth map
+    GLuint depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    //create a 2D texture to use as the framebuffer's depth buffer
+    GLuint depthTexture = makeDepthTexture(depthTexture);
+    //With the generated depth texture we can attach it as the framebuffer's depth buffer:
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    /*******************************************************************************************************************************************/
 
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
     int current_mesh_to_display = 1;
@@ -719,20 +756,27 @@ int main(int argc, char* args[])
             LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
             mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
             mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
+
+            light_pos3.x = mLight.light_position.x;
+            light_pos3.y = mLight.light_position.y;
+            light_pos3.z = mLight.light_position.z;
+            light_ViewMatrix = glm::lookAt(light_pos3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         }
         
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
+        // original
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         ////////////////////////////////////////////////////////////////////////////////
         switch (current_mesh_to_display)
         {
             case 1:
             {
-                MainPlaneObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                LeftPlaneObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                RightPlaneObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                MainPlaneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                LeftPlaneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                RightPlaneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -768,9 +812,9 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                MainCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                LeftCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                RightCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                MainCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                LeftCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                RightCubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -806,9 +850,9 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                MainCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                LeftCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                RightCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                MainCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                LeftCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                RightCylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -844,9 +888,9 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                MainConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                LeftConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                RightConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                MainConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                LeftConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                RightConeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -882,9 +926,9 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                MainSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                LeftSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                RightSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                MainSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                LeftSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
+                RightSphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -919,7 +963,7 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
         if (Display_Normals)
         {
             if (UsingFaceNormals)
@@ -935,7 +979,7 @@ int main(int argc, char* args[])
                 GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
             }
         }
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, DepthBufferShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, light_ViewMatrix, light_ProjectionMatrix, SHADOW_DIM, depthMapFBO);
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);
