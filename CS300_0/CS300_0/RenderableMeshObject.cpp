@@ -356,7 +356,7 @@ void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat
     GLuint loc1 = glGetUniformLocation(shader, "normalMap_data");   //get uniform of frag shader
     glUniform1i(loc1, 1);    //use stuff from bucket 1
 
-    glActiveTexture(GL_TEXTURE1); //activate bucket 2
+    glActiveTexture(GL_TEXTURE2); //activate bucket 2
     glBindTexture(GL_TEXTURE_2D, depthTex);
     GLuint loc2 = glGetUniformLocation(shader, "shadowMap_data");   //get uniform of frag shader
     glUniform1i(loc2, 2);    //use stuff from bucket 1
