@@ -236,7 +236,7 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     mesh.CleanupAndReset();
 }
 
-void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial)
+void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix)
 {
     glUseProgram(shader);
     //pass them to program
@@ -282,19 +282,25 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     //DIRECTION
     GLuint LIGHTDIRECTION = glGetUniformLocation(shader, "lightDirection");
     glUniform4fv(LIGHTDIRECTION, 1, &(CurrentLight.light_direction[0]));
+
+    //LIGHTSPACE VIEW and PROJECTION
+    GLint lightView = glGetUniformLocation(shader, "u_LightView");
+    glUniformMatrix4fv(lightView, 1, GL_FALSE, &(LightViewMatrix[0][0]));
+    GLint lightProjection = glGetUniformLocation(shader, "u_LightProjection");
+    glUniformMatrix4fv(lightProjection, 1, GL_FALSE, &(LightProjectionMatrix[0][0]));
+
 }
 
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& depthshader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, glm::vec2 shadowmapDimensions, GLuint& shadowMapFBO)
 {
     Renderable_firstPass(LightViewMatrix, LightProjectionMatrix, depthshader, shadowmapDimensions.x, shadowmapDimensions.y, shadowMapFBO);
-    Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals);
+    Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals, shadowMapFBO, LightViewMatrix, LightProjectionMatrix);
 }
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight, GLuint& shadowMapFBO)
 {
     glViewport(0, 0, ShadowMapWidth, ShadowMapWidth);
     glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-    // Clear it
-    glClear(GL_DEPTH_BUFFER_BIT);
+    
     // Bind the glsl program and this object's VAO
     glUseProgram(depthshader);
     // Enable front-face culling
@@ -313,7 +319,7 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
     //unbind
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
+void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix)
 {
     ////////////////////////////////////////////////////////////////////////////////
     glViewport(0, 0, WIDTH, HEIGHT);
@@ -329,8 +335,8 @@ void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat
     glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial);
+    
+    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial, LightViewMatrix, LightProjectionMatrix);
 
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "Render_Mode");
@@ -349,6 +355,11 @@ void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat
     glBindTexture(GL_TEXTURE_2D, NormalMap);
     GLuint loc1 = glGetUniformLocation(shader, "normalMap_data");   //get uniform of frag shader
     glUniform1i(loc1, 1);    //use stuff from bucket 1
+
+    glActiveTexture(GL_TEXTURE1); //activate bucket 2
+    glBindTexture(GL_TEXTURE_2D, depthTex);
+    GLuint loc2 = glGetUniformLocation(shader, "shadowMap_data");   //get uniform of frag shader
+    glUniform1i(loc2, 2);    //use stuff from bucket 1
 
     // Draw
     if (display_wiremesh == false)

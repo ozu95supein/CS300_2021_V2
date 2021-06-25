@@ -15,6 +15,8 @@ in vec4 Avg_BiTangent_Cameraspace;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform sampler2D normalMap_data;
+uniform sampler2D shadowMap_data;
+
 uniform int Render_Mode;
 uniform int faceNormal_toggle;
 uniform int light_type;
@@ -31,6 +33,8 @@ uniform float materialSpecularNS;
 uniform float lightInner;
 uniform float lightOuter;
 uniform float lightFalloff;
+uniform mat4 u_LightView;
+uniform mat4 u_LightProjection;
 
 void main()
 {
