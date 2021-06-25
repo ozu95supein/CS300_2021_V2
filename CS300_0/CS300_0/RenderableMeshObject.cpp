@@ -1,4 +1,6 @@
 #include "RenderableMeshObject.h"
+static GLsizei WIDTH = 1280;
+static GLsizei HEIGHT = 720;
 RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
 {
     mObjectVBO                  = -1;
@@ -284,15 +286,19 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
 
 void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& depthshader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, glm::vec2 shadowmapDimensions, GLuint& shadowMapFBO)
 {
-    //Renderable_firstPass(LightViewMatrix, LightProjectionMatrix, depthshader, shadowmapDimensions.x, shadowmapDimensions.y, shadowMapFBO);
+    Renderable_firstPass(LightViewMatrix, LightProjectionMatrix, depthshader, shadowmapDimensions.x, shadowmapDimensions.y, shadowMapFBO);
     Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals);
 }
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight, GLuint& shadowMapFBO)
 {
     glViewport(0, 0, ShadowMapWidth, ShadowMapWidth);
     glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+    // Clear it
+    glClear(GL_DEPTH_BUFFER_BIT);
     // Bind the glsl program and this object's VAO
     glUseProgram(depthshader);
+    // Enable front-face culling
+    glCullFace(GL_FRONT);
     //pass them to program
     GLint model = glGetUniformLocation(depthshader, "u_M");
     glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
@@ -310,6 +316,10 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
 void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
 {
     ////////////////////////////////////////////////////////////////////////////////
+    glViewport(0, 0, WIDTH, HEIGHT);
+    // Clear both the depth and color buffers
+    // Enable back-face culling
+    glCullFace(GL_BACK);
     // Bind the glsl program and this object's VAO
     glUseProgram(shader);
     //pass them to program
