@@ -97,9 +97,14 @@ void main()
 
 	vec2 shadowUV = vec2(position_lightspace_NDC.x, position_lightspace_NDC.y);
 	vec3 ShadowMap3 = texture(shadowMap_data, shadowUV).xyz; 
+
+	outputColor = vec4(ShadowMap3, 1.0f);
+	return;
+
 	float shadowmap_mod;
 	//compare the z value sampled from the shadowmap to the z value in the lightspace 
-	if(position_lightspace.z > ShadowMap3.z)
+	//RED CHANNEL ONLY
+	if(position_lightspace.z > ShadowMap3.r)
 	{
 		//It is lit
 		shadowmap_mod = 1.0f;

@@ -433,6 +433,9 @@ int main(int argc, char* args[])
     RightConeObject.SetMaterial(mMaterial);
     RightSphereObject.SetMaterial(mMaterial);
 
+    float SideObjectAngle = 0.0f;
+    float SideObjectAngleIncrement = 0.001f;
+
     GROUND_planeObject.SetMaterial(mMaterial);
 
     glEnable(GL_CULL_FACE);
@@ -477,6 +480,8 @@ int main(int argc, char* args[])
     int RenderMode = 0;
     int UsingFaceNormals = 1;
     int PlayingLightAnimation = 1;
+    int MovingSideObjects = 1;
+
     SDL_Event event;
     bool      quit = false;
     while (!quit)
@@ -731,6 +736,17 @@ int main(int argc, char* args[])
                         CameraRadius = 100.0f;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_O)
+                {
+                    if (MovingSideObjects == 1)
+                    {
+                        MovingSideObjects = 0;
+                    }
+                    else
+                    {
+                        MovingSideObjects = 1;
+                    }
+                }
                 break;
             }
         }
@@ -765,6 +781,18 @@ int main(int argc, char* args[])
             light_ViewMatrix = glm::lookAt(light_pos3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         }
         
+        if (MovingSideObjects)
+        {
+            SideObjectAngle += SideObjectAngleIncrement;
+            float left_y = 10.0f * glm::sin(SideObjectAngle);
+            float right_y = 10.0f * glm::sin(SideObjectAngle + PIValue);
+
+            LeftTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, left_y, 0.0f));
+            RightTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, right_y, 0.0f));
+
+
+
+        }
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         // original
