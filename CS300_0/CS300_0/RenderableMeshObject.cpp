@@ -298,8 +298,6 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
 }
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight, GLuint& shadowMapFBO)
 {
-    glViewport(0, 0, ShadowMapWidth, ShadowMapWidth);
-    glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
     
     // Bind the glsl program and this object's VAO
     glUseProgram(depthshader);
@@ -316,8 +314,7 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
     glBindVertexArray(mObjectVAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    //unbind
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
 }
 void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix)
 {
