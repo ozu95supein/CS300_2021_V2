@@ -339,7 +339,7 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
     //LIGHTS
-    float light_radius = 30.0f;
+    float light_radius = 90.0f;
     float light_Theta_Angle_Rad = 0.0f;
     float light_Phi_Angle_Rad = 0.0f;
     float light_Phi_increment = 0.001f;
@@ -808,48 +808,49 @@ int main(int argc, char* args[])
         //Bind the depth buffer
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         //clear it before we draw
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //render all the shapes for the shadow map using the light view and light projection matrices
         switch (current_mesh_to_display)
         {
         case 1:
         {
-            MainPlaneObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            LeftPlaneObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            RightPlaneObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
+            MainPlaneObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            LeftPlaneObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            RightPlaneObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
         }
         break;
         case 2:
         {
-            MainCubeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            LeftCubeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            RightCubeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
+            MainCubeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            LeftCubeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            RightCubeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
         }
         break;
         case 3:
         {
-            MainCylinderObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            LeftCylinderObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            RightCylinderObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
+            MainCylinderObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            LeftCylinderObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            RightCylinderObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
         }
         break;
         case 4:
         {
-            MainConeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            LeftConeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            RightConeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
+            MainConeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            LeftConeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            RightConeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
         }
         break;
         case 5:
         {
-            MainSphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            LeftSphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
-            RightSphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
+            MainSphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            LeftSphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
+            RightSphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
         }
         break;
         }
-        GROUND_planeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);   
-        LIGHT_sphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y, depthMapFBO);
+        GROUND_planeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);   
+        //LIGHT_sphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
 
         //unbind depth buffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
