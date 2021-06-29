@@ -36,6 +36,28 @@ uniform float lightInner;
 uniform float lightOuter;
 uniform float lightFalloff;
 
+float getPCFShadow(vec2 UV, vec3 position_lightspace_NDC3)
+{
+	vec2 texelOffset = 1.0 / textureSize(shadowMap_data, 0);
+	int neighbor = 2; // For a 5x5 neighborhood
+	float accumulatedVisibility = 0.0f;
+	float sampleCount = 0.0f;
+	for(int x = -neighbor; x <= neighbor; x++)
+	{
+		for(int y = -neighbor; y <= neighbor; y++)
+		{
+			float shadowDepth = texture(shadowMap_data, UV + texelOffset * vec2(x, y)).r;
+			// Evaluate visibility for this sample
+			if(position_lightspace_NDC3.z < shadowDepth)
+			{
+				accumulatedVisibility += 1.0f;
+			}
+			sampleCount += 1.0f;
+		}
+	}
+	return accumulatedVisibility / sampleCount;
+}
+
 void main()
 {
 	vec3 temp_normal_cameraspace = normal_cameraspace.xyz;
@@ -95,18 +117,7 @@ void main()
 
 	if(using_shadows_int == 1)
 	{
-		//compare the z value sampled from the shadowmap to the z value in the lightspace 
-		//RED CHANNEL ONLY
-		if(position_lightspace_NDC.z < ShadowMap3.r)
-		{
-			//It is lit
-			shadowmap_mod = 1.0f;
-		}
-		else
-		{
-			//it is in shadow
-			shadowmap_mod = 0.0f;
-		}
+		shadowmap_mod = getPCFShadow(shadowUV, position_lightspace_NDC);
 	}
 	else
 	{
