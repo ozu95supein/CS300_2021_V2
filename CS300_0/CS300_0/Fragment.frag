@@ -97,7 +97,7 @@ void main()
 	{
 		//compare the z value sampled from the shadowmap to the z value in the lightspace 
 		//RED CHANNEL ONLY
-		if(position_lightspace_NDC.z > ShadowMap3.r)
+		if(position_lightspace_NDC.z < ShadowMap3.r)
 		{
 			//It is lit
 			shadowmap_mod = 1.0f;

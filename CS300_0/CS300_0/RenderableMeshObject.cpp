@@ -295,11 +295,12 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
 
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight)
 {
-    glViewport(0, 0, 1024, 1024);
     // Bind the glsl program and this object's VAO
     glUseProgram(depthshader);
+
     // Enable front-face culling
     glCullFace(GL_FRONT);
+    
     //pass them to program
     GLint model = glGetUniformLocation(depthshader, "u_M");
     glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
@@ -316,7 +317,6 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
 void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows)
 {
     ////////////////////////////////////////////////////////////////////////////////
-    glViewport(0, 0, WIDTH, HEIGHT);
     // Clear both the depth and color buffers
     // Enable back-face culling
     glCullFace(GL_BACK);

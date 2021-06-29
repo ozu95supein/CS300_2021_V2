@@ -309,7 +309,7 @@ int main(int argc, char* args[])
     glm::mat4 LeftModelMatrix = LeftTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
     glm::mat4 RightModelMatrix = RightTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
 
-    int current_slices = 8;
+    int current_slices = 20;
     //create objects to swap when pressing buttons
     RenderableMeshObject MainPlaneObject(MeshType::PLANE, current_slices, MainModelMatrix);
     RenderableMeshObject MainCubeObject(MeshType::CUBE, current_slices, MainModelMatrix);
@@ -361,7 +361,7 @@ int main(int argc, char* args[])
     glm::vec3 main_light_ambient(0.0f);
     //DIFFUSE
     glm::vec3 main_material_diffuse(1.0f);
-    glm::vec3 main_light_diffuse(0.5f);
+    glm::vec3 main_light_diffuse(0.8f);
     glm::vec4 light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
     //SPECULAR
     glm::vec3 main_light_specular = glm::vec3(1.0f);
@@ -474,7 +474,7 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
 
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
-    int current_mesh_to_display = 1;
+    int current_mesh_to_display = 5;
     int Display_Normals = 0;
     bool Display_Wireframe = false;
     int RenderMode = 0;
@@ -784,10 +784,9 @@ int main(int argc, char* args[])
         {
             SideObjectAngle += SideObjectAngleIncrement;
             float left_y = 10.0f * glm::sin(SideObjectAngle);
-            float right_y = 10.0f * glm::sin(SideObjectAngle + PIValue);
-
+            
             LeftTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, left_y, 0.0f));
-            RightTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, right_y, 0.0f));
+            RightTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, left_y, 0.0f));
 
             LeftModelMatrix = LeftTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
             RightModelMatrix = RightTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
@@ -809,7 +808,8 @@ int main(int argc, char* args[])
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         //clear it before we draw
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear current buffer
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);      //set viewport of first pass
         //render all the shapes for the shadow map using the light view and light projection matrices
         switch (current_mesh_to_display)
         {
@@ -850,7 +850,6 @@ int main(int argc, char* args[])
         break;
         }
         GROUND_planeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);   
-        //LIGHT_sphereObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);
 
         //unbind depth buffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -860,6 +859,7 @@ int main(int argc, char* args[])
         // original
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, WIDTH, HEIGHT);
         ////////////////////////////////////////////////////////////////////////////////
         switch (current_mesh_to_display)
         {
@@ -1070,7 +1070,7 @@ int main(int argc, char* args[])
                 GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
             }
         }
-        LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false);
+        LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false);
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);
