@@ -236,7 +236,7 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     mesh.CleanupAndReset();
 }
 
-void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows)
+void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows, int neighbor)
 {
     glUseProgram(shader);
     //pass them to program
@@ -291,6 +291,8 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
 
     GLuint IsUsingShadows = glGetUniformLocation(shader, "using_shadows_int");
     glUniform1i(IsUsingShadows, using_shadows);
+    GLuint Neighbors = glGetUniformLocation(shader, "u_neighbors");
+    glUniform1i(Neighbors, neighbor);
 }
 
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight)
@@ -314,7 +316,7 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
     
 }
-void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows)
+void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows, int neighbor)
 {
     ////////////////////////////////////////////////////////////////////////////////
     // Clear both the depth and color buffers
@@ -330,7 +332,7 @@ void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
     
-    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial, LightViewMatrix, LightProjectionMatrix, using_shadows);
+    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial, LightViewMatrix, LightProjectionMatrix, using_shadows, neighbor);
 
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "Render_Mode");

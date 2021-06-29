@@ -342,7 +342,7 @@ int main(int argc, char* args[])
     float light_radius = 30.0f;
     float light_Theta_Angle_Rad = 0.0f;
     float light_Phi_Angle_Rad = 0.0f;
-    float light_Phi_increment = 0.001f;
+    float light_Phi_increment = 0.005f;
     float light_Amplitude = 14.0f;
     float light_Theta_increment = 0.0007f;  //MAGIC NUMBER
     float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
@@ -481,6 +481,7 @@ int main(int argc, char* args[])
     int UsingFaceNormals = 1;
     int PlayingLightAnimation = 1;
     int MovingSideObjects = 1;
+    int neighbor = 2;
 
     SDL_Event event;
     bool      quit = false;
@@ -747,6 +748,18 @@ int main(int argc, char* args[])
                         MovingSideObjects = 1;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_Z)
+                {
+                    //decrease
+                    if (neighbor > 1)
+                    {
+                        neighbor -= 1;
+                    }
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_X)
+                {
+                    neighbor += 1;
+                }
                 break;
             }
         }
@@ -865,9 +878,9 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                MainPlaneObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                LeftPlaneObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                RightPlaneObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
+                MainPlaneObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                LeftPlaneObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                RightPlaneObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -903,9 +916,9 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                MainCubeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                LeftCubeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                RightCubeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
+                MainCubeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                LeftCubeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                RightCubeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -941,9 +954,9 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                MainCylinderObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                LeftCylinderObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                RightCylinderObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
+                MainCylinderObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                LeftCylinderObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                RightCylinderObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -979,9 +992,9 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                MainConeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                LeftConeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                RightConeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
+                MainConeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                LeftConeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                RightConeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -1017,9 +1030,9 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                MainSphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                LeftSphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
-                RightSphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
+                MainSphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                LeftSphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
+                RightSphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -1054,7 +1067,7 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true);
+        GROUND_planeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
         if (Display_Normals)
         {
             if (UsingFaceNormals)
@@ -1070,7 +1083,9 @@ int main(int argc, char* args[])
                 GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
             }
         }
-        LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false);
+        LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false, neighbor);
+        
+        
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);

@@ -22,6 +22,7 @@ uniform int Render_Mode;
 uniform int faceNormal_toggle;
 uniform int light_type;
 uniform int using_shadows_int;
+uniform int u_neighbors;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
@@ -39,7 +40,7 @@ uniform float lightFalloff;
 float getPCFShadow(vec2 UV, vec3 position_lightspace_NDC3)
 {
 	vec2 texelOffset = 1.0 / textureSize(shadowMap_data, 0);
-	int neighbor = 2; // For a 5x5 neighborhood
+	int neighbor = u_neighbors; // For a 5x5 neighborhood
 	float accumulatedVisibility = 0.0f;
 	float sampleCount = 0.0f;
 	for(int x = -neighbor; x <= neighbor; x++)
