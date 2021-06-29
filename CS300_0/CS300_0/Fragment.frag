@@ -21,6 +21,7 @@ uniform sampler2D shadowMap_data;
 uniform int Render_Mode;
 uniform int faceNormal_toggle;
 uniform int light_type;
+uniform int using_shadows_int;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
@@ -84,38 +85,34 @@ void main()
 	//SHADOWMAP
 	//Do perspective division
 	float w = position_lightspace.w;
-	vec4 position_lightspace_persDiv;
-	position_lightspace_persDiv.x = position_lightspace.x / w;
-	position_lightspace_persDiv.y = position_lightspace.y / w;
-	position_lightspace_persDiv.z = position_lightspace.z / w;
-	position_lightspace_persDiv.w = position_lightspace.w / w;
-	vec4 position_lightspace_NDC;
-	position_lightspace_NDC.x = (position_lightspace.x * 0.5f) + 0.5f;
-	position_lightspace_NDC.y = (position_lightspace.y * 0.5f) + 0.5f;
-	position_lightspace_NDC.z = (position_lightspace.z * 0.5f) + 0.5f;
-	position_lightspace_NDC.w = (position_lightspace.w * 0.5f) + 0.5f;
+	vec3 position_lightspace_persDiv = position_lightspace.xyz / w;;
+	vec3 position_lightspace_NDC = (position_lightspace_persDiv * 0.5f) + 0.5f;
 
 	vec2 shadowUV = vec2(position_lightspace_NDC.x, position_lightspace_NDC.y);
 	vec3 ShadowMap3 = texture(shadowMap_data, shadowUV).xyz; 
 
-	//DEBUG
-	//outputColor = vec4(ShadowMap3, 1.0f);
-	//return;
-
 	float shadowmap_mod;
-	//compare the z value sampled from the shadowmap to the z value in the lightspace 
-	//RED CHANNEL ONLY
-	if(position_lightspace.z > ShadowMap3.r)
+
+	if(using_shadows_int == 1)
 	{
-		//It is lit
-		shadowmap_mod = 1.0f;
+		//compare the z value sampled from the shadowmap to the z value in the lightspace 
+		//RED CHANNEL ONLY
+		if(position_lightspace_NDC.z > ShadowMap3.r)
+		{
+			//It is lit
+			shadowmap_mod = 1.0f;
+		}
+		else
+		{
+			//it is in shadow
+			shadowmap_mod = 0.0f;
+		}
 	}
 	else
 	{
-		//it is in shadow
-		shadowmap_mod = 0.0f;
+			shadowmap_mod = 1.0f;
 	}
-
+	
 	if(light_type == 1)	//spotlight
 	{
 		vec3 neg_L =  - NORMALIZED_L;

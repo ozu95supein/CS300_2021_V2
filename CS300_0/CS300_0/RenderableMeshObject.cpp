@@ -236,7 +236,7 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     mesh.CleanupAndReset();
 }
 
-void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix)
+void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows)
 {
     glUseProgram(shader);
     //pass them to program
@@ -289,16 +289,13 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLint lightProjection = glGetUniformLocation(shader, "u_LightProjection");
     glUniformMatrix4fv(lightProjection, 1, GL_FALSE, &(LightProjectionMatrix[0][0]));
 
+    GLuint IsUsingShadows = glGetUniformLocation(shader, "using_shadows_int");
+    glUniform1i(IsUsingShadows, using_shadows);
 }
 
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& depthshader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, glm::vec2 shadowmapDimensions, GLuint& shadowMapFBO)
-{
-    Renderable_firstPass(LightViewMatrix, LightProjectionMatrix, depthshader, shadowmapDimensions.x, shadowmapDimensions.y);
-    Renderable_secondPass(ViewMatrix, ProjectionMatrix, shader, texture, display_wiremesh, RenderMode, CurrentLight, NormalMap, UsingFaceNormals, shadowMapFBO, LightViewMatrix, LightProjectionMatrix);
-}
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight)
 {
-    
+    glViewport(0, 0, 1024, 1024);
     // Bind the glsl program and this object's VAO
     glUseProgram(depthshader);
     // Enable front-face culling
@@ -316,7 +313,7 @@ void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
     
 }
-void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix)
+void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows)
 {
     ////////////////////////////////////////////////////////////////////////////////
     glViewport(0, 0, WIDTH, HEIGHT);
@@ -333,7 +330,7 @@ void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
     
-    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial, LightViewMatrix, LightProjectionMatrix);
+    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial, LightViewMatrix, LightProjectionMatrix, using_shadows);
 
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "Render_Mode");
