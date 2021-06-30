@@ -657,14 +657,14 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_N)
                 {
-                    if (Display_Normals == 1)
-                    {
-                        Display_Normals = 0;
-                    }
-                    else
-                    {
-                        Display_Normals = 1;
-                    }
+                    //if (Display_Normals == 1)
+                    //{
+                    //    Display_Normals = 0;
+                    //}
+                    //else
+                    //{
+                    //    Display_Normals = 1;
+                    //}
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
                 {
@@ -704,11 +704,11 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
-                    RenderMode += 1;
-                    if (RenderMode > 3)
-                    {
-                        RenderMode = 0;
-                    }
+                    //RenderMode += 1;
+                    //if (RenderMode > 3)
+                    //{
+                    //    RenderMode = 0;
+                    //}
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_W)
                 {
