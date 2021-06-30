@@ -537,22 +537,26 @@ void RenderableMeshObject::Renderable_RotateModel(float rotation_radians, glm::v
     glm::mat4& model = this->GetModelRefference();
     model = glm::rotate(model, rotation_radians, axis);
 }
-void RenderableMeshObject::Renderable_displayDepth(GLuint& shader, GLuint& texture)
+void RenderableMeshObject::Renderable_displayDepth(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthplaneshader, GLuint& texture)
 {
     // Enable back-face culling
     glCullFace(GL_BACK);
     // Bind the glsl program and this object's VAO
-    glUseProgram(shader);
+    glUseProgram(depthplaneshader);
     //pass them to program
-    GLint model = glGetUniformLocation(shader, "u_M");
+    GLint model = glGetUniformLocation(depthplaneshader, "u_M");
     glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(depthplaneshader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(depthplaneshader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
     //texture stuff
     glActiveTexture(GL_TEXTURE0); //activate bucket 0
     glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
-    GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
+    GLuint loc = glGetUniformLocation(depthplaneshader, "depth_texture_data");   //get uniform of frag shader
     glUniform1i(loc, 0);    //use stuff from bucket 0
+
     glBindVertexArray(mObjectVAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-
 }

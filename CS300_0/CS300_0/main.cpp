@@ -297,8 +297,7 @@ int main(int argc, char* args[])
     GLuint GreenShaderProgram = InitializeGreenProgram();
     GLuint BlueShaderProgram = InitializeBlueProgram();
     GLuint DepthBufferShaderProgram = InitializeDepthBufferProgram();
-    GLuint DepthPlaneShaderProgram = InitializeDepthPlaneProgram();
-
+    
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
 
@@ -345,8 +344,10 @@ int main(int argc, char* args[])
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
 
     /*******************************************************************************************************************************************/
+    GLuint depthPlaneShader = InitializeDepthPlaneProgram();
+
     //DepthShader Plane
-    glm::mat4 DEPTH_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f));
+    glm::mat4 DEPTH_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 DEPTH_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(30.0f, 1.0f, 30.0f));
 
@@ -1104,10 +1105,11 @@ int main(int argc, char* args[])
         }
         LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false, neighbor);
         glDisable(GL_DEPTH_TEST);
-
         glViewport(0, 0, 400, 400);
-        DEPTH_planeObject.Renderable_displayDepth(DepthPlaneShaderProgram, depthTex);
+        glm::mat4 v(1.0f);
+        glm::mat4 p(1.0f);
 
+        DEPTH_planeObject.Renderable_displayDepth(v, p, depthPlaneShader, depthTex);
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);

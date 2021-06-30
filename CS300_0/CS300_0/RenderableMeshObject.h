@@ -49,7 +49,7 @@ public:
     void Renderable_displayAveragedBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader);
     void Renderable_ChangeSlices(int new_slices, MeshType& t);
 
-    void Renderable_displayDepth(GLuint& shader, GLuint& texture);
+    void Renderable_displayDepth(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthplaneshader, GLuint& texture);
 
     glm::mat4& GetModelRefference();
     glm::mat4 GetModel();
