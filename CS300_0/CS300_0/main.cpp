@@ -131,6 +131,11 @@ GLuint InitializeDepthBufferProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("depth.vert", "depth.frag");
     return theProgram;
 }
+GLuint InitializeDepthPlaneProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("depthplane.vert", "depthplane.frag");
+    return theProgram;
+}
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -292,6 +297,7 @@ int main(int argc, char* args[])
     GLuint GreenShaderProgram = InitializeGreenProgram();
     GLuint BlueShaderProgram = InitializeBlueProgram();
     GLuint DepthBufferShaderProgram = InitializeDepthBufferProgram();
+    GLuint DepthPlaneShaderProgram = InitializeDepthPlaneProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
@@ -336,8 +342,19 @@ int main(int argc, char* args[])
     //model matrix
     glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
     GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    /*******************************************************************************************************************************************/
     RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
+
+    /*******************************************************************************************************************************************/
+    //DepthShader Plane
+    glm::mat4 DEPTH_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f));
+    glm::mat4 DEPTH_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(30.0f, 1.0f, 30.0f));
+
+    glm::mat4 DEPTH_ModelMatrix = DEPTH_translationMatrix * DEPTH_rotationMatrix * DEPTH_scaleMatrix;
+
+    RenderableMeshObject DEPTH_planeObject(MeshType::PLANE, current_slices, DEPTH_ModelMatrix);
+    /*******************************************************************************************************************************************/
+
     //LIGHTS
     float light_radius = 30.0f;
     float light_Theta_Angle_Rad = 0.0f;
@@ -437,6 +454,7 @@ int main(int argc, char* args[])
     float SideObjectAngleIncrement = 0.001f;
 
     GROUND_planeObject.SetMaterial(mMaterial);
+    DEPTH_planeObject.SetMaterial(mMaterial);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -487,6 +505,7 @@ int main(int argc, char* args[])
     bool      quit = false;
     while (!quit)
     {
+        glEnable(GL_DEPTH_TEST);
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -1084,8 +1103,11 @@ int main(int argc, char* args[])
             }
         }
         LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false, neighbor);
-        
-        
+        glDisable(GL_DEPTH_TEST);
+
+        glViewport(0, 0, 400, 400);
+        DEPTH_planeObject.Renderable_displayDepth(DepthPlaneShaderProgram, depthTex);
+
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);

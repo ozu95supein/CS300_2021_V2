@@ -30,6 +30,8 @@
   <ItemGroup>
     <None Include="blue.frag" />
     <None Include="depth.frag" />
+    <None Include="depthplane.frag" />
+    <None Include="depthplane.vert" />
     <None Include="green.frag" />
     <None Include="red.frag" />
     <None Include="SingleColor.frag" />
