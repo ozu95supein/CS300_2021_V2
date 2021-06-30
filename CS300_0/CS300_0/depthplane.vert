@@ -6,11 +6,10 @@ layout(location = 2) in vec2 aUV;
 uniform mat4 u_M;
 
 out vec2 outUV;
-out vec4 position_modelSpace;
 out int debugBool;
 
 void main()
 {
 	outUV = aUV;
-	position_modelSpace = u_M * aPosition;
+	gl_Position = u_M * aPosition;
 }
