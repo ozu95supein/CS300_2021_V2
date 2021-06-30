@@ -349,7 +349,7 @@ int main(int argc, char* args[])
     //DepthShader Plane
     glm::mat4 DEPTH_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 DEPTH_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(30.0f, 30.0f, 30.0f));
+    glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 
     glm::mat4 DEPTH_ModelMatrix = DEPTH_translationMatrix * DEPTH_rotationMatrix * DEPTH_scaleMatrix;
 
@@ -1105,7 +1105,7 @@ int main(int argc, char* args[])
         }
         LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false, neighbor);
         glDisable(GL_DEPTH_TEST);
-        glViewport(0, 0, (GLint)400, (GLint)400);
+        glViewport(0, 0, (GLint)300, (GLint)300);
         glm::mat4 v(1.0f);
         glm::mat4 p(1.0f);
 
