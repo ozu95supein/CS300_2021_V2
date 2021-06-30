@@ -349,7 +349,7 @@ int main(int argc, char* args[])
     //DepthShader Plane
     glm::mat4 DEPTH_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 DEPTH_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(30.0f, 1.0f, 30.0f));
+    glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(30.0f, 30.0f, 30.0f));
 
     glm::mat4 DEPTH_ModelMatrix = DEPTH_translationMatrix * DEPTH_rotationMatrix * DEPTH_scaleMatrix;
 
