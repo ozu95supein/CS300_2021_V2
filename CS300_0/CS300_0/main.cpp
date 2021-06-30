@@ -1105,7 +1105,7 @@ int main(int argc, char* args[])
         }
         LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false, neighbor);
         glDisable(GL_DEPTH_TEST);
-        glViewport(0, 0, 400, 400);
+        glViewport(0, 0, (GLint)400, (GLint)400);
         glm::mat4 v(1.0f);
         glm::mat4 p(1.0f);
 
