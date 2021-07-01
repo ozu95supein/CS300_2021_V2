@@ -67,5 +67,7 @@
     <None Include="depth.frag" />
     <None Include="depthplane.vert" />
     <None Include="depthplane.frag" />
+    <None Include="BasicColorMapShader.vert" />
+    <None Include="BasicColorMapShader.frag" />
   </ItemGroup>
 </Project>

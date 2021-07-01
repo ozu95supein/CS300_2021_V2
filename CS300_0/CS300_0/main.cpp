@@ -334,15 +334,7 @@ int main(int argc, char* args[])
     RenderableMeshObject RightConeObject(MeshType::CONE, current_slices, RightModelMatrix);
     RenderableMeshObject RightSphereObject(MeshType::SPHERE, current_slices, RightModelMatrix);
 
-    //GROUND
-    glm::mat4 GROUND_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -15.0f, 0.0f));
-    glm::mat4 GROUND_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(100.0f, 1.0f, 100.0f));
-    //model matrix
-    glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
-    GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
-
+    
     /*******************************************************************************************************************************************/
     GLuint depthPlaneShader = InitializeDepthPlaneProgram();
 
@@ -352,59 +344,9 @@ int main(int argc, char* args[])
     glm::mat4 DEPTH_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     glm::mat4 DEPTH_ModelMatrix = DEPTH_translationMatrix * DEPTH_rotationMatrix * DEPTH_scaleMatrix;
-
-    RenderableMeshObject DEPTH_planeObject(MeshType::PLANE, current_slices, DEPTH_ModelMatrix);
-    /*******************************************************************************************************************************************/
-
-    //LIGHTS
-    float light_radius = 30.0f;
-    float light_Theta_Angle_Rad = 0.0f;
-    float light_Phi_Angle_Rad = 0.0f;
-    float light_Phi_increment = 0.005f;
-    float light_Amplitude = 14.0f;
-    float light_Theta_increment = 0.0007f;  //MAGIC NUMBER
-    float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
-    float light_y = 0.0f;
-    float light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
-    
-    glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-    glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
-    //model matrix
-    glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
-    RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, 6, LIGHT_ModelMatrix);
     /*==========================================================================================================================================*/
-    //HARD CODED for now
-    //AMBIENT
-    glm::vec3 main_material_ambient(1.0f);
-    glm::vec3 main_light_ambient(0.0f);
-    //DIFFUSE
-    glm::vec3 main_material_diffuse(1.0f);
-    glm::vec3 main_light_diffuse(0.8f);
-    glm::vec4 light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
-    //SPECULAR
-    glm::vec3 main_light_specular = glm::vec3(1.0f);
-    glm::vec3 main_material_specular = glm::vec3(1.0f);
-    //ATTENUATION
-    glm::vec3 main_light_attenuation = glm::vec3(0.0f, 0.0f, 0.005f);
-
-    float main_ns = 10.0f;
-    Light mLight;
-    mLight.light_ambient = main_light_ambient;
-    mLight.light_diffuse = main_light_diffuse;
-    mLight.light_position = light_position;
-    mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
-    mLight.light_specular = main_light_specular;
-    mLight.light_attenuation = main_light_attenuation;
-    mLight.light_type = 1; //Spotlight for this demo only
-    mLight.inner = 30.0f;
-    mLight.outer = 35.0f;
-    mLight.falloff = 1.0f;
-
-    Material mMaterial;
-    mMaterial.material_ambient = main_material_ambient;
-    mMaterial.material_diffuse = main_light_diffuse;
-    mMaterial.material_specular = main_material_specular;
-    mMaterial.ns = main_ns;
+    Light mLight = Light();
+    Material mMaterial = Material();
     
     //render from lights point of view and store it in a depth buffer texture
     glm::vec3 light_pos3(mLight.light_position.x, mLight.light_position.y, mLight.light_position.z);
@@ -454,9 +396,6 @@ int main(int argc, char* args[])
     float SideObjectAngle = 0.0f;
     float SideObjectAngleIncrement = 0.001f;
 
-    GROUND_planeObject.SetMaterial(mMaterial);
-    DEPTH_planeObject.SetMaterial(mMaterial);
-
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -498,7 +437,6 @@ int main(int argc, char* args[])
     bool Display_Wireframe = false;
     int RenderMode = 0;
     int UsingFaceNormals = 1;
-    int PlayingLightAnimation = 1;
     int MovingSideObjects = 1;
     int neighbor = 2;
 
@@ -626,18 +564,6 @@ int main(int argc, char* args[])
                 else if (event.key.keysym.scancode == SDL_SCANCODE_5)
                 {
                     current_mesh_to_display = 5;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_P)
-                {
-                    //// Toggle to pause/start the light animation
-                    //if (PlayingLightAnimation == 1)
-                    //{
-                    //    PlayingLightAnimation = 0;
-                    //}
-                    //else
-                    //{
-                    //    PlayingLightAnimation = 1;
-                    //}
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_F)
                 {
@@ -792,26 +718,6 @@ int main(int argc, char* args[])
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
         // update light
-        if (PlayingLightAnimation)
-        {
-            light_Theta_Angle_Rad += light_Theta_increment;
-            light_Phi_Angle_Rad += light_Phi_increment;
-            light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
-            light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
-            light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
-
-            LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-            LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;
-
-            LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
-            mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
-            mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
-
-            light_pos3.x = mLight.light_position.x;
-            light_pos3.y = mLight.light_position.y;
-            light_pos3.z = mLight.light_position.z;
-            light_ViewMatrix = glm::lookAt(light_pos3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        }
         if (MovingSideObjects)
         {
             SideObjectAngle += SideObjectAngleIncrement;
@@ -881,7 +787,6 @@ int main(int argc, char* args[])
         }
         break;
         }
-        GROUND_planeObject.Renderable_firstPass(light_ViewMatrix, light_ProjectionMatrix, DepthBufferShaderProgram, SHADOW_DIM.x, SHADOW_DIM.y);   
 
         //unbind depth buffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1086,29 +991,9 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, true, neighbor);
-        if (Display_Normals)
-        {
-            if (UsingFaceNormals)
-            {
-                GROUND_planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                GROUND_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-            }
-            else
-            {
-                GROUND_planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                GROUND_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-            }
-        }
-        LIGHT_sphereObject.Renderable_secondPass(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals, depthTex, light_ViewMatrix, light_ProjectionMatrix, false, neighbor);
-        glDisable(GL_DEPTH_TEST);
-        glViewport(-125, -125, (GLint)500, (GLint)500);
-        glm::mat4 v(1.0f);
-        glm::mat4 p(1.0f);
-
-        DEPTH_planeObject.Renderable_displayDepth(v, p, depthPlaneShader, depthTex);
+        
+        //glDisable(GL_DEPTH_TEST);
+        
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);
