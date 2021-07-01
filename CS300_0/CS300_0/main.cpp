@@ -309,33 +309,27 @@ int main(int argc, char* args[])
 
     /*******************************************************************************************************************************************/
     //create matrices
-    glm::mat4 CenterTranslationMatrix;
-    glm::mat4 LeftMobileTranslationMatrix;
-    glm::mat4 RightMobileTranslationMatrix;
-    glm::mat4 LeftStaticTranslationMatrix;
-    glm::mat4 RightStaticTranslationMatrix;
-
-    glm::mat4 rotationMatrix;
-
-    glm::mat4 CenterScaleMatrix;
-    glm::mat4 MobileScaleMatrix;
-    glm::mat4 StaticScaleMatrix;
-    
-    //model matrix
-    //glm::mat4 MainModelMatrix = translationMatrix * rotationMatrix * MainScaleMatrix;//world space
-    
-    glm::mat4 CenterModelMatrix        = CenterTranslationMatrix * rotationMatrix * CenterScaleMatrix;
-    glm::mat4 LeftMobileModelMatrix    = LeftMobileTranslationMatrix * rotationMatrix * MobileScaleMatrix;
-    glm::mat4 RightMobileModelMatrix   = RightMobileTranslationMatrix * rotationMatrix * MobileScaleMatrix;
-    glm::mat4 LeftStaticModelMatrix    = LeftStaticTranslationMatrix * rotationMatrix * StaticScaleMatrix;
-    glm::mat4 RightStaticModelMatrix   = RightStaticTranslationMatrix * rotationMatrix * StaticScaleMatrix;
-
+    //TRANSLATION
+    glm::mat4 CenterTranslationMatrix           = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 LeftMobileTranslationMatrix       = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, 0.0f, 0.0f));
+    glm::mat4 RightMobileTranslationMatrix      = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 0.0f, 0.0f));
+    glm::mat4 LeftStaticTranslationMatrix       = glm::translate(glm::mat4(1.0f), glm::vec3(-40.0f, 0.0f, 0.0f));
+    glm::mat4 RightStaticTranslationMatrix      = glm::translate(glm::mat4(1.0f), glm::vec3(40.0f, 0.0f, 0.0f));
+    //ROTATION
+    glm::mat4 rotationMatrix                    = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
+    //SCALE
+    glm::mat4 CenterScaleMatrix                 = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+    glm::mat4 MobileScaleMatrix                 = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
+    glm::mat4 StaticScaleMatrix                 = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+    //MODEL
+    glm::mat4 CenterModelMatrix                 = CenterTranslationMatrix * rotationMatrix * CenterScaleMatrix;
+    glm::mat4 LeftMobileModelMatrix             = LeftMobileTranslationMatrix * rotationMatrix * MobileScaleMatrix;
+    glm::mat4 RightMobileModelMatrix            = RightMobileTranslationMatrix * rotationMatrix * MobileScaleMatrix;
+    glm::mat4 LeftStaticModelMatrix             = LeftStaticTranslationMatrix * rotationMatrix * StaticScaleMatrix;
+    glm::mat4 RightStaticModelMatrix            = RightStaticTranslationMatrix * rotationMatrix * StaticScaleMatrix;
     /*******************************************************************************************************************************************/
     int current_slices = 20;
     //create objects to swap when pressing buttons
-    
-    //RenderableMeshObject::RenderableMeshObject(MeshType t, int slices, glm::mat4 ModelMatrix)
-
     RenderableMeshObject CenterPlaneObject(MeshType::PLANE, current_slices, CenterModelMatrix);
     RenderableMeshObject CenterCubeObject(MeshType::CUBE, current_slices, CenterModelMatrix);
     RenderableMeshObject CenterConeObject(MeshType::CONE, current_slices, CenterModelMatrix);
@@ -365,16 +359,23 @@ int main(int argc, char* args[])
     RenderableMeshObject RightStaticConeObject(MeshType::CONE, current_slices, RightStaticModelMatrix);
     RenderableMeshObject RightStaticCylinderObject(MeshType::CYLINDER, current_slices, RightStaticModelMatrix);
     RenderableMeshObject RightStaticSphereObject(MeshType::SPHERE, current_slices, RightStaticModelMatrix);
+
+    LeftMobilePlaneObject;
+    LeftMobileCubeObject;
+    LeftMobileConeObject;
+    LeftMobileCylinderObject;
+    LeftMobileSphereObject;
+
+    RightMobilePlaneObject;
+    RightMobileCubeObject;
+    RightMobileConeObject;
+    RightMobileCylinderObject;
+    RightMobileSphereObject;
+
     /*******************************************************************************************************************************************/
-  
+    //DUMMY LIGHT AND MATERIAL
     Light mLight = Light();
     Material mMaterial = Material();
-    
-    //render from lights point of view and store it in a depth buffer texture
-    glm::vec3 light_pos3(mLight.light_position.x, mLight.light_position.y, mLight.light_position.z);
-    glm::mat4 light_ViewMatrix = glm::lookAt(light_pos3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 light_ProjectionMatrix = glm::perspective(2 * glm::radians(mLight.outer), 1.0f, 0.1f, 150.0f);
-    
     /*******************************************************************************************************************************************/
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -461,91 +462,35 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
                 {
-                    MainPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
                 {
-                    MainPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-
-                    MainSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    LeftSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    RightSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    CenterSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
                 {
-                    MainPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0,1.0, 0.0));
-
-                    MainCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0,1.0, 0.0));
-
-                    MainCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0,1.0, 0.0));
-
-                    MainConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0,1.0, 0.0));
-
-                    MainSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0,1.0, 0.0));
+                    CenterPlaneObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterCubeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterConeObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterCylinderObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterSphereObject.Renderable_RotateModel(glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
                 {
-                    MainPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-
-                    MainCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-
-                    MainCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-
-                    MainConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-
-                    MainSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    LeftSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    RightSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterPlaneObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterCubeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterConeObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterCylinderObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    CenterSphereObject.Renderable_RotateModel(glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_1)
                 {
@@ -599,15 +544,22 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    MainCylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    LeftCylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    RightCylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    MainConeObject.Renderable_ChangeSlices(current_slices, cn);
-                    LeftConeObject.Renderable_ChangeSlices(current_slices, cn);
-                    RightConeObject.Renderable_ChangeSlices(current_slices, cn);
-                    MainSphereObject.Renderable_ChangeSlices(current_slices, sp);
-                    LeftSphereObject.Renderable_ChangeSlices(current_slices, sp);
-                    RightSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    CenterConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    CenterCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    CenterSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftMobileConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftMobileCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftMobileSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightMobileConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightMobileCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightMobileSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftStaticConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftStaticCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftStaticSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightStaticConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightStaticCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightStaticSphereObject.Renderable_ChangeSlices(current_slices, sp);
+
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -619,15 +571,21 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    MainCylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    LeftCylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    RightCylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    MainConeObject.Renderable_ChangeSlices(current_slices, cn);
-                    LeftConeObject.Renderable_ChangeSlices(current_slices, cn);
-                    RightConeObject.Renderable_ChangeSlices(current_slices, cn);
-                    MainSphereObject.Renderable_ChangeSlices(current_slices, sp);
-                    LeftSphereObject.Renderable_ChangeSlices(current_slices, sp);
-                    RightSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    CenterConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    CenterCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    CenterSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftMobileConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftMobileCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftMobileSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightMobileConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightMobileCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightMobileSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftStaticConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftStaticCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftStaticSphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightStaticConeObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightStaticCylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightStaticSphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
@@ -643,8 +601,7 @@ int main(int argc, char* args[])
                     if (gamma_rad > (PIValue / 2.0f))
                     {
                         gamma_rad = (PIValue / 2.0f);
-                    }
-                    
+                    }  
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                 {
@@ -653,8 +610,7 @@ int main(int argc, char* args[])
                     {
                         gamma_rad = -(PIValue / 2.0f);
                     }
-                    glm::clamp(gamma_rad, -(PIValue / 2.0f), (PIValue / 2.0f));
-                    
+                    glm::clamp(gamma_rad, -(PIValue / 2.0f), (PIValue / 2.0f));        
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_A)
                 {
@@ -663,8 +619,7 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_D)
                 {
-                    alpha_rad += alpha_increment;
-                    
+                    alpha_rad += alpha_increment;                  
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_Q)
                 {
@@ -694,8 +649,7 @@ int main(int argc, char* args[])
                     {
                         MovingSideObjects = 1;
                     }
-                }
-                
+                }     
                 break;
             }
         }
@@ -708,37 +662,33 @@ int main(int argc, char* args[])
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
-        // update light
         if (MovingSideObjects)
         {
             SideObjectAngle += SideObjectAngleIncrement;
             float left_y = 10.0f * glm::sin(SideObjectAngle);
-            
-            LeftTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, left_y, 0.0f));
-            RightTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, left_y, 0.0f));
 
-            LeftModelMatrix = LeftTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
-            RightModelMatrix = RightTranslationMatrix * rotationMatrix * SecondaryScaleMatrix;//world space
-           
-            LeftPlaneObject.SetModel(LeftModelMatrix);
-            LeftCubeObject.SetModel(LeftModelMatrix);
-            LeftCylinderObject.SetModel(LeftModelMatrix);
-            LeftConeObject.SetModel(LeftModelMatrix);
-            LeftSphereObject.SetModel(LeftModelMatrix);
+            LeftMobileTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, left_y, 0.0f));
+            RightMobileTranslationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, left_y, 0.0f));
 
-            RightPlaneObject.SetModel(RightModelMatrix);
-            RightCubeObject.SetModel(RightModelMatrix);
-            RightCylinderObject.SetModel(RightModelMatrix);
-            RightConeObject.SetModel(RightModelMatrix);
-            RightSphereObject.SetModel(RightModelMatrix);
+            LeftMobileModelMatrix =  LeftMobileTranslationMatrix   * rotationMatrix * MobileScaleMatrix;//world space
+            RightMobileModelMatrix = RightMobileTranslationMatrix * rotationMatrix * MobileScaleMatrix;//world space
+
+            LeftMobilePlaneObject.SetModel(LeftMobileModelMatrix);
+            LeftMobileCubeObject.SetModel(LeftMobileModelMatrix);
+            LeftMobileConeObject.SetModel(LeftMobileModelMatrix);
+            LeftMobileCylinderObject.SetModel(LeftMobileModelMatrix);
+            LeftMobileSphereObject.SetModel(LeftMobileModelMatrix);
+
+            RightMobilePlaneObject.SetModel(RightMobileModelMatrix);
+            RightMobileCubeObject.SetModel(RightMobileModelMatrix);
+            RightMobileConeObject.SetModel(RightMobileModelMatrix);
+            RightMobileCylinderObject.SetModel(RightMobileModelMatrix);
+            RightMobileSphereObject.SetModel(RightMobileModelMatrix);
         }
+        //Display Objects
+        
         ////////////////////////////////////////////////////////////////////////////////
-        //Bind the depth buffer
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        //clear it before we draw
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear current buffer
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);      //set viewport of first pass
         //render all the shapes for the shadow map using the light view and light projection matrices
         switch (current_mesh_to_display)
         {
@@ -768,9 +718,6 @@ int main(int argc, char* args[])
             }
             break;
         }
-
-        //unbind depth buffer
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
@@ -806,10 +753,8 @@ int main(int argc, char* args[])
                 
             }
             break;
-        }
-        
+        }     
         //glDisable(GL_DEPTH_TEST);
-        
         SDL_GL_SwapWindow(window);        
     }
     glDeleteProgram(shaderProgram);

@@ -58,7 +58,8 @@ public:
     void Translate(glm::vec3 newPosition);
     Material& GetMaterialRefference();
     void Renderable_RotateModel(float rotation_radians, glm::vec3 axis);
-
+    
+    void Renderable_
 private:
 
     Mesh mObjectMesh;

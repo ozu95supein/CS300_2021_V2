@@ -560,3 +560,4 @@ void RenderableMeshObject::Renderable_displayDepth(glm::mat4& ViewMatrix, glm::m
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }
+
