@@ -347,6 +347,7 @@ int main(int argc, char* args[])
     RenderableMeshObject RightStatic_coneObject(MeshType::CONE, current_slices, StaticRight_ModelMatrix);
     RenderableMeshObject RightStatic_sphereObject(MeshType::SPHERE, current_slices, StaticRight_ModelMatrix);
     
+    
     float SideObjectAngle = 0.0f;
     float SideObjectAngleIncrement = 0.001f;
 
@@ -403,8 +404,12 @@ int main(int argc, char* args[])
     RightStatic_coneObject.SetMaterial(mMaterial);
     RightStatic_sphereObject.SetMaterial(mMaterial);
 
+    glm::mat4 Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
+    glm::mat4 Skybox_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(40.0f, 40.0f, 40.0f));
+    glm::mat4 Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
+    RenderableMeshObject Skybox_cubeObject(MeshType::CUBE, current_slices, Skybox_ModelMatrix);
+
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
@@ -667,6 +672,11 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
+
+        Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
+        Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
+        Skybox_cubeObject.SetModel(Skybox_ModelMatrix);
+
         if (MovingSideObjects)
         {
             SideObjectAngle += SideObjectAngleIncrement;
@@ -696,7 +706,14 @@ int main(int argc, char* args[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //render skybox
         //disable depth test
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        Skybox_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
         
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CCW);
+        glEnable(GL_DEPTH_TEST);
+        glCullFace(GL_BACK);
         ////////////////////////////////////////////////////////////////////////////////
         // Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh)
         switch (current_mesh_to_display)
