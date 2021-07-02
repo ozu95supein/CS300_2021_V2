@@ -47,6 +47,9 @@ public:
     void Renderable_displayBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader);
     void Renderable_displayAveragedBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader);
     void Renderable_ChangeSlices(int new_slices, MeshType& t);
+
+    void Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh);
+
     glm::mat4& GetModelRefference();
     glm::mat4 GetModel();
     void SetModel(glm::mat4 m);

@@ -410,7 +410,7 @@ int main(int argc, char* args[])
     int current_mesh_to_display = 1;
     int Display_Normals = 0;
     bool Display_Wireframe = false;
-    int RenderMode = 0;
+    int RenderMode = 1;
     int UsingFaceNormals = 1;
     int PlayingLightAnimation = 1;
     SDL_Event event;
@@ -656,10 +656,12 @@ int main(int argc, char* args[])
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ////////////////////////////////////////////////////////////////////////////////
+        // Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh)
         switch (current_mesh_to_display)
         {
             case 1:
             {
+                //Renderable_DisplayBasicTexture(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, RenderMode, Display_Wireframe);
                 planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
