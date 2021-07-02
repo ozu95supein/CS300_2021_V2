@@ -296,81 +296,59 @@ int main(int argc, char* args[])
 
     /*******************************************************************************************************************************************/
     //create matrices
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 Center_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 MobileLeft_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, 0.0f, 0.0f));
+    glm::mat4 MobileRight_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 0.0f, 0.0f));
+    glm::mat4 StaticLeft_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-40.0f, 0.0f, 0.0f));
+    glm::mat4 StaticRight_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(40.0f, 0.0f, 0.0f));
+    
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+   
+    glm::mat4 Center_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+    glm::mat4 Mobile_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
+    glm::mat4 Static_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+
     //model matrix
-    glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
+    glm::mat4 Center_ModelMatrix = Center_translationMatrix * rotationMatrix * Center_scaleMatrix;
+    glm::mat4 MobileLeft_ModelMatrix = MobileLeft_translationMatrix * rotationMatrix * Mobile_scaleMatrix;
+    glm::mat4 MobileRight_ModelMatrix = MobileRight_translationMatrix * rotationMatrix * Mobile_scaleMatrix;  
+    glm::mat4 StaticLeft_ModelMatrix = StaticLeft_translationMatrix * rotationMatrix * Static_scaleMatrix;
+    glm::mat4 StaticRight_ModelMatrix = StaticRight_translationMatrix * rotationMatrix * Static_scaleMatrix;
+
     int current_slices = 20;
     //create objects to swap when pressing buttons
-    RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
-    RenderableMeshObject cubeObject(MeshType::CUBE, current_slices, ModelMatrix);
-    RenderableMeshObject cylinderObject(MeshType::CYLINDER, current_slices, ModelMatrix);
-    RenderableMeshObject coneObject(MeshType::CONE, current_slices, ModelMatrix);
-    RenderableMeshObject sphereObject(MeshType::SPHERE, current_slices, ModelMatrix);
-    //GROUND
-    glm::mat4 GROUND_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -15.0f, 0.0f));
-    glm::mat4 GROUND_rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 GROUND_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f, 1.0f, 50.0f));
-    //model matrix
-    glm::mat4 GROUND_ModelMatrix = GROUND_translationMatrix * GROUND_rotationMatrix * GROUND_scaleMatrix;//world space
-    GROUND_ModelMatrix = glm::rotate(GROUND_ModelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    /*******************************************************************************************************************************************/
-    RenderableMeshObject GROUND_planeObject(MeshType::PLANE, current_slices, GROUND_ModelMatrix);
-    //LIGHTS
-    float light_radius = 20.0f;
-    float light_Theta_Angle_Rad = 0.0f;
-    float light_Phi_Angle_Rad = 0.0f;
-    float light_Phi_increment = 0.001f;
-    float light_Amplitude = 14.0f;
-    float light_Theta_increment = 0.0007f;  //MAGIC NUMBER
-    float light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
-    float light_y = 0.0f;
-    float light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
+    RenderableMeshObject Center_planeObject(MeshType::PLANE, current_slices, Center_ModelMatrix);
+    RenderableMeshObject Center_cubeObject(MeshType::CUBE, current_slices, Center_ModelMatrix);
+    RenderableMeshObject Center_cylinderObject(MeshType::CYLINDER, current_slices, Center_ModelMatrix);
+    RenderableMeshObject Center_coneObject(MeshType::CONE, current_slices, Center_ModelMatrix);
+    RenderableMeshObject Center_sphereObject(MeshType::SPHERE, current_slices, Center_ModelMatrix);
+
+    RenderableMeshObject LeftMobile_planeObject(MeshType::PLANE, current_slices, MobileLeft_ModelMatrix);
+    RenderableMeshObject LeftMobile_cubeObject(MeshType::CUBE, current_slices, MobileLeft_ModelMatrix);
+    RenderableMeshObject LeftMobile_cylinderObject(MeshType::CYLINDER, current_slices, MobileLeft_ModelMatrix);
+    RenderableMeshObject LeftMobile_coneObject(MeshType::CONE, current_slices, MobileLeft_ModelMatrix);
+    RenderableMeshObject LeftMobile_sphereObject(MeshType::SPHERE, current_slices, MobileLeft_ModelMatrix);
+
+    RenderableMeshObject RightMobile_planeObject(MeshType::PLANE, current_slices, MobileRight_ModelMatrix);
+    RenderableMeshObject RightMobile_cubeObject(MeshType::CUBE, current_slices, MobileRight_ModelMatrix);
+    RenderableMeshObject RightMobile_cylinderObject(MeshType::CYLINDER, current_slices, MobileRight_ModelMatrix);
+    RenderableMeshObject RightMobile_coneObject(MeshType::CONE, current_slices, MobileRight_ModelMatrix);
+    RenderableMeshObject RightMobile_sphereObject(MeshType::SPHERE, current_slices, MobileRight_ModelMatrix);
+
+    RenderableMeshObject LeftStatic_planeObject(MeshType::PLANE, current_slices, StaticLeft_ModelMatrix);
+    RenderableMeshObject LeftStatic_cubeObject(MeshType::CUBE, current_slices, StaticLeft_ModelMatrix);
+    RenderableMeshObject LeftStatic_cylinderObject(MeshType::CYLINDER, current_slices, StaticLeft_ModelMatrix);
+    RenderableMeshObject LeftStatic_coneObject(MeshType::CONE, current_slices, StaticLeft_ModelMatrix);
+    RenderableMeshObject LeftStatic_sphereObject(MeshType::SPHERE, current_slices, StaticLeft_ModelMatrix);
+
+    RenderableMeshObject RightStatic_planeObject(MeshType::PLANE, current_slices, StaticRight_ModelMatrix);
+    RenderableMeshObject RightStatic_cubeObject(MeshType::CUBE, current_slices, StaticRight_ModelMatrix);
+    RenderableMeshObject RightStatic_cylinderObject(MeshType::CYLINDER, current_slices, StaticRight_ModelMatrix);
+    RenderableMeshObject RightStatic_coneObject(MeshType::CONE, current_slices, StaticRight_ModelMatrix);
+    RenderableMeshObject RightStatic_sphereObject(MeshType::SPHERE, current_slices, StaticRight_ModelMatrix);
     
-    glm::mat4 LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-    glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
-    //model matrix
-    glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
-    /*==========================================================================================================================================*/
-    //HARD CODED for now
-    //AMBIENT
-    glm::vec3 main_material_ambient(1.0f);
-    glm::vec3 main_light_ambient(0.0f);
-    //DIFFUSE
-    glm::vec3 main_material_diffuse(1.0f);
-    glm::vec3 main_light_diffuse(0.5f);
-    glm::vec4 light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);    //MAKE IT THE SAME AS THE SPHERE OBJECT FOR NOW
-    //SPECULAR
-    glm::vec3 main_light_specular = glm::vec3(1.0f);
-    glm::vec3 main_material_specular = glm::vec3(1.0f);
-    //ATTENUATION
-    glm::vec3 main_light_attenuation = glm::vec3(0.0f, 0.0f, 0.005f);
-
-    float main_ns = 10.0f;
-    Light mLight;
-    mLight.light_ambient = main_light_ambient;
-    mLight.light_diffuse = main_light_diffuse;
-    mLight.light_position = light_position;
-    mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
-    mLight.light_specular = main_light_specular;
-    mLight.light_attenuation = main_light_attenuation;
-    mLight.light_type = 0;
-    mLight.inner = 30.0f;
-    mLight.outer = 35.0f;
-    mLight.falloff = 1.0f;
-
-    Material mMaterial;
-    mMaterial.material_ambient = main_material_ambient;
-    mMaterial.material_diffuse = main_light_diffuse;
-    mMaterial.material_specular = main_material_specular;
-    mMaterial.ns = main_ns;
-    /*=========================================================================================================================================*/
-    //MAKE LIGHTSOURCE OBJECT
-    
-
-    /*=========================================================================================================================================*/
-
+    Light mLight = Light();
+    Material mMaterial = Material();
     /*******************************************************************************************************************************************/
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -392,15 +370,35 @@ int main(int argc, char* args[])
     float aspect = (float)WIDTH / HEIGHT;
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 150.0f);
     /*******************************************************************************************************************************************/
+    Center_planeObject.SetMaterial(mMaterial);
+    Center_cubeObject.SetMaterial(mMaterial);
+    Center_cylinderObject.SetMaterial(mMaterial);
+    Center_coneObject.SetMaterial(mMaterial);
+    Center_sphereObject.SetMaterial(mMaterial);
 
+    LeftMobile_planeObject.SetMaterial(mMaterial);
+    LeftMobile_cubeObject.SetMaterial(mMaterial);
+    LeftMobile_cylinderObject.SetMaterial(mMaterial);
+    LeftMobile_coneObject.SetMaterial(mMaterial);
+    LeftMobile_sphereObject.SetMaterial(mMaterial);
 
-    planeObject.SetMaterial(mMaterial);
-    cubeObject.SetMaterial(mMaterial);
-    cylinderObject.SetMaterial(mMaterial);
-    coneObject.SetMaterial(mMaterial);
-    sphereObject.SetMaterial(mMaterial);
-    GROUND_planeObject.SetMaterial(mMaterial);
-    sphereObject.SetMaterial(mMaterial);
+    RightMobile_planeObject.SetMaterial(mMaterial);
+    RightMobile_cubeObject.SetMaterial(mMaterial);
+    RightMobile_cylinderObject.SetMaterial(mMaterial);
+    RightMobile_coneObject.SetMaterial(mMaterial);
+    RightMobile_sphereObject.SetMaterial(mMaterial);
+
+    LeftStatic_planeObject.SetMaterial(mMaterial);
+    LeftStatic_cubeObject.SetMaterial(mMaterial);
+    LeftStatic_cylinderObject.SetMaterial(mMaterial);
+    LeftStatic_coneObject.SetMaterial(mMaterial);
+    LeftStatic_sphereObject.SetMaterial(mMaterial);
+
+    RightStatic_planeObject.SetMaterial(mMaterial);
+    RightStatic_cubeObject.SetMaterial(mMaterial);
+    RightStatic_cylinderObject.SetMaterial(mMaterial);
+    RightStatic_coneObject.SetMaterial(mMaterial);
+    RightStatic_sphereObject.SetMaterial(mMaterial);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -431,55 +429,55 @@ int main(int argc, char* args[])
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
                 {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));             
-                    glm::mat4& mCube = cubeObject.GetModelRefference();
-                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
-                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mCone = coneObject.GetModelRefference();
-                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mSphere = sphereObject.GetModelRefference();
-                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mPlane = Center_planeObject.GetModelRefference();
+                    mPlane = glm::rotate(Center_planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCube = Center_cubeObject.GetModelRefference();
+                    mCube = glm::rotate(Center_cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCylinder = Center_cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(Center_cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCone = Center_coneObject.GetModelRefference();
+                    mCone = glm::rotate(Center_coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mSphere = Center_sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(Center_sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
                 {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mCube = cubeObject.GetModelRefference();
-                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
-                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mCone = coneObject.GetModelRefference();
-                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    glm::mat4& mSphere = sphereObject.GetModelRefference();
-                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mPlane = Center_planeObject.GetModelRefference();
+                    mPlane = glm::rotate(Center_planeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCube = Center_cubeObject.GetModelRefference();
+                    mCube = glm::rotate(Center_cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCylinder = Center_cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(Center_cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mCone = Center_coneObject.GetModelRefference();
+                    mCone = glm::rotate(Center_coneObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
+                    glm::mat4& mSphere = Center_sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(Center_sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
                 {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mCube = cubeObject.GetModelRefference();
-                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
-                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mCone = coneObject.GetModelRefference();
-                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mSphere = sphereObject.GetModelRefference();
-                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mPlane = Center_planeObject.GetModelRefference();
+                    mPlane = glm::rotate(Center_planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCube = Center_cubeObject.GetModelRefference();
+                    mCube = glm::rotate(Center_cubeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCylinder = Center_cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(Center_cylinderObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCone = Center_coneObject.GetModelRefference();
+                    mCone = glm::rotate(Center_coneObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mSphere = Center_sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(Center_sphereObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
                 {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mCube = cubeObject.GetModelRefference();
-                    mCube = glm::rotate(cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mCylinder = cylinderObject.GetModelRefference();
-                    mCylinder = glm::rotate(cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mCone = coneObject.GetModelRefference();
-                    mCone = glm::rotate(coneObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                    glm::mat4& mSphere = sphereObject.GetModelRefference();
-                    mSphere = glm::rotate(sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mPlane = Center_planeObject.GetModelRefference();
+                    mPlane = glm::rotate(Center_planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCube = Center_cubeObject.GetModelRefference();
+                    mCube = glm::rotate(Center_cubeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCylinder = Center_cylinderObject.GetModelRefference();
+                    mCylinder = glm::rotate(Center_cylinderObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mCone = Center_coneObject.GetModelRefference();
+                    mCone = glm::rotate(Center_coneObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
+                    glm::mat4& mSphere = Center_sphereObject.GetModelRefference();
+                    mSphere = glm::rotate(Center_sphereObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_1)
                 {
@@ -500,26 +498,6 @@ int main(int argc, char* args[])
                 else if (event.key.keysym.scancode == SDL_SCANCODE_5)
                 {
                     current_mesh_to_display = 5;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_7)
-                {
-                    //TO DO
-                    // Turn all lights to point lights
-                    mLight.light_type = 0;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_8)
-                {
-                    //TO DO
-                    // turn all lights to spot lights
-                    mLight.light_type = 1;
-
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_9)
-                {
-                    //TO DO
-                    // turn all lights to directional lights
-                    mLight.light_type = 2;
-
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_P)
                 {
@@ -566,9 +544,21 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    cylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    coneObject.Renderable_ChangeSlices(current_slices, cn);
-                    sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    Center_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    Center_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    Center_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftMobile_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftMobile_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftMobile_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightMobile_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightMobile_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightMobile_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftStatic_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftStatic_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftStatic_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightStatic_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightStatic_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightStatic_sphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
                 {
@@ -580,9 +570,21 @@ int main(int argc, char* args[])
                     MeshType cy = MeshType::CYLINDER;
                     MeshType cn = MeshType::CONE;
                     MeshType sp = MeshType::SPHERE;
-                    cylinderObject.Renderable_ChangeSlices(current_slices, cy);
-                    coneObject.Renderable_ChangeSlices(current_slices, cn);
-                    sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    Center_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    Center_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    Center_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftMobile_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftMobile_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftMobile_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightMobile_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightMobile_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightMobile_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    LeftStatic_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    LeftStatic_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    LeftStatic_sphereObject.Renderable_ChangeSlices(current_slices, sp);
+                    RightStatic_cylinderObject.Renderable_ChangeSlices(current_slices, cy);
+                    RightStatic_coneObject.Renderable_ChangeSlices(current_slices, cn);
+                    RightStatic_sphereObject.Renderable_ChangeSlices(current_slices, sp);
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_T)
                 {
@@ -650,7 +652,6 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
-       
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -662,123 +663,127 @@ int main(int argc, char* args[])
             case 1:
             {
                 //Renderable_DisplayBasicTexture(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, RenderMode, Display_Wireframe);
-                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                if (Display_Normals)
-                {
-                    if (UsingFaceNormals)
-                    {
-                        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                    else
-                    {
-                        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
-                        planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                }
+                Center_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);               
+                RightMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftStatic_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightStatic_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                //if (Display_Normals)
+                //{
+                //    if (UsingFaceNormals)
+                //    {
+                //        planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //    else
+                //    {
+                //        planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, SingleColorShaderProgram);
+                //        planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //}
             }
             break;
             case 2:
             {
-                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                if (Display_Normals)
-                {
-                    if (UsingFaceNormals)
-                    {
-                        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                    else
-                    {
-                        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                }
+                Center_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftMobile_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightMobile_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftStatic_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightStatic_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                //if (Display_Normals)
+                //{
+                //    if (UsingFaceNormals)
+                //    {
+                //        cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //    else
+                //    {
+                //        cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //}
             }
             break;
             case 3:
             {
-                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                if (Display_Normals)
-                {
-                    if (UsingFaceNormals)
-                    {
-                        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                    else
-                    {
-                        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                }
+                Center_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftMobile_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightMobile_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftStatic_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightStatic_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                //if (Display_Normals)
+                //{
+                //    if (UsingFaceNormals)
+                //    {
+                //        cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //    else
+                //    {
+                //        cylinderObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //}
             }
             break;
             case 4:
             {
-                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                if (Display_Normals)
-                {
-                    if (UsingFaceNormals)
-                    {
-                        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                    else
-                    {
-                        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                }
+                Center_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftMobile_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightMobile_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftStatic_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightStatic_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                //if (Display_Normals)
+                //{
+                //    if (UsingFaceNormals)
+                //    {
+                //        coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //    else
+                //    {
+                //        coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //}
             }
             break;
             case 5:
             {
-                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-                if (Display_Normals)
-                {
-                    if (UsingFaceNormals)
-                    {
-                        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                    else
-                    {
-                        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                        sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                        sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    }
-                }
+                Center_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftMobile_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightMobile_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                LeftStatic_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                RightStatic_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                //if (Display_Normals)
+                //{
+                //    if (UsingFaceNormals)
+                //    {
+                //        sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //    else
+                //    {
+                //        sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
+                //        sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                //        sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                //    }
+                //}
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-        if (Display_Normals)
-        {
-            if (UsingFaceNormals)
-            {
-                GROUND_planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                GROUND_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-            }
-            else
-            {
-                GROUND_planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
-                GROUND_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-            }
-        }
-        SDL_GL_SwapWindow(window);    
         
+        SDL_GL_SwapWindow(window);           
     }
 
     glDeleteProgram(shaderProgram);
