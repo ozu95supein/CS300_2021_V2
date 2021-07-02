@@ -696,7 +696,7 @@ int main(int argc, char* args[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //render skybox
         //disable depth test
-
+        
         ////////////////////////////////////////////////////////////////////////////////
         // Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh)
         switch (current_mesh_to_display)
