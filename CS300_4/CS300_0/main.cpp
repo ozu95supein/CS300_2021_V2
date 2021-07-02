@@ -122,6 +122,11 @@ GLuint InitializeSingleColorProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("White.vert", "SingleColor.frag");
     return theProgram;
 }
+GLuint InitializeBasicColorProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("BasicTextureShader.vert", "BasicTextureShader.frag");
+    return theProgram;
+}
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -228,8 +233,7 @@ GLuint makeNormalMapTexture(const std::string& filename)
 }
 #undef main
 int main(int argc, char* args[])
-{
-    
+{  
     //init SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -285,6 +289,8 @@ int main(int argc, char* args[])
     GLuint GreenShaderProgram = InitializeGreenProgram();
     GLuint BlueShaderProgram = InitializeBlueProgram();
 
+    GLuint BasicColorShaderProgram = InitializeBasicColorProgram();
+
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
 
@@ -326,7 +332,6 @@ int main(int argc, char* args[])
     glm::mat4 LIGHT_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
     //model matrix
     glm::mat4 LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;//world space
-    RenderableMeshObject LIGHT_sphereObject(MeshType::SPHERE, 6, LIGHT_ModelMatrix);
     /*==========================================================================================================================================*/
     //HARD CODED for now
     //AMBIENT
@@ -645,24 +650,7 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
-        ////////////////////////////////////////////////////////////////////////////////
-        // update light
-        if (PlayingLightAnimation)
-        {
-            light_Theta_Angle_Rad += light_Theta_increment;
-            light_Phi_Angle_Rad += light_Phi_increment;
-            light_x = light_radius * glm::cos(light_Theta_Angle_Rad);
-            light_y = light_Amplitude * sin(light_Phi_Angle_Rad);
-            light_z = light_radius * glm::sin(light_Theta_Angle_Rad);
-
-            LIGHT_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(light_x, light_y, light_z));
-            LIGHT_ModelMatrix = LIGHT_translationMatrix * LIGHT_scaleMatrix;
-
-            LIGHT_sphereObject.SetModel(LIGHT_ModelMatrix);
-            mLight.light_position = glm::vec4(glm::vec3(light_x, light_y, light_z), 1.0f);
-            mLight.light_direction = glm::vec4(glm::vec3(0.0f), 1.0f) - mLight.light_position;
-        }
-        
+       
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -672,7 +660,7 @@ int main(int argc, char* args[])
         {
             case 1:
             {
-                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                planeObject.Renderable_displayMesh(ViewMatrix,ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -692,7 +680,7 @@ int main(int argc, char* args[])
             break;
             case 2:
             {
-                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -712,7 +700,7 @@ int main(int argc, char* args[])
             break;
             case 3:
             {
-                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -732,7 +720,7 @@ int main(int argc, char* args[])
             break;
             case 4:
             {
-                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -752,7 +740,7 @@ int main(int argc, char* args[])
             break;
             case 5:
             {
-                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+                sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
                 if (Display_Normals)
                 {
                     if (UsingFaceNormals)
@@ -771,7 +759,7 @@ int main(int argc, char* args[])
             }
             break;
         }
-        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, shaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
+        GROUND_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
         if (Display_Normals)
         {
             if (UsingFaceNormals)
@@ -787,7 +775,6 @@ int main(int argc, char* args[])
                 GROUND_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
             }
         }
-        LIGHT_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, WhiteShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
         SDL_GL_SwapWindow(window);    
         
     }

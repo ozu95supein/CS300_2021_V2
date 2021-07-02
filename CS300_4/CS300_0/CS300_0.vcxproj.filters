@@ -64,5 +64,7 @@
     <None Include="red.frag" />
     <None Include="blue.frag" />
     <None Include="green.frag" />
+    <None Include="BasicTextureShader.vert" />
+    <None Include="BasicTextureShader.frag" />
   </ItemGroup>
 </Project>
