@@ -347,6 +347,9 @@ int main(int argc, char* args[])
     RenderableMeshObject RightStatic_coneObject(MeshType::CONE, current_slices, StaticRight_ModelMatrix);
     RenderableMeshObject RightStatic_sphereObject(MeshType::SPHERE, current_slices, StaticRight_ModelMatrix);
     
+    float SideObjectAngle = 0.0f;
+    float SideObjectAngleIncrement = 0.001f;
+
     Light mLight = Light();
     Material mMaterial = Material();
     /*******************************************************************************************************************************************/
@@ -411,6 +414,7 @@ int main(int argc, char* args[])
     int RenderMode = 1;
     int UsingFaceNormals = 1;
     int PlayingLightAnimation = 1;
+    int MovingSideObjects = 1;
     SDL_Event event;
     bool      quit = false;
     while (!quit)
@@ -538,6 +542,17 @@ int main(int argc, char* args[])
                         Display_Normals = 1;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_O)
+                {
+                if (MovingSideObjects == 1)
+                {
+                    MovingSideObjects = 0;
+                }
+                else
+                {
+                    MovingSideObjects = 1;
+                }
+                }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
                 {
                     current_slices += 1;
@@ -652,10 +667,36 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
+        if (MovingSideObjects)
+        {
+            SideObjectAngle += SideObjectAngleIncrement;
+            float left_y = 10.0f * glm::sin(SideObjectAngle);
+
+            MobileLeft_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, left_y, 0.0f));
+            MobileRight_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, left_y, 0.0f));
+
+            MobileLeft_ModelMatrix = MobileLeft_translationMatrix * rotationMatrix * Mobile_scaleMatrix;
+            MobileRight_ModelMatrix = MobileRight_translationMatrix * rotationMatrix * Mobile_scaleMatrix;  
+
+            LeftMobile_planeObject.SetModel(MobileLeft_ModelMatrix);
+            LeftMobile_cubeObject.SetModel(MobileLeft_ModelMatrix);
+            LeftMobile_cylinderObject.SetModel(MobileLeft_ModelMatrix);
+            LeftMobile_coneObject.SetModel(MobileLeft_ModelMatrix);
+            LeftMobile_sphereObject.SetModel(MobileLeft_ModelMatrix);
+
+            RightMobile_planeObject.SetModel(MobileRight_ModelMatrix);
+            RightMobile_cubeObject.SetModel(MobileRight_ModelMatrix);
+            RightMobile_cylinderObject.SetModel(MobileRight_ModelMatrix);
+            RightMobile_coneObject.SetModel(MobileRight_ModelMatrix);
+            RightMobile_sphereObject.SetModel(MobileRight_ModelMatrix);
+        }
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //render skybox
+        //disable depth test
+
         ////////////////////////////////////////////////////////////////////////////////
         // Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh)
         switch (current_mesh_to_display)

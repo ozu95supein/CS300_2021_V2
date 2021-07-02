@@ -485,39 +485,3 @@ Material& RenderableMeshObject::GetMaterialRefference()
 {
     return mMaterial;
 }
-
-void RenderableMeshObject::Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh)
-{
-    // Bind the glsl program and this object's VAO
-    glUseProgram(shader);
-    //pass them to program
-    GLint model = glGetUniformLocation(shader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(shader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(shader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-    
-    //ColoredBoxTextureOn
-    GLuint texture_tog = glGetUniformLocation(shader, "texture_toggle");
-    glUniform1i(texture_tog, texture_toggle);
-
-    //texture stuff
-    glActiveTexture(GL_TEXTURE0); //activate bucket 0
-    glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
-    GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
-    glUniform1i(loc, 0);    //use stuff from bucket 0
-    // Draw
-    if (display_wiremesh == false)
-    {
-        glBindVertexArray(mObjectVAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    }
-    else
-    {
-        glBindVertexArray(mObjectVAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    }
-}
