@@ -231,6 +231,45 @@ GLuint makeNormalMapTexture(const std::string& filename)
 
     return texture;
 }
+
+std::vector<std::string> skyboxFaces
+{
+    "./Textures/CottonCandy_Right.png",
+    "./Textures/CottonCandy_Left.png",
+    "./Textures/CottonCandy_Top.png",
+    "./Textures/CottonCandy_Bottom.png",
+    "./Textures/CottonCandy_Front.png",
+    "./Textures/CottonCandy_Back.png"
+};
+GLuint LoadCubemap(std::vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        SDL_Surface* data = IMG_Load(faces[i].c_str());
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, data->w, data->h, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            SDL_FreeSurface(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            SDL_FreeSurface(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
 #undef main
 int main(int argc, char* args[])
 {  
@@ -293,7 +332,7 @@ int main(int argc, char* args[])
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
-
+    GLuint mCubeMapSkybox = LoadCubemap(skyboxFaces);
     /*******************************************************************************************************************************************/
     //create matrices
     glm::mat4 Center_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -315,7 +354,7 @@ int main(int argc, char* args[])
     glm::mat4 StaticLeft_ModelMatrix = StaticLeft_translationMatrix * rotationMatrix * Static_scaleMatrix;
     glm::mat4 StaticRight_ModelMatrix = StaticRight_translationMatrix * rotationMatrix * Static_scaleMatrix;
 
-    int current_slices = 20;
+    int current_slices = 10;
     //create objects to swap when pressing buttons
     RenderableMeshObject Center_planeObject(MeshType::PLANE, current_slices, Center_ModelMatrix);
     RenderableMeshObject Center_cubeObject(MeshType::CUBE, current_slices, Center_ModelMatrix);
@@ -672,7 +711,7 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
-
+        //updateSkybox
         Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
         Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
         Skybox_cubeObject.SetModel(Skybox_ModelMatrix);
