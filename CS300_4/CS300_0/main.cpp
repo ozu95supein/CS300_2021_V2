@@ -331,7 +331,7 @@ int main(int argc, char* args[])
     GLuint BasicColorShaderProgram = InitializeBasicColorProgram();
 
     //Make a normal map for the height maps
-    GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
+    GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map.png");
     GLuint mCubeMapSkybox = LoadCubemap(skyboxFaces);
     /*******************************************************************************************************************************************/
     //create matrices
