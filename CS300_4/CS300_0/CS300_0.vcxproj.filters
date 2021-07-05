@@ -66,5 +66,7 @@
     <None Include="green.frag" />
     <None Include="BasicTextureShader.vert" />
     <None Include="BasicTextureShader.frag" />
+    <None Include="CubeMap.vert" />
+    <None Include="CubeMap.frag" />
   </ItemGroup>
 </Project>

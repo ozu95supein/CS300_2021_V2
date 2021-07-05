@@ -251,9 +251,9 @@ GLuint LoadCubemap(std::vector<std::string> faces)
         SDL_Surface* data = IMG_Load(faces[i].c_str());
         if (data)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                0, GL_RGB, data->w, data->h, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-            );
+            int width = data->w;
+            int height = data->h;
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data->pixels);
             SDL_FreeSurface(data);
         }
         else
