@@ -769,10 +769,6 @@ int main(int argc, char* args[])
         //render skybox
         //disable depth test
 
-        mCottonMapSkybox;
-        mCubeMapSkybox;
-
-
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         //render Cubemap
@@ -793,8 +789,9 @@ int main(int argc, char* args[])
         glFrontFace(GL_CCW);
         glEnable(GL_DEPTH_TEST);
         glCullFace(GL_BACK);
+
         ////////////////////////////////////////////////////////////////////////////////
-        // Renderable_DisplayBasicTexture(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, int texture_toggle, int display_wiremesh)
+        // Second Pass
         switch (current_mesh_to_display)
         {
             case 1:
