@@ -718,7 +718,7 @@ int main(int argc, char* args[])
         Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
         Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
         Skybox_cubeObject.SetModel(Skybox_ModelMatrix);
-
+        //ASK IF I NEED TO SET MODEL MATRIX EVERY FRAME
         if (MovingSideObjects)
         {
             SideObjectAngle += SideObjectAngleIncrement;
