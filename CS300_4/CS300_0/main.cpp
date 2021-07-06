@@ -237,7 +237,7 @@ GLuint makeNormalMapTexture(const std::string& filename)
     return texture;
 }
 
-std::vector<std::string> skyboxFaces
+std::vector<std::string> CotonSkyboxFaces
 {
     "./Textures/CottonCandy_Right.png",
     "./Textures/CottonCandy_Left.png",
@@ -245,6 +245,15 @@ std::vector<std::string> skyboxFaces
     "./Textures/CottonCandy_Bottom.png",
     "./Textures/CottonCandy_Front.png",
     "./Textures/CottonCandy_Back.png"
+};
+std::vector<std::string> CubeMapSkyboxFaces
+{
+    "./Textures/CubeMap_Right.png",
+    "./Textures/CubeMap_Left.png",
+    "./Textures/CubeMap_Top.png",
+    "./Textures/CubeMap_Bottom.png",
+    "./Textures/CubeMap_Front.png",
+    "./Textures/CubeMap_Back.png"
 };
 GLuint LoadCubemap(std::vector<std::string> faces)
 {
@@ -338,7 +347,8 @@ int main(int argc, char* args[])
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map.png");
-    GLuint mCubeMapSkybox = LoadCubemap(skyboxFaces);
+    GLuint mCottonMapSkybox = LoadCubemap(CotonSkyboxFaces);
+    GLuint mCubeMapSkybox = LoadCubemap(CubeMapSkyboxFaces);
     /*******************************************************************************************************************************************/
     //create matrices
     glm::mat4 Center_translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -453,7 +463,7 @@ int main(int argc, char* args[])
     glm::mat4 Skybox_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     glm::mat4 Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
     RenderableMeshObject Skybox_cubeObject(MeshType::CUBE, current_slices, Skybox_ModelMatrix);
-
+    
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
     int current_mesh_to_display = 1;
     int Display_Normals = 0;
@@ -462,6 +472,8 @@ int main(int argc, char* args[])
     int UsingFaceNormals = 1;
     int PlayingLightAnimation = 1;
     int MovingSideObjects = 1;
+    int CurrentSkybox = 1;  //1 is cubemap, 0 is cotton
+
     SDL_Event event;
     bool      quit = false;
     while (!quit)
@@ -703,6 +715,14 @@ int main(int argc, char* args[])
                         CameraRadius = 100.0f;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_Z)
+                {
+                    CurrentSkybox = 1;
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_X)
+                {
+                    CurrentSkybox = 0;
+                }
                 break;
             }
         }
@@ -749,6 +769,10 @@ int main(int argc, char* args[])
         //render skybox
         //disable depth test
 
+        mCottonMapSkybox;
+        mCubeMapSkybox;
+
+
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         //render Cubemap
@@ -757,7 +781,14 @@ int main(int argc, char* args[])
         SkyViewMatrix[3].y = 0.0f;
         SkyViewMatrix[3].z = 0.0f;
         //SkyViewMatrix
-        Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+        if (CurrentSkybox)
+        {
+            Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+        }
+        else
+        {
+            Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox);
+        }
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
         glEnable(GL_DEPTH_TEST);
@@ -888,10 +919,8 @@ int main(int argc, char* args[])
             }
             break;
         }
-        
         SDL_GL_SwapWindow(window);           
     }
-
     glDeleteProgram(shaderProgram);
     SDL_GL_DeleteContext(context_);
     SDL_DestroyWindow(window);
