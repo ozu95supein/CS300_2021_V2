@@ -450,12 +450,9 @@ int main(int argc, char* args[])
     RightStatic_sphereObject.SetMaterial(mMaterial);
 
     glm::mat4 Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
-    glm::mat4 Skybox_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(40.0f, 40.0f, 40.0f));
+    glm::mat4 Skybox_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     glm::mat4 Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
     RenderableMeshObject Skybox_cubeObject(MeshType::CUBE, current_slices, Skybox_ModelMatrix);
-
-    glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
 
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
     int current_mesh_to_display = 1;
@@ -755,7 +752,12 @@ int main(int argc, char* args[])
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         //render Cubemap
-        Skybox_cubeObject.Renderable_displayCubeMap(ViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+        glm::mat4 SkyViewMatrix = ViewMatrix;
+        SkyViewMatrix[3].x = 0.0f;
+        SkyViewMatrix[3].y = 0.0f;
+        SkyViewMatrix[3].z = 0.0f;
+        //SkyViewMatrix
+        Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
         glEnable(GL_DEPTH_TEST);
