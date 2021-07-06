@@ -127,6 +127,11 @@ GLuint InitializeBasicColorProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("BasicTextureShader.vert", "BasicTextureShader.frag");
     return theProgram;
 }
+GLuint InitializeCubeMapProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("CubeMap.vert", "CubeMap.frag");
+    return theProgram;
+}
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -329,6 +334,7 @@ int main(int argc, char* args[])
     GLuint BlueShaderProgram = InitializeBlueProgram();
 
     GLuint BasicColorShaderProgram = InitializeBasicColorProgram();
+    GLuint CubemapShaderProgram = InitializeCubeMapProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map.png");
@@ -745,10 +751,11 @@ int main(int argc, char* args[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //render skybox
         //disable depth test
+
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
-        Skybox_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-        
+        //render Cubemap
+        Skybox_cubeObject.Renderable_displayCubeMap(ViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
         glEnable(GL_DEPTH_TEST);
