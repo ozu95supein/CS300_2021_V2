@@ -509,7 +509,7 @@ void RenderableMeshObject::Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm:
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }
 
-void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture, unsigned int buffer_width, unsigned int buffer_height)
+void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture)
 {
     // Bind the glsl program and this object's VAO
     glUseProgram(CubeMapShader);
@@ -522,7 +522,6 @@ void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::m
     glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
     GLint projection = glGetUniformLocation(CubeMapShader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
 
     //draw depth buffer
     glBindVertexArray(mObjectVAO);

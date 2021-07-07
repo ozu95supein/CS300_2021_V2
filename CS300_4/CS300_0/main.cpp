@@ -467,7 +467,7 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
     //generating and binding the 6 fbos to a cubemap texture handle
     GLuint cubemapTexture;
-    GLuint cubemapFBO;
+    GLuint cubemapFBO[6];
     glGenTextures(1, &cubemapTexture);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
     const unsigned EnvMapSize = 512;
@@ -483,11 +483,11 @@ int main(int argc, char* args[])
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     // Create and set up the FBO
-    glGenFramebuffers(6, &cubemapFBO);
+    glGenFramebuffers(6, cubemapFBO);
     
     for (GLuint i = 0; i < 6; i++)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, (&cubemapFBO)[i]);
+        glBindFramebuffer(GL_FRAMEBUFFER, (cubemapFBO)[i]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemapTexture, 0);
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
         glDrawBuffers(1, drawBuffers);
@@ -503,6 +503,15 @@ int main(int argc, char* args[])
     int PlayingLightAnimation = 1;
     int MovingSideObjects = 1;
     int CurrentSkybox = 1;  //1 is cubemap, 0 is cotton
+
+    glm::mat4 CubeMapViewMatrixArray[6]; 
+    CubeMapViewMatrixArray[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    CubeMapViewMatrixArray[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    CubeMapViewMatrixArray[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    CubeMapViewMatrixArray[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    CubeMapViewMatrixArray[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    CubeMapViewMatrixArray[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 CubeMapProjectionMatrix = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 150.0f);
 
     SDL_Event event;
     bool      quit = false;
@@ -855,7 +864,11 @@ int main(int argc, char* args[])
             }
             break;
         }
-
+        //unbind depth buffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, WIDTH, HEIGHT);
         ////////////////////////////////////////////////////////////////////////////////
         // Second Pass
         switch (current_mesh_to_display)
