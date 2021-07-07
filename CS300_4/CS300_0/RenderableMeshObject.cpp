@@ -523,6 +523,11 @@ void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::m
     GLint projection = glGetUniformLocation(CubeMapShader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
 
+    //ColoredBoxTextureOn
+    GLuint texture_tog = glGetUniformLocation(CubeMapShader, "texture_toggle");
+    glUniform1i(texture_tog, 1);
+
+
     //draw depth buffer
     glBindVertexArray(mObjectVAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
