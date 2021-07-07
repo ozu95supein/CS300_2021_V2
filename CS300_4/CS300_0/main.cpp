@@ -511,7 +511,7 @@ int main(int argc, char* args[])
     CubeMapViewMatrixArray[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     CubeMapViewMatrixArray[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     CubeMapViewMatrixArray[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 CubeMapProjectionMatrix = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 150.0f);
+    glm::mat4 CubeMapProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 150.0f);
 
     SDL_Event event;
     bool      quit = false;
