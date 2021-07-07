@@ -55,7 +55,7 @@ public:
     void Translate(glm::vec3 newPosition);
     Material& GetMaterialRefference();
     void Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture);
-    void Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture);
+    void Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture, unsigned int buffer_width, unsigned int buffer_height);
 private:
 
     Mesh mObjectMesh;

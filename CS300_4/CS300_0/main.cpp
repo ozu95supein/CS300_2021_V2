@@ -467,7 +467,7 @@ int main(int argc, char* args[])
     /*******************************************************************************************************************************************/
     //generating and binding the 6 fbos to a cubemap texture handle
     GLuint cubemapTexture;
-    GLuint cubeFBO;
+    GLuint cubemapFBO;
     glGenTextures(1, &cubemapTexture);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
     const unsigned EnvMapSize = 512;
@@ -483,11 +483,11 @@ int main(int argc, char* args[])
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     // Create and set up the FBO
-    glGenFramebuffers(6, &cubeFBO);
+    glGenFramebuffers(6, &cubemapFBO);
     
     for (GLuint i = 0; i < 6; i++)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, (&cubeFBO)[i]);
+        glBindFramebuffer(GL_FRAMEBUFFER, (&cubemapFBO)[i]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemapTexture, 0);
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
         glDrawBuffers(1, drawBuffers);
@@ -821,6 +821,10 @@ int main(int argc, char* args[])
         glFrontFace(GL_CCW);
         glEnable(GL_DEPTH_TEST);
         glCullFace(GL_BACK);
+
+        //bind the FBO of the cubemap faces
+        glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ////////////////////////////////////////////////////////////////////////////////
         // First Pass, we are drawing to the FBOs of the cubemap for the center object
         switch (current_mesh_to_display)
