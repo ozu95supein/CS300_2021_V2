@@ -458,12 +458,42 @@ int main(int argc, char* args[])
     RightStatic_cylinderObject.SetMaterial(mMaterial);
     RightStatic_coneObject.SetMaterial(mMaterial);
     RightStatic_sphereObject.SetMaterial(mMaterial);
-
+    /*******************************************************************************************************************************************/
+    //Making Skybox renderable object
     glm::mat4 Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
     glm::mat4 Skybox_scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     glm::mat4 Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
     RenderableMeshObject Skybox_cubeObject(MeshType::CUBE, current_slices, Skybox_ModelMatrix);
+    /*******************************************************************************************************************************************/
+    //generating and binding the 6 fbos to a cubemap texture handle
+    GLuint cubemapTexture;
+    GLuint cubeFBO;
+    glGenTextures(1, &cubemapTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    const unsigned EnvMapSize = 512;
+    for (GLuint i = 0; i < 6; i++)
+    {
+        //binding and relating the cubemap textures to that of a cubemap, without data, because data is NULL
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, EnvMapSize, EnvMapSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    // Create and set up the FBO
+    glGenFramebuffers(6, &cubeFBO);
     
+    for (GLuint i = 0; i < 6; i++)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, (&cubeFBO)[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemapTexture, 0);
+        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
+        glDrawBuffers(1, drawBuffers);
+    }
+    /*******************************************************************************************************************************************/
+
     //1 = plane, 1: Plane, 2: Cube, 3 : Cone,  4 : Cylinder, 5 : Sphere       
     int current_mesh_to_display = 1;
     int Display_Normals = 0;
@@ -726,7 +756,7 @@ int main(int argc, char* args[])
                 break;
             }
         }
-        ////////////////////////////////////////////////////////////////////////////////
+        /*******************************************************************************************************************************************/
         //update camera
         cam_x = CameraRadius * glm::cos(gamma_rad) * glm::sin(alpha_rad);
         cam_y = CameraRadius * glm::sin(gamma_rad);
@@ -734,6 +764,7 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
+        /*******************************************************************************************************************************************/
         //updateSkybox
         Skybox_translationMatrix = glm::translate(glm::mat4(1.0f), cam_pos);
         Skybox_ModelMatrix = Skybox_translationMatrix * rotationMatrix * Skybox_scaleMatrix;
@@ -762,7 +793,8 @@ int main(int argc, char* args[])
             RightMobile_coneObject.SetModel(MobileRight_ModelMatrix);
             RightMobile_sphereObject.SetModel(MobileRight_ModelMatrix);
         }
-        ////////////////////////////////////////////////////////////////////////////////
+        /*******************************************************************************************************************************************/
+
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -789,6 +821,36 @@ int main(int argc, char* args[])
         glFrontFace(GL_CCW);
         glEnable(GL_DEPTH_TEST);
         glCullFace(GL_BACK);
+        ////////////////////////////////////////////////////////////////////////////////
+        // First Pass, we are drawing to the FBOs of the cubemap for the center object
+        switch (current_mesh_to_display)
+        {
+            case 1:
+            {
+                
+            }
+            break;
+            case 2:
+            {
+
+            }
+            break;
+            case 3:
+            {
+
+            }
+            break;
+            case 4:
+            {
+
+            }
+            break;
+            case 5:
+            {
+
+            }
+            break;
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // Second Pass
