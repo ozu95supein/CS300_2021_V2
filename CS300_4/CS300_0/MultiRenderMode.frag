@@ -2,6 +2,7 @@
 out vec4 outputColor;
 in vec2 outUV;
 in vec3 CubeMapTexCoord;
+in vec3 ReflectTexCoord3;
 
 uniform sampler2D texture_data;		// smallColors.png
 uniform samplerCube cubemap_data;	// cubemap
@@ -16,7 +17,8 @@ void main()
 	}
 	else if(RenderMode == 1)	//cubemap rendering 1st version
 	{
-		outputColor = texture(cubemap_data, CubeMapTexCoord);
+		//outputColor = texture(cubemap_data, CubeMapTexCoord);
+		outputColor = texture(cubemap_data, ReflectTexCoord3);
 	}
 	else if(RenderMode == 2)	//cubemap rendering 2nd version
 	{

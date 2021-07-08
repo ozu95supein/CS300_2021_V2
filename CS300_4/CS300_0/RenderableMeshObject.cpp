@@ -532,7 +532,7 @@ void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::m
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }
-void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode)
+void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos)
 {
     // Bind the glsl program and this object's VAO
     glUseProgram(MultiRenderShader);
@@ -561,6 +561,11 @@ void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatr
     glBindTexture(GL_TEXTURE_CUBE_MAP, CubeMapFaceTexture);
     GLuint loc1 = glGetUniformLocation(MultiRenderShader, "cubemap_data");   //get uniform of frag shader
     glUniform1i(loc1, 1);    //use stuff from bucket 1
+
+
+    glm::vec4 cam4 = glm::vec4(cam_pos, 0.0f);
+    GLint camPos = glGetUniformLocation(MultiRenderShader, "camera_position");
+    glUniform4fv(camPos, 1, GL_FALSE, (GLfloat)&(cam4[0]));
 
     //Draw Triangles
     glBindVertexArray(mObjectVAO);

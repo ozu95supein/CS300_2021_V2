@@ -515,12 +515,12 @@ int main(int argc, char* args[])
     RenderableMeshObject* rightstatic = NULL;
 
     glm::mat4 CubeMapViewMatrixArray[6];
-    CubeMapViewMatrixArray[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    CubeMapViewMatrixArray[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    CubeMapViewMatrixArray[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    CubeMapViewMatrixArray[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    CubeMapViewMatrixArray[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    CubeMapViewMatrixArray[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    CubeMapViewMatrixArray[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    CubeMapViewMatrixArray[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    CubeMapViewMatrixArray[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+    CubeMapViewMatrixArray[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+    CubeMapViewMatrixArray[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    CubeMapViewMatrixArray[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     glm::mat4 CubeMapProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 150.0f);
 
     SDL_Event event;
@@ -890,19 +890,26 @@ int main(int argc, char* args[])
             glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glViewport(0, 0, EnvMapSize, EnvMapSize);
+            //disable depth and culling for skybox
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_CULL_FACE);
             if (CurrentSkybox)
             {
-                Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+                Skybox_cubeObject.Renderable_displayCubeMap(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
             }
             else
             {
-                Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox);
+                Skybox_cubeObject.Renderable_displayCubeMap(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox);
             }
-            leftmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-            rightmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-            leftstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-            rightstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);  
-            
+            //reenable depth and culling
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
+            glFrontFace(GL_CCW);
+            glCullFace(GL_BACK);
+            leftmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
+            rightmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
+            leftstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
+            rightstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
         }
         //unbind depth buffer back to screen
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -915,7 +922,7 @@ int main(int argc, char* args[])
         {
 
             //Center_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_planeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode);
+            Center_planeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos);
             LeftMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
