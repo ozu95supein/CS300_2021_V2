@@ -509,6 +509,11 @@ int main(int argc, char* args[])
     int MovingSideObjects = 1;
     int CurrentSkybox = 1;  //1 is cubemap, 0 is cotton
 
+    RenderableMeshObject* leftmobile = NULL;
+    RenderableMeshObject* rightmobile = NULL;
+    RenderableMeshObject* leftstatic = NULL;
+    RenderableMeshObject* rightstatic = NULL;
+
     glm::mat4 CubeMapViewMatrixArray[6];
     CubeMapViewMatrixArray[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     CubeMapViewMatrixArray[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -838,79 +843,68 @@ int main(int argc, char* args[])
         // First Pass, we are drawing to the FBOs of the cubemap for the center object   
         switch (current_mesh_to_display)
         {
-            //set the viewport for all of these fbo draw calls
-            glViewport(0, 0, EnvMapSize, EnvMapSize);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
             case 1:
             {
-                //bind the FBO of the cubemap faces
-                for (int index = 0; index < 6; index++)
-                {
-                    glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
-                    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    LeftMobile_planeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightMobile_planeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    LeftStatic_planeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightStatic_planeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                }
-            }
-            break;
-            case 2:
-            {
-                for (int index = 0; index < 6; index++)
-                {
-                    glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
-                    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    LeftMobile_cubeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightMobile_cubeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    LeftStatic_cubeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightStatic_cubeObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                }
-            }
-            break;
-            case 3:
-            {
-                for (int index = 0; index < 6; index++)
-                {
-                    glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
-                    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    LeftMobile_cylinderObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightMobile_cylinderObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    LeftStatic_cylinderObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightStatic_cylinderObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                }
-            }
-            break;
-            case 4:
-            {
-                for (int index = 0; index < 6; index++)
-                {
-                    glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
-                    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    LeftMobile_coneObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightMobile_coneObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    LeftStatic_coneObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightStatic_coneObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                }
-            }
-            break;
-            case 5:
-            {
-                for (int index = 0; index < 6; index++)
-                {
-                    glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
-                    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    LeftMobile_sphereObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightMobile_sphereObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    LeftStatic_sphereObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                    RightStatic_sphereObject.Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
-                }
+                leftmobile  = &LeftMobile_planeObject;
+                rightmobile = &RightMobile_planeObject;
+                leftstatic  = &LeftStatic_planeObject;
+                rightstatic = &RightStatic_planeObject;
+            }               
+            break;          
+            case 2:         
+            {               
+                leftmobile  = &LeftMobile_cubeObject;
+                rightmobile = &RightMobile_cubeObject;
+                leftstatic  = &LeftStatic_cubeObject;
+                rightstatic = &RightStatic_cubeObject;
+            }               
+            break;          
+            case 3:         
+            {               
+                leftmobile  = &LeftMobile_cylinderObject;
+                rightmobile = &RightMobile_cylinderObject;
+                leftstatic  = &LeftStatic_cylinderObject;
+                rightstatic = &RightStatic_cylinderObject;
+            }               
+            break;          
+            case 4:         
+            {               
+                leftmobile  = &LeftMobile_coneObject;
+                rightmobile = &RightMobile_coneObject;
+                leftstatic  = &LeftStatic_coneObject;
+                rightstatic = &RightStatic_coneObject;
+            }               
+            break;          
+            case 5:         
+            {               
+                leftmobile  = &LeftMobile_sphereObject;
+                rightmobile = &RightMobile_sphereObject;
+                leftstatic  = &LeftStatic_sphereObject;
+                rightstatic = &RightStatic_sphereObject;
             }
             break;
         }
-        
-        //unbind depth buffer
+        // First Pass, we are drawing to the FBOs of the cubemap for the center object   
+        for (int index = 0; index < 6; index++)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, cubemapFBO[index]);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glViewport(0, 0, EnvMapSize, EnvMapSize);
+            if (CurrentSkybox)
+            {
+                Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+            }
+            else
+            {
+                Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox);
+            }
+            leftmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
+            rightmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
+            leftstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);
+            rightstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, BasicColorShaderProgram, cubemapTexture);  
+            
+        }
+        //unbind depth buffer back to screen
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, WIDTH, HEIGHT);
         ////////////////////////////////////////////////////////////////////////////////
