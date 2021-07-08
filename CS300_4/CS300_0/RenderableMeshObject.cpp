@@ -561,11 +561,10 @@ void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatr
     glBindTexture(GL_TEXTURE_CUBE_MAP, CubeMapFaceTexture);
     GLuint loc1 = glGetUniformLocation(MultiRenderShader, "cubemap_data");   //get uniform of frag shader
     glUniform1i(loc1, 1);    //use stuff from bucket 1
-
-
+    
     glm::vec4 cam4 = glm::vec4(cam_pos, 0.0f);
     GLint camPos = glGetUniformLocation(MultiRenderShader, "camera_position");
-    glUniform4fv(camPos, 1, GL_FALSE, (GLfloat)&(cam4[0]));
+    glUniform4fv(camPos, 1, &(cam4[0]));
 
     //Draw Triangles
     glBindVertexArray(mObjectVAO);

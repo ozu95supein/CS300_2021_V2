@@ -6,23 +6,31 @@ layout(location = 2) in vec2 aUV;
 out vec2 outUV;
 out vec3 CubeMapTexCoord;
 out vec3 ReflectTexCoord3;
+out vec4 SurfaceNormalWorldspace4;
+out vec3 RefractTexCoord;
 
 uniform mat4 u_M;
 uniform mat4 u_V;
 uniform mat4 u_P;
 uniform vec4 camera_position;
+float refraction_index = 1.33;
 
 void main()
 {
-	vec4 posModelspace = u_M * aPosition;
-	vec4 IncidentVectorModelSpace = posModelspace - camera_position;
-	vec4 normalModelspace = u_M * aNormal;
-	vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, normalModelspace);
-	ReflectTexCoord3 = ReflectModelspace.xyz;
-
 	mat4 MVP = u_P * u_V * u_M;
-	mat4 MV = u_V * u_M;
-	mat4 Q = transpose(inverse(MV));
+	mat4 Q_world = transpose(inverse(u_M));
+	SurfaceNormalWorldspace4 = Q_world * aNormal;
+
+	vec4 posWorldspace = u_M * aPosition;
+	vec4 IncidentVectorModelSpace = normalize(posWorldspace - camera_position);
+	vec4 normalWorldspace = normalize(u_M * aNormal);
+	vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, normalWorldspace);
+	vec4 RefractModelspace = refract(IncidentVectorModelSpace, normalWorldspace, refraction_index);
+	//pass to frag shader
+	ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
+	RefractTexCoord = normalize(RefractModelspace.xyz);
+	SurfaceNormalWorldspace4 = normalWorldspace;
+
 	outUV = aUV;
 	CubeMapTexCoord = vec3(aPosition.xyz);
     gl_Position = MVP * aPosition;
