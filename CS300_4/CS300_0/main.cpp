@@ -503,7 +503,7 @@ int main(int argc, char* args[])
     int current_mesh_to_display = 2;
     int Display_Normals = 0;
     bool Display_Wireframe = false;
-    int RenderMode = 1;
+    int RenderMode = 0;
     int UsingFaceNormals = 1;
     int PlayingLightAnimation = 1;
     int MovingSideObjects = 1;
