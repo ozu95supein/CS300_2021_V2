@@ -68,5 +68,7 @@
     <None Include="BasicTextureShader.frag" />
     <None Include="CubeMap.vert" />
     <None Include="CubeMap.frag" />
+    <None Include="MultiRenderMode.vert" />
+    <None Include="MultiRenderMode.frag" />
   </ItemGroup>
 </Project>

@@ -34,6 +34,8 @@
     <None Include="CubeMap.frag" />
     <None Include="CubeMap.vert" />
     <None Include="green.frag" />
+    <None Include="MultiRenderMode.frag" />
+    <None Include="MultiRenderMode.vert" />
     <None Include="red.frag" />
     <None Include="SingleColor.frag" />
     <None Include="White.frag" />

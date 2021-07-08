@@ -132,6 +132,11 @@ GLuint InitializeCubeMapProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("CubeMap.vert", "CubeMap.frag");
     return theProgram;
 }
+GLuint InitializeMultiRenderProgram()
+{
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("MultiRenderMode.vert", "MultiRenderMode.frag");
+    return theProgram;
+}
 void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
 {
     // Delete the VBOs
@@ -236,7 +241,6 @@ GLuint makeNormalMapTexture(const std::string& filename)
 
     return texture;
 }
-
 std::vector<std::string> CotonSkyboxFaces
 {
     "./Textures/CottonCandy_Right.png",
@@ -344,6 +348,7 @@ int main(int argc, char* args[])
 
     GLuint BasicColorShaderProgram = InitializeBasicColorProgram();
     GLuint CubemapShaderProgram = InitializeCubeMapProgram();
+    GLuint MultiRenderModeProgram = InitializeMultiRenderProgram();
 
     //Make a normal map for the height maps
     GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map.png");
