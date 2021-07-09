@@ -19,16 +19,16 @@ void main()
 	}
 	else if(RenderMode == 1)	//cubemap rendering 1st version
 	{
-		outputColor = texture(cubemap_data, normalize(SurfaceNormalWorldspace4.xyz));
+		outputColor = texture(cubemap_data, SurfaceNormalWorldspace4.xyz);
 	}
 	else if(RenderMode == 2)	//cubemap rendering 2nd version
 	{
 		//outputColor = texture(cubemap_data, CubeMapTexCoord);
-		outputColor = texture(cubemap_data, normalize(ReflectTexCoord3));
+		outputColor = texture(cubemap_data, ReflectTexCoord3);
 	}
 	else if(RenderMode == 3)	//cubemap rendering Refraction
 	{
 		//outputColor = texture(cubemap_data, CubeMapTexCoord);
-		outputColor = texture(cubemap_data, normalize(RefractTexCoord));
+		outputColor = texture(cubemap_data, RefractTexCoord);
 	}
 }
