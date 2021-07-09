@@ -937,17 +937,17 @@ int main(int argc, char* args[])
                     LeftStatic_planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_planeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);;
-                    RightMobile_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);;
+                    RightMobile_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_planeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_planeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     
                 }
                 else
@@ -958,17 +958,17 @@ int main(int argc, char* args[])
                     LeftStatic_planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_planeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_planeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_planeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
             }
         }
@@ -991,17 +991,17 @@ int main(int argc, char* args[])
                     LeftStatic_cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_cubeObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_cubeObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_cubeObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
                 else
                 {
@@ -1011,17 +1011,17 @@ int main(int argc, char* args[])
                     LeftStatic_cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_cubeObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_cubeObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_cubeObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
             }
         }
@@ -1044,17 +1044,17 @@ int main(int argc, char* args[])
                     LeftStatic_cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_cylinderObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_cylinderObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_cylinderObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
 
                 }
                 else
@@ -1071,11 +1071,11 @@ int main(int argc, char* args[])
                     LeftStatic_cylinderObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                     RightStatic_cylinderObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
 
-                    Center_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_cylinderObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
             }
         }
@@ -1098,17 +1098,17 @@ int main(int argc, char* args[])
                     LeftStatic_coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_coneObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_coneObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_coneObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
                 else
                 {
@@ -1118,17 +1118,17 @@ int main(int argc, char* args[])
                     LeftStatic_coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_coneObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_coneObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_coneObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
             }
         }
@@ -1151,17 +1151,17 @@ int main(int argc, char* args[])
                     LeftStatic_sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_sphereObject.Renderable_displayNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_sphereObject.Renderable_displayTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_sphereObject.Renderable_displayBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
 
                 }
                 else
@@ -1172,17 +1172,17 @@ int main(int argc, char* args[])
                     LeftStatic_sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
                     RightStatic_sphereObject.Renderable_displayAveragedNormals(ViewMatrix, ProjectionMatrix, BlueShaderProgram);
 
-                    Center_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftMobile_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightMobile_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    LeftStatic_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
-                    RightStatic_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    Center_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftMobile_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightMobile_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    LeftStatic_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    RightStatic_sphereObject.Renderable_displayAveragedTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
 
-                    Center_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftMobile_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightMobile_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    LeftStatic_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
-                    RightStatic_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, RedShaderProgram);
+                    Center_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftMobile_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightMobile_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    LeftStatic_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
+                    RightStatic_sphereObject.Renderable_displayAveragedBiTangents(ViewMatrix, ProjectionMatrix, GreenShaderProgram);
                 }
             }
         }
