@@ -24,11 +24,11 @@ void main()
 	else if(RenderMode == 2)	//cubemap rendering 2nd version
 	{
 		//outputColor = texture(cubemap_data, CubeMapTexCoord);
-		outputColor = texture(cubemap_data, ReflectTexCoord3);
+		outputColor = texture(cubemap_data, normalize(ReflectTexCoord3));
 	}
 	else if(RenderMode == 3)	//cubemap rendering Refraction
 	{
 		//outputColor = texture(cubemap_data, CubeMapTexCoord);
-		outputColor = texture(cubemap_data, RefractTexCoord3);
+		outputColor = texture(cubemap_data, normalize(RefractTexCoord3));
 	}
 }

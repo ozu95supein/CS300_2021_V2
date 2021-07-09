@@ -18,6 +18,7 @@ uniform vec4 camera_position;
 uniform int usingFaceNormals;
 
 float refraction_index = 1.33;
+uniform float refraction_index_ratio;
 
 void main()
 {
@@ -30,7 +31,7 @@ void main()
 	{
 		ResultingNormalWorldspace4 = normalize(Q_world * aNormal);
 		vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, ResultingNormalWorldspace4);
-		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, refraction_index);
+		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, refraction_index_ratio);
 		ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
 		RefractTexCoord3 = normalize(RefractModelspace.xyz);
 	}
@@ -38,7 +39,7 @@ void main()
 	{
 		ResultingNormalWorldspace4 = normalize(Q_world * aAvgNormal);
 		vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, ResultingNormalWorldspace4);
-		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, refraction_index);
+		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, refraction_index_ratio);
 		ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
 		RefractTexCoord3 = normalize(RefractModelspace.xyz);
 	}
