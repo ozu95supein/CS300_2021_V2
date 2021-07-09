@@ -828,11 +828,11 @@ int main(int argc, char* args[])
         //SkyViewMatrix
         if (CurrentSkybox)
         {
-            Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+            Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox, Display_Wireframe);
         }
         else
         {
-            Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox);
+            Skybox_cubeObject.Renderable_displayCubeMap(SkyViewMatrix, ProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox, Display_Wireframe);
         }
         //reenable depth 
         glEnable(GL_DEPTH_TEST);
@@ -895,11 +895,11 @@ int main(int argc, char* args[])
             glDisable(GL_CULL_FACE);
             if (CurrentSkybox)
             {
-                Skybox_cubeObject.Renderable_displayCubeMap(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox);
+                Skybox_cubeObject.Renderable_displayCubeMap(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, CubemapShaderProgram, mCubeMapSkybox, Display_Wireframe);
             }
             else
             {
-                Skybox_cubeObject.Renderable_displayCubeMap(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox);
+                Skybox_cubeObject.Renderable_displayCubeMap(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, CubemapShaderProgram, mCottonMapSkybox, Display_Wireframe);
             }
             //reenable depth and culling
             glEnable(GL_DEPTH_TEST);
@@ -922,7 +922,7 @@ int main(int argc, char* args[])
         {
 
             //Center_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_planeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio);
+            Center_planeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio, Display_Wireframe);
             LeftMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -976,7 +976,7 @@ int main(int argc, char* args[])
         case 2:
         {
             //Center_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_cubeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio);
+            Center_cubeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio, Display_Wireframe);
             LeftMobile_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -1029,7 +1029,7 @@ int main(int argc, char* args[])
         case 3:
         {
             //Center_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_cylinderObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio);
+            Center_cylinderObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio, Display_Wireframe);
             LeftMobile_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -1083,7 +1083,7 @@ int main(int argc, char* args[])
         case 4:
         {
             //Center_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_coneObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio);
+            Center_coneObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio, Display_Wireframe);
             LeftMobile_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -1136,7 +1136,7 @@ int main(int argc, char* args[])
         case 5:
         {
             //Center_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_sphereObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio);
+            Center_sphereObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals, Refraction_ratio, Display_Wireframe);
             LeftMobile_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);

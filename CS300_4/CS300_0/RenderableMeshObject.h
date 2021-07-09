@@ -54,9 +54,9 @@ public:
     void SetMaterial(Material m);
     void Translate(glm::vec3 newPosition);
     Material& GetMaterialRefference();
-    void Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture);
+    void Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture, bool display_wiremesh);
     void Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture, int RenderMode);
-    void Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, float refraction_ratio);
+    void Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, float refraction_ratio, bool display_wiremesh);
 private:
 
     Mesh mObjectMesh;

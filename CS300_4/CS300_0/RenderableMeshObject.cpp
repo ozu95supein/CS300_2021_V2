@@ -486,7 +486,7 @@ Material& RenderableMeshObject::GetMaterialRefference()
     return mMaterial;
 }
 
-void RenderableMeshObject::Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture)
+void RenderableMeshObject::Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture, bool display_wiremesh)
 {
     // Bind the glsl program and this object's VAO
     glUseProgram(shader);
@@ -504,9 +504,19 @@ void RenderableMeshObject::Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm:
     GLuint loc = glGetUniformLocation(shader, "skyBox_data");   //get uniform of frag shader
     glUniform1i(loc, 0);    //use stuff from bucket 0
 
-    glBindVertexArray(mObjectVAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    // Draw
+    if (display_wiremesh == false)
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
+    else
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
 }
 
 void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture, int RenderMode)
@@ -536,7 +546,7 @@ void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::m
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }
-void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, float refraction_ratio)
+void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, float refraction_ratio, bool display_wiremesh)
 {
     // Bind the glsl program and this object's VAO
     glUseProgram(MultiRenderShader);
@@ -578,10 +588,17 @@ void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatr
     GLint camPos = glGetUniformLocation(MultiRenderShader, "camera_position");
     glUniform4fv(camPos, 1, &(cam4[0]));
 
-    //Draw Triangles
-    glBindVertexArray(mObjectVAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-
-
+    // Draw
+    if (display_wiremesh == false)
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
+    else
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
 }
