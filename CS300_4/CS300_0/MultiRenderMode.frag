@@ -3,8 +3,8 @@ out vec4 outputColor;
 in vec2 outUV;
 in vec3 CubeMapTexCoord;
 in vec3 ReflectTexCoord3;
-in vec4 SurfaceNormalWorldspace4;
-in vec3 RefractTexCoord;
+in vec3 RefractTexCoord3;
+in vec4 ResultingNormalWorldspace4;
 
 uniform sampler2D texture_data;		// smallColors.png
 uniform samplerCube cubemap_data;	// cubemap
@@ -19,7 +19,7 @@ void main()
 	}
 	else if(RenderMode == 1)	//cubemap rendering 1st version
 	{
-		outputColor = texture(cubemap_data, SurfaceNormalWorldspace4.xyz);
+		outputColor = texture(cubemap_data, ResultingNormalWorldspace4.xyz);
 	}
 	else if(RenderMode == 2)	//cubemap rendering 2nd version
 	{
@@ -29,6 +29,6 @@ void main()
 	else if(RenderMode == 3)	//cubemap rendering Refraction
 	{
 		//outputColor = texture(cubemap_data, CubeMapTexCoord);
-		outputColor = texture(cubemap_data, RefractTexCoord);
+		outputColor = texture(cubemap_data, RefractTexCoord3);
 	}
 }

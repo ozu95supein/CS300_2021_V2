@@ -375,7 +375,7 @@ int main(int argc, char* args[])
     glm::mat4 StaticLeft_ModelMatrix = StaticLeft_translationMatrix * rotationMatrix * Static_scaleMatrix;
     glm::mat4 StaticRight_ModelMatrix = StaticRight_translationMatrix * rotationMatrix * Static_scaleMatrix;
 
-    int current_slices = 20;
+    int current_slices = 100;
     //create objects to swap when pressing buttons
     RenderableMeshObject Center_planeObject(MeshType::PLANE, current_slices, Center_ModelMatrix);
     RenderableMeshObject Center_cubeObject(MeshType::CUBE, current_slices, Center_ModelMatrix);
@@ -517,8 +517,8 @@ int main(int argc, char* args[])
     glm::mat4 CubeMapViewMatrixArray[6];
     CubeMapViewMatrixArray[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     CubeMapViewMatrixArray[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-    CubeMapViewMatrixArray[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
-    CubeMapViewMatrixArray[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+    CubeMapViewMatrixArray[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    CubeMapViewMatrixArray[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     CubeMapViewMatrixArray[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     CubeMapViewMatrixArray[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     glm::mat4 CubeMapProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 150.0f);
@@ -906,10 +906,10 @@ int main(int argc, char* args[])
             glEnable(GL_CULL_FACE);
             glFrontFace(GL_CCW);
             glCullFace(GL_BACK);
-            leftmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
-            rightmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
-            leftstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
-            rightstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture);
+            leftmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture, 0);
+            rightmobile->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture, 0);
+            leftstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture, 0);
+            rightstatic->Renderable_DisplayToFBO(CubeMapViewMatrixArray[index], CubeMapProjectionMatrix, MultiRenderModeProgram, cubemapTexture, 0);
         }
         //unbind depth buffer back to screen
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -922,7 +922,7 @@ int main(int argc, char* args[])
         {
 
             //Center_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_planeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos);
+            Center_planeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals);
             LeftMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_planeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -947,7 +947,7 @@ int main(int argc, char* args[])
         case 2:
         {
             //Center_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_cubeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos);
+            Center_cubeObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals);
             LeftMobile_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_cubeObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -972,7 +972,7 @@ int main(int argc, char* args[])
         case 3:
         {
             //Center_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_cylinderObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos);
+            Center_cylinderObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals);
             LeftMobile_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_cylinderObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -997,7 +997,7 @@ int main(int argc, char* args[])
         case 4:
         {
             //Center_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_coneObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos);
+            Center_coneObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals);
             LeftMobile_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_coneObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
@@ -1022,7 +1022,7 @@ int main(int argc, char* args[])
         case 5:
         {
             //Center_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
-            Center_sphereObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos);
+            Center_sphereObject.Renderable_DisplayMultiRenderMode(ViewMatrix, ProjectionMatrix, MultiRenderModeProgram, texture, cubemapTexture, RenderMode, cam_pos, UsingFaceNormals);
             LeftMobile_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             RightMobile_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
             LeftStatic_sphereObject.Renderable_displayMesh(ViewMatrix, ProjectionMatrix, BasicColorShaderProgram, texture, Display_Wireframe, RenderMode, mLight, mNormalMap, UsingFaceNormals);
