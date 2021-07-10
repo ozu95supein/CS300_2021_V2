@@ -375,7 +375,7 @@ int main(int argc, char* args[])
     glm::mat4 StaticLeft_ModelMatrix = StaticLeft_translationMatrix * rotationMatrix * Static_scaleMatrix;
     glm::mat4 StaticRight_ModelMatrix = StaticRight_translationMatrix * rotationMatrix * Static_scaleMatrix;
 
-    int current_slices = 15;
+    int current_slices = 100;
     //create objects to swap when pressing buttons
     RenderableMeshObject Center_planeObject(MeshType::PLANE, current_slices, Center_ModelMatrix);
     RenderableMeshObject Center_cubeObject(MeshType::CUBE, current_slices, Center_ModelMatrix);

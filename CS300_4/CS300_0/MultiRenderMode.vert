@@ -31,7 +31,7 @@ void main()
 	{
 		ResultingNormalWorldspace4 = normalize(Q_world * aNormal);
 		vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, ResultingNormalWorldspace4);
-		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, refraction_index_ratio);
+		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, 1.33f);
 		ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
 		RefractTexCoord3 = normalize(RefractModelspace.xyz);
 	}
@@ -39,7 +39,7 @@ void main()
 	{
 		ResultingNormalWorldspace4 = normalize(Q_world * aAvgNormal);
 		vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, ResultingNormalWorldspace4);
-		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, refraction_index_ratio);
+		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, 1.33f);
 		ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
 		RefractTexCoord3 = normalize(RefractModelspace.xyz);
 	}
