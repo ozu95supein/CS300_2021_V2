@@ -546,7 +546,7 @@ void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::m
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }
-void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, float refraction_ratio, bool display_wiremesh)
+void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, bool display_wiremesh)
 {
     // Bind the glsl program and this object's VAO
     glUseProgram(MultiRenderShader);
@@ -567,10 +567,6 @@ void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatr
     //using face normals
     GLuint FaceNormal_tog = glGetUniformLocation(MultiRenderShader, "usingFaceNormals");
     glUniform1i(FaceNormal_tog, using_facenormals);
-
-    //ratio
-    GLuint RefractionRatio = glGetUniformLocation(MultiRenderShader, "refraction_index_ratio");
-    glUniform1i(RefractionRatio, refraction_ratio);
 
     //texture stuff
     glActiveTexture(GL_TEXTURE0); //activate bucket 0

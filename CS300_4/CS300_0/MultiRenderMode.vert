@@ -7,41 +7,27 @@ layout(location = 3) in vec4 aAvgNormal;
 
 out vec2 outUV;
 out vec3 CubeMapTexCoord;
-out vec3 ReflectTexCoord3;
-out vec3 RefractTexCoord3;
 out vec4 ResultingNormalWorldspace4;
+out vec4 posWorldSpace4;
 
 uniform mat4 u_M;
 uniform mat4 u_V;
 uniform mat4 u_P;
-uniform vec4 camera_position;
 uniform int usingFaceNormals;
-
-float refraction_index = 1.33;
-uniform float refraction_index_ratio;
 
 void main()
 {
 	mat4 MVP = u_P * u_V * u_M;
 	mat4 Q_world = transpose(inverse(u_M));
 	
-	vec4 posWorldspace = u_M * aPosition;
-	vec4 IncidentVectorModelSpace = normalize(posWorldspace - camera_position);
+	posWorldSpace4 = u_M * aPosition;
 	if(usingFaceNormals == 0)
 	{
-		ResultingNormalWorldspace4 = normalize(Q_world * aNormal);
-		vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, ResultingNormalWorldspace4);
-		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, 1.33f);
-		ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
-		RefractTexCoord3 = normalize(RefractModelspace.xyz);
+		ResultingNormalWorldspace4 = normalize(Q_world * aNormal);	
 	}
 	else
 	{
 		ResultingNormalWorldspace4 = normalize(Q_world * aAvgNormal);
-		vec4 ReflectModelspace = reflect(IncidentVectorModelSpace, ResultingNormalWorldspace4);
-		vec4 RefractModelspace = refract(IncidentVectorModelSpace, ResultingNormalWorldspace4, 1.33f);
-		ReflectTexCoord3 = normalize(ReflectModelspace.xyz);
-		RefractTexCoord3 = normalize(RefractModelspace.xyz);
 	}
 
 	outUV = aUV;
