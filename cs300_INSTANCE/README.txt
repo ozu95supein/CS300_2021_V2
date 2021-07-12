@@ -6,13 +6,13 @@ Project: cs300_oscar.s_2
 Author: Oscar Sanchez Bayton Griffith, oscar.s, 540002116
 Creation date: 06/20/2021
 ----------------------------------------------------------------------------------------------------------*/
-Move the camera around in always looking at the object. 
+Move the camera around in always looking at the object.
 ▪ W: Move up.
 ▪ S: Move down.
-▪ A: Move left. 
-▪ D: Move right. 
-▪ E: Further from object. 
-▪ Q: Closer to object. 
+▪ A: Move left.
+▪ D: Move right.
+▪ E: Further from object.
+▪ Q: Closer to object.
  Select shape to be rendered through the number keys.
 ▪ Numbers 1 to 5: Change the shape to be rendered
 – 1: Plane
@@ -22,12 +22,16 @@ Move the camera around in always looking at the object.
 – 5: Sphere
 ▪ +: Increase the shape subdivisions
 ▪ -: Decrease the shape subdivisions
- O: Toggle to pause/start adjacent object animation.
+ Select the light types:
+▪ 7: All lights become point lights.
+▪ 8: All lights become spot lights.
+▪ 9: All lights become directional lights.
+ P: Toggle to pause/start the light animation.
  N: Toggle normal rendering
  F: Toggle face/averaged normal
  M: Toggle wireframe mode on/off
- T: Cycle between the different modes (texture/normal reflection/reflective/ 
-refractive)
- Object rotation for center shape.
-▪ Arrows Up/Down: Rotate the shape along X-axis
-▪ Arrows Right/Left: Rotate the shape along Y-axis
+ T: Change between rendering modes:
+▪ Normal Mapping: Scene with lighting and normal mapping with texture
+▪ Normals: Geometry normal in camera space as color
+▪ Tangent: Geometry tangent in camera space as color
+▪ Bitangent: Geometry bitangent in camera space as color

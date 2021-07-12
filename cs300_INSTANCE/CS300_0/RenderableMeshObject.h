@@ -47,16 +47,12 @@ public:
     void Renderable_displayBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader);
     void Renderable_displayAveragedBiTangents(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& bitangentShader);
     void Renderable_ChangeSlices(int new_slices, MeshType& t);
-
     glm::mat4& GetModelRefference();
     glm::mat4 GetModel();
     void SetModel(glm::mat4 m);
     void SetMaterial(Material m);
     void Translate(glm::vec3 newPosition);
     Material& GetMaterialRefference();
-    void Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture, bool display_wiremesh);
-    void Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture, int RenderMode);
-    void Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, bool display_wiremesh);
 private:
 
     Mesh mObjectMesh;

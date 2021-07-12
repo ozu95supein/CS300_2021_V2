@@ -1,7 +1,6 @@
 #include "Mesh.h"
 #include <iostream>
 float PI = glm::atan(1) * 4;
-float normalVectorMultiplier = 0.5f;
 Mesh::Mesh() : mVertexNum{ 0 }, mFaceNum{ 0 }, mType{ MeshType::PLANE }, mVertexArray{ std::vector<Vertex>() }, mNormalArray{ std::vector<NormalLine>() }
 {
 }
@@ -182,6 +181,7 @@ void Mesh::ConstructCube()
 	mVertexArray.push_back(v33);
 	mVertexArray.push_back(v34);
 	mVertexArray.push_back(v35);
+	std::cout << "CUBE" << std::endl;
 	ConstructAveragedNormals();
 	AveragedNormal_ComputeTangentBasis();
 	ComputeTangetBasis();
@@ -921,7 +921,7 @@ void Mesh::GenerateNormalLines()
 	{
 		Vertex v = mVertexArray[i];
 		glm::vec4 start = v.position;
-		glm::vec4 end = v.position + (v.normal * normalVectorMultiplier);
+		glm::vec4 end = v.position + v.normal;
 		NormalLine n(start, end);
 		mNormalArray.push_back(n);
 	}
@@ -933,7 +933,7 @@ void Mesh::GenerateAveragedNormalLines()
 	{
 		Vertex v = mVertexArray[i];
 		glm::vec4 start = v.position;
-		glm::vec4 end = v.position + (v.AveragedNormal * normalVectorMultiplier);
+		glm::vec4 end = v.position + v.AveragedNormal;
 		NormalLine n(start, end);
 		mAveragedNormalArray.push_back(n);
 	}
@@ -945,7 +945,7 @@ void Mesh::GenerateTangentLines()
 	{
 		Vertex v = mVertexArray[i];
 		glm::vec4 start = v.position;
-		glm::vec4 end = v.position + (v.tangents * normalVectorMultiplier);
+		glm::vec4 end = v.position + v.tangents;
 		NormalLine n(start, end);
 		mTangentArray.push_back(n);
 	}
@@ -957,7 +957,7 @@ void Mesh::GenerateAveragedTangentLines()
 	{
 		Vertex v = mVertexArray[i];
 		glm::vec4 start = v.position;
-		glm::vec4 end = v.position + (v.AveragedNormal_tangents * normalVectorMultiplier);
+		glm::vec4 end = v.position + v.AveragedNormal_tangents;
 		NormalLine n(start, end);
 		mAveragedTangentArray.push_back(n);
 	}
@@ -969,7 +969,7 @@ void Mesh::GenerateBiTangentLines()
 	{
 		Vertex v = mVertexArray[i];
 		glm::vec4 start = v.position;
-		glm::vec4 end = v.position + (v.bi_tangents * normalVectorMultiplier);
+		glm::vec4 end = v.position + v.bi_tangents;
 		NormalLine n(start, end);
 		mBiTangentArray.push_back(n);
 	}
@@ -981,7 +981,7 @@ void Mesh::GenerateAveragedBiTangentLines()
 	{
 		Vertex v = mVertexArray[i];
 		glm::vec4 start = v.position;
-		glm::vec4 end = v.position + (v.AveragedNormal_bi_tangents * normalVectorMultiplier);
+		glm::vec4 end = v.position + v.AveragedNormal_bi_tangents;
 		NormalLine n(start, end);
 		mAveragedBiTangentArray.push_back(n);
 	}

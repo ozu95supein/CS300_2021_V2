@@ -53,6 +53,7 @@ RenderableMeshObject::~RenderableMeshObject()
     Renderable_CleanUpObjectAndBuffers(mObjectAveragedBiTangent_VBO, mObjectAveragedBiTangent_VAO, mObjectMesh);
     mObjectMesh.~Mesh();
 }
+
 void RenderableMeshObject::Renderable_InitAllBuffers()
 {
     Renderable_InitializeMeshBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
@@ -194,6 +195,8 @@ void RenderableMeshObject::Renderable_InitializeAveragedBiTangentBuffers(GLuint&
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 }
+
+
 Mesh& RenderableMeshObject::GetMesh()
 {
     return mObjectMesh;
@@ -230,6 +233,7 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset();
 }
+
 void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial)
 {
     glUseProgram(shader);
@@ -484,117 +488,4 @@ void RenderableMeshObject::Translate(glm::vec3 newPosition)
 Material& RenderableMeshObject::GetMaterialRefference()
 {
     return mMaterial;
-}
-
-void RenderableMeshObject::Renderable_displayCubeMap(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& CubemapTexture, bool display_wiremesh)
-{
-    // Bind the glsl program and this object's VAO
-    glUseProgram(shader);
-    //pass them to program
-    GLint model = glGetUniformLocation(shader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(shader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(shader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    //texture stuff
-    glActiveTexture(GL_TEXTURE0); //activate bucket 0
-    glBindTexture(GL_TEXTURE_CUBE_MAP, CubemapTexture);  //fill bucket 0
-    GLuint loc = glGetUniformLocation(shader, "skyBox_data");   //get uniform of frag shader
-    glUniform1i(loc, 0);    //use stuff from bucket 0
-
-    // Draw
-    if (display_wiremesh == false)
-    {
-        glBindVertexArray(mObjectVAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    }
-    else
-    {
-        glBindVertexArray(mObjectVAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    }
-}
-
-void RenderableMeshObject::Renderable_DisplayToFBO(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& CubeMapShader, GLuint& CubeMapFaceTexture, int RenderMode)
-{
-    // Bind the glsl program and this object's VAO
-    glUseProgram(CubeMapShader);
-    // Enable front-face culling
-    glCullFace(GL_BACK);
-    //pass them to program
-    GLint model = glGetUniformLocation(CubeMapShader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(CubeMapShader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(CubeMapShader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    //ColoredBoxTextureOn
-    GLuint texture_tog = glGetUniformLocation(CubeMapShader, "texture_toggle");
-    glUniform1i(texture_tog, 1);
-
-    //RenderMode
-    GLuint RenderMode_tog = glGetUniformLocation(CubeMapShader, "RenderMode");
-    glUniform1i(RenderMode_tog, RenderMode);
-
-    //draw depth buffer
-    glBindVertexArray(mObjectVAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-}
-void RenderableMeshObject::Renderable_DisplayMultiRenderMode(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& MultiRenderShader, GLuint& ColorMaptexture, GLuint& CubeMapFaceTexture, int RenderMode, glm::vec3 cam_pos, int using_facenormals, bool display_wiremesh)
-{
-    // Bind the glsl program and this object's VAO
-    glUseProgram(MultiRenderShader);
-    // Enable front-face culling
-    glCullFace(GL_BACK);
-    //pass them to program
-    GLint model = glGetUniformLocation(MultiRenderShader, "u_M");
-    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
-    GLint view = glGetUniformLocation(MultiRenderShader, "u_V");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
-    GLint projection = glGetUniformLocation(MultiRenderShader, "u_P");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-    
-    //RenderMode
-    GLuint RenderMode_tog = glGetUniformLocation(MultiRenderShader, "RenderMode");
-    glUniform1i(RenderMode_tog, RenderMode);
-
-    //using face normals
-    GLuint FaceNormal_tog = glGetUniformLocation(MultiRenderShader, "usingFaceNormals");
-    glUniform1i(FaceNormal_tog, using_facenormals);
-
-    //texture stuff
-    glActiveTexture(GL_TEXTURE0); //activate bucket 0
-    glBindTexture(GL_TEXTURE_2D, ColorMaptexture);  //fill bucket 0
-    GLuint loc = glGetUniformLocation(MultiRenderShader, "texture_data");   //get uniform of frag shader
-    glUniform1i(loc, 0);    //use stuff from bucket 0
-
-    // cubemap
-    glActiveTexture(GL_TEXTURE1); //activate bucket 1
-    glBindTexture(GL_TEXTURE_CUBE_MAP, CubeMapFaceTexture);
-    GLuint loc1 = glGetUniformLocation(MultiRenderShader, "cubemap_data");   //get uniform of frag shader
-    glUniform1i(loc1, 1);    //use stuff from bucket 1
-    
-    glm::vec4 cam4 = glm::vec4(cam_pos, 0.0f);
-    GLint camPos = glGetUniformLocation(MultiRenderShader, "camera_position");
-    glUniform4fv(camPos, 1, &(cam4[0]));
-
-    // Draw
-    if (display_wiremesh == false)
-    {
-        glBindVertexArray(mObjectVAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    }
-    else
-    {
-        glBindVertexArray(mObjectVAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
-    }
 }

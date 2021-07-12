@@ -28,14 +28,8 @@
     <ClInclude Include="ShaderUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BasicTextureShader.frag" />
-    <None Include="BasicTextureShader.vert" />
     <None Include="blue.frag" />
-    <None Include="CubeMap.frag" />
-    <None Include="CubeMap.vert" />
     <None Include="green.frag" />
-    <None Include="MultiRenderMode.frag" />
-    <None Include="MultiRenderMode.vert" />
     <None Include="red.frag" />
     <None Include="SingleColor.frag" />
     <None Include="White.frag" />
