@@ -14,13 +14,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "RenderableMeshObject.h"
+#include "InstanceMesh.h"
 
 static int     winID;
 static GLsizei WIDTH = 1280;
 static GLsizei HEIGHT = 720;
 float PIValue = glm::atan(1) * 4;
+//declare vertex as a struct
+
 GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 {
     GLuint       shader = glCreateShader(eShaderType);
@@ -91,45 +92,6 @@ GLuint InitializeProgram()
     GLuint theProgram = ShaderUtils::CreateShaderProgram("Vertex.vert", "Fragment.frag");
     return theProgram;
 }
-
-void CleanUpObjectAndBuffers(GLuint& vbo, GLuint& vao, Mesh& mesh)
-{
-    // Delete the VBOs
-    glDeleteBuffers(1, &vbo);
-    // Delete the VAO
-    glDeleteVertexArrays(1, &vao);
-    mesh.CleanupAndReset(); 
-}
-void ChangeSlices(GLuint& vbo, GLuint& vao, RenderableMeshObject & RenderableMesh, int new_slices, MeshType & t, GLuint & normal_vbo, GLuint & normal_vao, GLuint& average_normal_vbo, GLuint& average_normal_vao)
-{
-    Mesh& mesh = RenderableMesh.GetMesh();
-    //reset the Mesh object and clean up the buffers
-    CleanUpObjectAndBuffers(vbo, vao, mesh);
-    CleanUpObjectAndBuffers(normal_vbo, normal_vao, mesh);
-    CleanUpObjectAndBuffers(average_normal_vbo, average_normal_vao, mesh);
-    //reconstruct mesh with new slices
-    switch (t)
-    {
-    case MeshType::CYLINDER:
-        mesh.ConstructCylinder(new_slices);
-        break;
-    case MeshType::CONE:
-        mesh.ConstructCone(new_slices);
-        break;
-    case MeshType::SPHERE:
-        mesh.ConstructSphere(new_slices);
-        break;
-    default:
-        break;
-    }
-    
-    RenderableMesh.Renderable_InitializeMeshBuffers(vbo, vao, mesh);
-    mesh.GenerateNormalLines();
-    mesh.GenerateAveragedNormalLines();
-    RenderableMesh.Renderable_InitializeNormalBuffers(normal_vbo, normal_vao, mesh);
-    RenderableMesh.Renderable_InitializeAveragedNormalBuffers(average_normal_vbo, average_normal_vao, mesh);
-}
-
 GLuint makeTextureFromFile(const std::string& filename)
 {
     //load texture from filename
@@ -165,7 +127,6 @@ GLuint makeTextureFromFile(const std::string& filename)
 #undef main
 int main(int argc, char* args[])
 {
-    
     //init SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -227,6 +188,8 @@ int main(int argc, char* args[])
     //create objects to swap when pressing buttons
     RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
 */
+
+
 
     /*******************************************************************************************************************************************/
     //view matrix
