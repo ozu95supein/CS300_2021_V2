@@ -130,7 +130,7 @@ void ChangeSlices(GLuint& vbo, GLuint& vao, RenderableMeshObject & RenderableMes
     RenderableMesh.Renderable_InitializeAveragedNormalBuffers(average_normal_vbo, average_normal_vao, mesh);
 }
 
-GLuint makeNormalMapTexture(const std::string& filename)
+GLuint makeTextureFromFile(const std::string& filename)
 {
     //load texture from filename
     SDL_Surface* normalMap = IMG_Load(filename.c_str());
@@ -210,15 +210,14 @@ int main(int argc, char* args[])
     std::cout << "GL_VENDOR: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
+    
     glEnable(GL_DEPTH_TEST);
     GLuint shaderProgram = InitializeProgram();
-   
-    //TODO CHANGE TO GRASS
-    //Make a normal map for the height maps
-    GLuint mNormalMap = makeNormalMapTexture("./Textures/normal_map_flippedY.png");
+    GLuint mGrassTexture = makeTextureFromFile("./Textures/grass.png");
 
     /*******************************************************************************************************************************************/
     //create matrices
+/*
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
@@ -227,6 +226,7 @@ int main(int argc, char* args[])
     int current_slices = 20;
     //create objects to swap when pressing buttons
     RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
+*/
 
     /*******************************************************************************************************************************************/
     //view matrix
@@ -270,28 +270,6 @@ int main(int argc, char* args[])
                 {
                     quit = true;
                 }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-                {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(1.0, 0.0, 0.0));             
-                    
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
-                {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(1.0, 0.0, 0.0));
-                    
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-                {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-                {
-                    glm::mat4& mPlane = planeObject.GetModelRefference();
-                    mPlane = glm::rotate(planeObject.GetModel(), glm::radians(5.0f), glm::vec3(0.0, 1.0, 0.0));
-                }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_W)
                 {
                     gamma_rad += gamma_increment;
@@ -299,7 +277,6 @@ int main(int argc, char* args[])
                     {
                         gamma_rad = (PIValue / 2.0f);
                     }
-                    
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                 {
@@ -308,8 +285,7 @@ int main(int argc, char* args[])
                     {
                         gamma_rad = -(PIValue / 2.0f);
                     }
-                    glm::clamp(gamma_rad, -(PIValue / 2.0f), (PIValue / 2.0f));
-                    
+                    glm::clamp(gamma_rad, -(PIValue / 2.0f), (PIValue / 2.0f));  
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_A)
                 {
