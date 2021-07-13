@@ -15,19 +15,26 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "InstanceMesh.h"
+#include <time.h>
 
 static int     winID;
 static GLsizei WIDTH = 1280;
 static GLsizei HEIGHT = 720;
 float PIValue = glm::atan(1) * 4;
-//declare vertex as a struct
+
+float RandomFloat(float width)
+{
+    //random number from 0 to 1
+    float mult = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float result = (width * mult) - 50.0f;
+    //std::cout << result << std::endl;
+    return result;
+}
 glm::mat4 RandomTranslate(int x_area_width, int z_area_height, glm::mat4 inputMat)
 {
-    int x_offset = rand() % 100;
-    x_offset -= (x_area_width / 2);
-    int z_offset = rand() % 100;
-    z_offset -= (z_area_height / 2);
-    glm::mat4 resultMat = glm::translate(glm::mat4(1.0f), glm::vec3(x_offset, 0.0f, z_offset));
+    float randxf = RandomFloat(x_area_width);
+    float randzf = RandomFloat(z_area_height);
+    glm::mat4 resultMat = glm::translate(glm::mat4(1.0f), glm::vec3(randxf, 0.0f, randzf));
     return resultMat;
 }
 GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
@@ -194,6 +201,8 @@ int main(int argc, char* args[])
         SDL_Quit();
         exit(1);
     }
+
+    srand(time(0));
 
 #if _DEBUG
     glEnable(GL_DEBUG_OUTPUT);
