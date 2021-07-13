@@ -132,7 +132,7 @@ GLuint makeTextureFromFile(const std::string& filename)
 
     return texture;
 }
-void displayInstancedMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, GLuint& VAO, InstanceMesh mesh, unsigned int qCount)
+void displayInstancedMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, GLuint& VAO, InstanceMesh mesh, unsigned int qCount, glm::vec3 cam_pos, glm::mat4 Scale)
 {
     ////////////////////////////////////////////////////////////////////////////////
     // Bind the glsl program and this object's VAO
@@ -141,6 +141,10 @@ void displayInstancedMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GL
     glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+    GLint scale = glGetUniformLocation(shader, "u_Scale");
+    glUniformMatrix4fv(scale, 1, GL_FALSE, &(Scale[0][0]));
+    GLuint CAM_POS = glGetUniformLocation(shader, "u_camPos");
+    glUniform3fv(CAM_POS, 1, &(cam_pos[0]));
 
     //texture stuff
     glActiveTexture(GL_TEXTURE0); //activate bucket 0
@@ -210,7 +214,7 @@ int main(int argc, char* args[])
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
     //Base model matrix before making it all random
-    glm::mat4 ModelMatrixBase = scaleMatrix;//world space
+    glm::mat4 ModelMatrixBase = translationMatrix;//world space
     //create 50 initial positions from the base model matrix in the area
     unsigned int quad_count = 1000;
     std::vector<glm::mat4> quad_positions;
@@ -379,9 +383,9 @@ int main(int argc, char* args[])
                 {
                     //further
                     quad_count -= 1;
-                    if (quad_count < 0)
+                    if (quad_count < 1)
                     {
-                        quad_count = 0;
+                        quad_count = 1;
                     }
                     else
                     {
@@ -419,6 +423,7 @@ int main(int argc, char* args[])
         cam_y = CameraRadius * glm::sin(gamma_rad);
         cam_z = CameraRadius * glm::cos(gamma_rad) * glm::cos(alpha_rad);
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
+        
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
         ////////////////////////////////////////////////////////////////////////////////
@@ -427,7 +432,7 @@ int main(int argc, char* args[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ////////////////////////////////////////////////////////////////////////////////       
         //render instance
-        displayInstancedMesh(ViewMatrix, ProjectionMatrix, shaderProgram, mGrassTexture, GrassVAO, GrassQuads, quad_count);
+        displayInstancedMesh(ViewMatrix, ProjectionMatrix, shaderProgram, mGrassTexture, GrassVAO, GrassQuads, quad_count, cam_pos, scaleMatrix);
         SDL_GL_SwapWindow(window);         
     }
 
