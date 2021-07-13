@@ -9,9 +9,22 @@ out vec2 outUV;
 uniform mat4 u_P;
 uniform mat4 u_V;
 
-
 void main()
 { 
-    gl_Position = u_P * u_V * aInstanceMatrix * aPosition; 
+    mat4 ModelView = u_V * aInstanceMatrix;
+
+    //first column
+    ModelView[0][0] = 1.0f;
+    ModelView[0][1] = 0.0f;
+    ModelView[0][2] = 0.0f;
+
+    // Thrid colunm.
+    ModelView[2][0] = 0.0; 
+    ModelView[2][1] = 0.0; 
+    ModelView[2][2] = 1.0; 
+
+    vec4 ResultingPosition = ModelView * aPosition;
+    gl_Position = u_P * ResultingPosition;
+    //gl_Position = u_P * u_V * aInstanceMatrix * aPosition; 
     outUV = aUV;
 }
