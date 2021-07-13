@@ -21,7 +21,15 @@ static GLsizei WIDTH = 1280;
 static GLsizei HEIGHT = 720;
 float PIValue = glm::atan(1) * 4;
 //declare vertex as a struct
-
+glm::mat4 RandomTranslate(int x_area_width, int z_area_height, glm::mat4 inputMat)
+{
+    int x_offset = rand() % 100;
+    x_offset -= (x_area_width / 2);
+    int z_offset = rand() % 100;
+    z_offset -= (z_area_height / 2);
+    glm::mat4 resultMat = glm::translate(glm::mat4(1.0f), glm::vec3(x_offset, 0.0f, z_offset));
+    return resultMat;
+}
 GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile)
 {
     GLuint       shader = glCreateShader(eShaderType);
@@ -89,7 +97,7 @@ GLuint CreateProgram(const std::vector<GLuint>& shaderList)
 }
 GLuint InitializeProgram()
 {
-    GLuint theProgram = ShaderUtils::CreateShaderProgram("Vertex.vert", "Fragment.frag");
+    GLuint theProgram = ShaderUtils::CreateShaderProgram("Instance.vert", "Instance.frag");
     return theProgram;
 }
 GLuint makeTextureFromFile(const std::string& filename)
@@ -124,6 +132,26 @@ GLuint makeTextureFromFile(const std::string& filename)
 
     return texture;
 }
+void displayInstancedMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, GLuint& VAO, InstanceMesh mesh, unsigned int qCount)
+{
+    ////////////////////////////////////////////////////////////////////////////////
+    // Bind the glsl program and this object's VAO
+    glUseProgram(shader);
+    GLint view = glGetUniformLocation(shader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(shader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+
+    //texture stuff
+    glActiveTexture(GL_TEXTURE0); //activate bucket 0
+    glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
+    GLuint loc = glGetUniformLocation(shader, "texture_data");   //get uniform of frag shader
+    glUniform1i(loc, 0);    //use stuff from bucket 0
+
+    glBindVertexArray(VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.GetVertexNum(), qCount);
+}
 #undef main
 int main(int argc, char* args[])
 {
@@ -142,7 +170,7 @@ int main(int argc, char* args[])
         exit(1);
     }
     //ASK ABOUT THIS
-     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     //CREATE the Context, ask about this
     SDL_GLContext context_ = SDL_GL_CreateContext(window);
@@ -173,25 +201,67 @@ int main(int argc, char* args[])
     std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
     
     glEnable(GL_DEPTH_TEST);
+    /*******************************************************************************************************************************************/
     GLuint shaderProgram = InitializeProgram();
     GLuint mGrassTexture = makeTextureFromFile("./Textures/grass.png");
-
-    /*******************************************************************************************************************************************/
-    //create matrices
-/*
+    int AreaWidth = 100;    //x
+    int AreaHeight = 100;   //z
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 20.0f, 20.0f));
-    //model matrix
-    glm::mat4 ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;//world space
-    int current_slices = 20;
-    //create objects to swap when pressing buttons
-    RenderableMeshObject planeObject(MeshType::PLANE, current_slices, ModelMatrix);
-*/
-
-
-
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
+    //Base model matrix before making it all random
+    glm::mat4 ModelMatrixBase = scaleMatrix;//world space
+    //create 50 initial positions from the base model matrix in the area
+    unsigned int quad_count = 1000;
+    std::vector<glm::mat4> quad_positions;
+    for (int i = 0; i < quad_count; i++)
+    {
+        glm::mat4 r = RandomTranslate(AreaWidth, AreaHeight, ModelMatrixBase);
+        quad_positions.push_back(r);
+    }
     /*******************************************************************************************************************************************/
+    unsigned long Vertex_Stride = sizeof(Vertex);
+    InstanceMesh GrassQuads = InstanceMesh();
+    GLuint GrassVAO;    // create buffer for VAO
+    glGenVertexArrays(1, &GrassVAO);
+    GLuint GrassQuadVBO;
+    glGenBuffers(1, &GrassQuadVBO);
+    GLuint GrassInstanceMatricesVBO;
+    glGenBuffers(1, &GrassInstanceMatricesVBO);
+
+    glBindVertexArray(GrassVAO);                 //bind so we are now doing stuff to the vao
+    glBindBuffer(GL_ARRAY_BUFFER, GrassQuadVBO); // bind so we are now doing stuff to the vao of the grass quad with its positions and UVs
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(Vertex) * GrassQuads.GetVertexNum()), GrassQuads.GetVertices(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);               //positions
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, Vertex_Stride, 0);  
+    glEnableVertexAttribArray(1);               //normals
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, Vertex_Stride, reinterpret_cast<void*>(offsetof(Vertex, normal))); 
+    glEnableVertexAttribArray(2);               //uv
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, Vertex_Stride, reinterpret_cast<void*>(offsetof(Vertex, UV)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(GrassVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, GrassInstanceMatricesVBO);
+    glBufferData(GL_ARRAY_BUFFER, quad_count * sizeof(glm::mat4), &quad_positions[0], GL_STATIC_DRAW);
+    std::size_t vec4Size = sizeof(glm::vec4);
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribDivisor(5, 1);
+    glVertexAttribDivisor(6, 1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    /*******************************************************************************************************************************************/
+
     //view matrix
     glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::vec3 ViewDirection = glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(0.0f, 0.0f, 50.0f);
@@ -201,8 +271,8 @@ int main(int argc, char* args[])
     float CameraRadius_increment = 0.5;  //radius of the camera from origin
     float alpha_rad = 0.0f;     //angle of the camera on the xz plane, y axis
     float gamma_rad = 0.0f;   //angle of the camera from the top
-    float alpha_increment = 0.05f;
-    float gamma_increment = 0.05f;
+    float alpha_increment = 0.01f;
+    float gamma_increment = 0.01f;
     
     float cam_x = CameraRadius * glm::cos(gamma_rad) * glm::sin(alpha_rad);
     float cam_y = CameraRadius * glm::sin(gamma_rad);
@@ -278,7 +348,69 @@ int main(int argc, char* args[])
                         CameraRadius = 100.0f;
                     }
                 }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
+                {
+                    //further
+                    quad_count += 1;
+                    glm::mat4 r = RandomTranslate(AreaWidth, AreaHeight, ModelMatrixBase);
+                    quad_positions.push_back(r);
+                    glBindVertexArray(GrassVAO);
+                    glBindBuffer(GL_ARRAY_BUFFER, GrassInstanceMatricesVBO);
+                    glBufferData(GL_ARRAY_BUFFER, quad_count * sizeof(glm::mat4), &quad_positions[0], GL_STATIC_DRAW);
+                    std::size_t vec4Size = sizeof(glm::vec4);
+                    glEnableVertexAttribArray(3);
+                    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+                    glEnableVertexAttribArray(4);
+                    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+                    glEnableVertexAttribArray(5);
+                    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+                    glEnableVertexAttribArray(6);
+                    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+                    glVertexAttribDivisor(3, 1);
+                    glVertexAttribDivisor(4, 1);
+                    glVertexAttribDivisor(5, 1);
+                    glVertexAttribDivisor(6, 1);
+
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindVertexArray(0);
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
+                {
+                    //further
+                    quad_count -= 1;
+                    if (quad_count < 0)
+                    {
+                        quad_count = 0;
+                    }
+                    else
+                    {
+                        quad_positions.pop_back();
+                        glBindVertexArray(GrassVAO);
+                        glBindBuffer(GL_ARRAY_BUFFER, GrassInstanceMatricesVBO);
+                        glBufferData(GL_ARRAY_BUFFER, quad_count * sizeof(glm::mat4), &quad_positions[0], GL_STATIC_DRAW);
+                        std::size_t vec4Size = sizeof(glm::vec4);
+                        glEnableVertexAttribArray(3);
+                        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+                        glEnableVertexAttribArray(4);
+                        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+                        glEnableVertexAttribArray(5);
+                        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+                        glEnableVertexAttribArray(6);
+                        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+                        glVertexAttribDivisor(3, 1);
+                        glVertexAttribDivisor(4, 1);
+                        glVertexAttribDivisor(5, 1);
+                        glVertexAttribDivisor(6, 1);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, 0);
+                        glBindVertexArray(0);
+                    }
+                }
                 break;
+
+                //SDL_SCANCODE_KP_PLUS
             }
         }
         ////////////////////////////////////////////////////////////////////////////////
@@ -289,19 +421,14 @@ int main(int argc, char* args[])
         glm::vec3 cam_pos(cam_x, cam_y, cam_z);
         glm::mat4 ViewMatrix2 = glm::lookAt(cam_pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ViewMatrix = ViewMatrix2;
-        
         ////////////////////////////////////////////////////////////////////////////////
         //change shader program to receive matrices as inputs
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        ////////////////////////////////////////////////////////////////////////////////
-        
+        ////////////////////////////////////////////////////////////////////////////////       
         //render instance
-
-        //
-
-        SDL_GL_SwapWindow(window);    
-        
+        displayInstancedMesh(ViewMatrix, ProjectionMatrix, shaderProgram, mGrassTexture, GrassVAO, GrassQuads, quad_count);
+        SDL_GL_SwapWindow(window);         
     }
 
     glDeleteProgram(shaderProgram);

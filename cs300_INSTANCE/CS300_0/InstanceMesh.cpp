@@ -3,7 +3,6 @@
 InstanceMesh::InstanceMesh()
 {
 	ConstructPlane();
-
 }
 InstanceMesh::~InstanceMesh()
 {

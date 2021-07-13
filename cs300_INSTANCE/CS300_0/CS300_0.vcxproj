@@ -11,29 +11,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LightSourceObject.cpp" />
+    <ClCompile Include="InstanceMesh.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OGLDebug.cpp" />
-    <ClCompile Include="RenderableMeshObject.cpp" />
     <ClCompile Include="ShaderUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraObject.h" />
-    <ClInclude Include="LightSourceObject.h" />
-    <ClInclude Include="Light_And_Material.h" />
+    <ClInclude Include="InstanceMesh.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="OGLDebug.h" />
-    <ClInclude Include="RenderableMeshObject.h" />
     <ClInclude Include="ShaderUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="blue.frag" />
-    <None Include="green.frag" />
-    <None Include="red.frag" />
-    <None Include="SingleColor.frag" />
-    <None Include="White.frag" />
-    <None Include="White.vert" />
+    <None Include="Instance.frag" />
+    <None Include="Instance.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

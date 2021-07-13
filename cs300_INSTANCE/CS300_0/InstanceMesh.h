@@ -26,6 +26,7 @@ public:
     void SetVertexNum(int v);
     int GetFaceNum();
     void SetFaceNum(int f);
+    
 private:
     std::vector<Vertex> mVertexArray;
     int mVertexNum;
