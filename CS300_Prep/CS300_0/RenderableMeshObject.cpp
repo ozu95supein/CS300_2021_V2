@@ -55,7 +55,6 @@ RenderableMeshObject::~RenderableMeshObject()
     Renderable_CleanUpObjectAndBuffers(mObjectAveragedBiTangent_VBO, mObjectAveragedBiTangent_VAO, mObjectMesh);
     mObjectMesh.~Mesh();
 }
-
 void RenderableMeshObject::Renderable_InitAllBuffers()
 {
     Renderable_InitializeMeshBuffers(mObjectVBO, mObjectVAO, mObjectMesh);
@@ -197,8 +196,6 @@ void RenderableMeshObject::Renderable_InitializeAveragedBiTangentBuffers(GLuint&
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 }
-
-
 Mesh& RenderableMeshObject::GetMesh()
 {
     return mObjectMesh;
@@ -235,7 +232,6 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     glDeleteVertexArrays(1, &vao);
     mesh.CleanupAndReset();
 }
-
 void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows, int neighbor)
 {
     glUseProgram(shader);
@@ -294,7 +290,6 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     GLuint Neighbors = glGetUniformLocation(shader, "u_neighbors");
     glUniform1i(Neighbors, neighbor);
 }
-
 void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight)
 {
     // Bind the glsl program and this object's VAO
@@ -359,6 +354,96 @@ void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat
 
     // Draw
     if (display_wiremesh == false)
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
+    else
+    {
+        glBindVertexArray(mObjectVAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    }
+}
+void RenderableMeshObject::New_Renderable_MainDisplay(Camera camera, Light& CurrentLight, Camera light_camera, AuxRenderVariables variables, GLuint& depthTex)
+{
+    ////////////////////////////////////////////////////////////////////////////////
+    // Clear both the depth and color buffers
+    // Enable back-face culling
+    glCullFace(GL_BACK);
+    // Bind the glsl program and this object's VAO
+    glUseProgram(mRegularShaderProgram);
+    //pass them to program
+    GLint model = glGetUniformLocation(mRegularShaderProgram, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(mRegularShaderProgram, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(camera.GetViewMatrix()[0][0]));
+    GLint projection = glGetUniformLocation(mRegularShaderProgram, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(camera.GetProjectionMatrix()[0][0]));
+    ////////////////////////////////////////////////////////////////////////////////
+    //set lighting
+    //AMBIENT
+    GLint LIGHTAMBIENT = glGetUniformLocation(mRegularShaderProgram, "lightAmbient");
+    glUniform3fv(LIGHTAMBIENT, 1, &(CurrentLight.light_ambient[0]));
+    GLint MATERIALAMBIENT = glGetUniformLocation(mRegularShaderProgram, "materialAmbient");
+    glUniform3fv(MATERIALAMBIENT, 1, &(mMaterial.material_ambient[0]));
+    //DIFFUSE
+    GLuint LIGHTDIFFUSE = glGetUniformLocation(mRegularShaderProgram, "lightDiffuse");
+    glUniform3fv(LIGHTDIFFUSE, 1, &(CurrentLight.light_diffuse[0]));
+    GLuint LIGHTPOSITION = glGetUniformLocation(mRegularShaderProgram, "lightPosition");
+    glUniform4fv(LIGHTPOSITION, 1, &(CurrentLight.light_position[0]));
+    GLuint MATERIALDIFFUSE = glGetUniformLocation(mRegularShaderProgram, "materialDiffuse");
+    glUniform3fv(MATERIALDIFFUSE, 1, &(mMaterial.material_diffuse[0]));
+    //SPECULAR
+    GLuint LIGHTSPECULAR = glGetUniformLocation(mRegularShaderProgram, "lightSpecular");
+    glUniform3fv(LIGHTSPECULAR, 1, &(CurrentLight.light_specular[0]));
+    GLuint MATERIALSPECULAR = glGetUniformLocation(mRegularShaderProgram, "materialSpecular");
+    glUniform3fv(MATERIALSPECULAR, 1, &(mMaterial.material_specular[0]));
+    GLuint MATERIALSPECULAR_NS = glGetUniformLocation(mRegularShaderProgram, "materialSpecularNS");
+    glUniform1f(MATERIALSPECULAR_NS, (mMaterial.ns));
+    //ATTENUATION
+    GLuint LIGHTATTENUATION = glGetUniformLocation(mRegularShaderProgram, "lightAttenuation");
+    glUniform3fv(LIGHTATTENUATION, 1, &(CurrentLight.light_attenuation[0]));
+    //LIGHTSOURCETYPE
+    GLuint LIGHTSOURCETYPE = glGetUniformLocation(mRegularShaderProgram, "light_type");
+    glUniform1i(LIGHTSOURCETYPE, CurrentLight.light_type);
+    //SPOTLIGHT
+    GLuint LIGHTINNERANGLE = glGetUniformLocation(mRegularShaderProgram, "lightInner");
+    glUniform1f(LIGHTINNERANGLE, (CurrentLight.inner));
+    GLuint LIGHTOUTERANGLE = glGetUniformLocation(mRegularShaderProgram, "lightOuter");
+    glUniform1f(LIGHTOUTERANGLE, (CurrentLight.outer));
+    GLuint LIGHTFALLOFF = glGetUniformLocation(mRegularShaderProgram, "lightFalloff");
+    glUniform1f(LIGHTFALLOFF, (CurrentLight.falloff));
+    //DIRECTION
+    GLuint LIGHTDIRECTION = glGetUniformLocation(mRegularShaderProgram, "lightDirection");
+    glUniform4fv(LIGHTDIRECTION, 1, &(CurrentLight.light_direction[0]));
+    //LIGHTSPACE VIEW and PROJECTION
+    GLint lightView = glGetUniformLocation(mRegularShaderProgram, "u_LightView");
+    glUniformMatrix4fv(lightView, 1, GL_FALSE, &(light_camera.GetViewMatrix()[0][0]));
+    GLint lightProjection = glGetUniformLocation(mRegularShaderProgram, "u_LightProjection");
+    glUniformMatrix4fv(lightProjection, 1, GL_FALSE, &(light_camera.GetProjectionMatrix()[0][0]));
+    GLuint IsUsingShadows = glGetUniformLocation(mRegularShaderProgram, "using_shadows_int");
+    glUniform1i(IsUsingShadows, variables.using_shadows);
+    GLuint Neighbors = glGetUniformLocation(mRegularShaderProgram, "u_neighbors");
+    glUniform1i(Neighbors, CurrentLight.neighbor);
+    ////////////////////////////////////////////////////////////////////////////////
+    //texture stuff
+    glActiveTexture(GL_TEXTURE0); //activate bucket 0
+    glBindTexture(GL_TEXTURE_2D, mObjectTexture);  //fill bucket 0
+    GLuint loc = glGetUniformLocation(mRegularShaderProgram, "texture_data");   //get uniform of frag shader
+    glUniform1i(loc, 0);    //use stuff from bucket 0
+    glActiveTexture(GL_TEXTURE1); //activate bucket 1
+    glBindTexture(GL_TEXTURE_2D, mObjectNormalMapTexture);
+    GLuint loc1 = glGetUniformLocation(mRegularShaderProgram, "normalMap_data");   //get uniform of frag shader
+    glUniform1i(loc1, 1);    //use stuff from bucket 1
+    glActiveTexture(GL_TEXTURE2); //activate bucket 2
+    glBindTexture(GL_TEXTURE_2D, depthTex);
+    GLuint loc2 = glGetUniformLocation(mRegularShaderProgram, "shadowMap_data");   //get uniform of frag shader
+    glUniform1i(loc2, 2);    //use stuff from bucket 1
+    ////////////////////////////////////////////////////////////////////////////////
+    // Draw
+    if (variables.display_wiremesh == false)
     {
         glBindVertexArray(mObjectVAO);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -560,3 +645,4 @@ void RenderableMeshObject::Renderable_displayDepth(glm::mat4& ViewMatrix, glm::m
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }
+
