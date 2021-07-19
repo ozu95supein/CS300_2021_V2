@@ -181,7 +181,6 @@ void Mesh::ConstructCube()
 	mVertexArray.push_back(v33);
 	mVertexArray.push_back(v34);
 	mVertexArray.push_back(v35);
-	std::cout << "CUBE" << std::endl;
 	ConstructAveragedNormals();
 	AveragedNormal_ComputeTangentBasis();
 	ComputeTangetBasis();

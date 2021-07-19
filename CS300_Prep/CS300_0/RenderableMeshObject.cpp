@@ -1,4 +1,6 @@
 #include "RenderableMeshObject.h"
+static GLsizei WIDTH = 1280;
+static GLsizei HEIGHT = 720;
 RenderableMeshObject::RenderableMeshObject() : mObjectVBO ( 0 )
 {
     mObjectVBO                  = -1;
@@ -234,7 +236,7 @@ void RenderableMeshObject::Renderable_CleanUpObjectAndBuffers(GLuint& vbo, GLuin
     mesh.CleanupAndReset();
 }
 
-void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial)
+void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light& CurrentLight, Material& CurrentMaterial, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows, int neighbor)
 {
     glUseProgram(shader);
     //pass them to program
@@ -280,10 +282,46 @@ void RenderableMeshObject::Renderable_SetLightingUniforms(GLuint& shader, Light&
     //DIRECTION
     GLuint LIGHTDIRECTION = glGetUniformLocation(shader, "lightDirection");
     glUniform4fv(LIGHTDIRECTION, 1, &(CurrentLight.light_direction[0]));
+
+    //LIGHTSPACE VIEW and PROJECTION
+    GLint lightView = glGetUniformLocation(shader, "u_LightView");
+    glUniformMatrix4fv(lightView, 1, GL_FALSE, &(LightViewMatrix[0][0]));
+    GLint lightProjection = glGetUniformLocation(shader, "u_LightProjection");
+    glUniformMatrix4fv(lightProjection, 1, GL_FALSE, &(LightProjectionMatrix[0][0]));
+
+    GLuint IsUsingShadows = glGetUniformLocation(shader, "using_shadows_int");
+    glUniform1i(IsUsingShadows, using_shadows);
+    GLuint Neighbors = glGetUniformLocation(shader, "u_neighbors");
+    glUniform1i(Neighbors, neighbor);
 }
-void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light & CurrentLight, GLuint& NormalMap, int UsingFaceNormals)
+
+void RenderableMeshObject::Renderable_firstPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthshader, const int ShadowMapWidth, const int ShadowMapHeight)
+{
+    // Bind the glsl program and this object's VAO
+    glUseProgram(depthshader);
+
+    // Enable front-face culling
+    glCullFace(GL_FRONT);
+    
+    //pass them to program
+    GLint model = glGetUniformLocation(depthshader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(depthshader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(depthshader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+    //draw depth buffer
+    glBindVertexArray(mObjectVAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
+    
+}
+void RenderableMeshObject::Renderable_secondPass(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& shader, GLuint& texture, bool display_wiremesh, int RenderMode, Light& CurrentLight, GLuint& NormalMap, int UsingFaceNormals, GLuint& depthTex, glm::mat4& LightViewMatrix, glm::mat4& LightProjectionMatrix, bool using_shadows, int neighbor)
 {
     ////////////////////////////////////////////////////////////////////////////////
+    // Clear both the depth and color buffers
+    // Enable back-face culling
+    glCullFace(GL_BACK);
     // Bind the glsl program and this object's VAO
     glUseProgram(shader);
     //pass them to program
@@ -293,8 +331,8 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
     GLint projection = glGetUniformLocation(shader, "u_P");
     glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
-
-    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial);
+    
+    Renderable_SetLightingUniforms(shader, CurrentLight, mMaterial, LightViewMatrix, LightProjectionMatrix, using_shadows, neighbor);
 
     //ColoredBoxTextureOn
     GLuint texture_tog = glGetUniformLocation(shader, "Render_Mode");
@@ -313,6 +351,11 @@ void RenderableMeshObject::Renderable_displayMesh(glm::mat4& ViewMatrix, glm::ma
     glBindTexture(GL_TEXTURE_2D, NormalMap);
     GLuint loc1 = glGetUniformLocation(shader, "normalMap_data");   //get uniform of frag shader
     glUniform1i(loc1, 1);    //use stuff from bucket 1
+
+    glActiveTexture(GL_TEXTURE2); //activate bucket 2
+    glBindTexture(GL_TEXTURE_2D, depthTex);
+    GLuint loc2 = glGetUniformLocation(shader, "shadowMap_data");   //get uniform of frag shader
+    glUniform1i(loc2, 2);    //use stuff from bucket 1
 
     // Draw
     if (display_wiremesh == false)
@@ -488,4 +531,32 @@ void RenderableMeshObject::Translate(glm::vec3 newPosition)
 Material& RenderableMeshObject::GetMaterialRefference()
 {
     return mMaterial;
+}
+void RenderableMeshObject::Renderable_RotateModel(float rotation_radians, glm::vec3 axis)
+{
+    glm::mat4& model = this->GetModelRefference();
+    model = glm::rotate(model, rotation_radians, axis);
+}
+void RenderableMeshObject::Renderable_displayDepth(glm::mat4& ViewMatrix, glm::mat4& ProjectionMatrix, GLuint& depthplaneshader, GLuint& texture)
+{
+    // Enable back-face culling
+    glCullFace(GL_BACK);
+    // Bind the glsl program and this object's VAO
+    glUseProgram(depthplaneshader);
+    //pass them to program
+    GLint model = glGetUniformLocation(depthplaneshader, "u_M");
+    glUniformMatrix4fv(model, 1, GL_FALSE, &(mModelMatrix[0][0]));
+    GLint view = glGetUniformLocation(depthplaneshader, "u_V");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &(ViewMatrix[0][0]));
+    GLint projection = glGetUniformLocation(depthplaneshader, "u_P");
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &(ProjectionMatrix[0][0]));
+    //texture stuff
+    glActiveTexture(GL_TEXTURE0); //activate bucket 0
+    glBindTexture(GL_TEXTURE_2D, texture);  //fill bucket 0
+    GLuint loc = glGetUniformLocation(depthplaneshader, "depth_texture_data");   //get uniform of frag shader
+    glUniform1i(loc, 0);    //use stuff from bucket 0
+
+    glBindVertexArray(mObjectVAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDrawArrays(GL_TRIANGLES, 0, mObjectMesh.GetVertexNum());
 }

@@ -27,7 +27,10 @@
     <ClCompile Include="ShaderUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InstanceMesh.cpp">
+    <ClCompile Include="RenderableMeshObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSourceObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,15 +44,28 @@
     <ClInclude Include="ShaderUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraObject.h">
+    <ClInclude Include="RenderableMeshObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InstanceMesh.h">
+    <ClInclude Include="Light_And_Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSourceObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Instance.vert" />
-    <None Include="Instance.frag" />
+    <None Include="White.vert" />
+    <None Include="White.frag" />
+    <None Include="SingleColor.frag" />
+    <None Include="red.frag" />
+    <None Include="blue.frag" />
+    <None Include="green.frag" />
+    <None Include="depth.frag" />
+    <None Include="depthplane.vert" />
+    <None Include="depthplane.frag" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 out vec4 outputColor;
 in vec2 outUV;
 in vec4 position_cameraspace;
+in vec4 position_lightspace;
 in vec4 lightPosition_cameraspace;
 in vec4 lightDirection_cameraspace;
 
@@ -15,9 +16,13 @@ in vec4 Avg_BiTangent_Cameraspace;
 
 uniform sampler2D texture_data; // smallColors.png
 uniform sampler2D normalMap_data;
+uniform sampler2D shadowMap_data;
+
 uniform int Render_Mode;
 uniform int faceNormal_toggle;
 uniform int light_type;
+uniform int using_shadows_int;
+uniform int u_neighbors;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
@@ -31,6 +36,28 @@ uniform float materialSpecularNS;
 uniform float lightInner;
 uniform float lightOuter;
 uniform float lightFalloff;
+
+float getPCFShadow(vec2 UV, vec3 position_lightspace_NDC3)
+{
+	vec2 texelOffset = 1.0 / textureSize(shadowMap_data, 0);
+	int neighbor = u_neighbors; // For a 5x5 neighborhood
+	float accumulatedVisibility = 0.0f;
+	float sampleCount = 0.0f;
+	for(int x = -neighbor; x <= neighbor; x++)
+	{
+		for(int y = -neighbor; y <= neighbor; y++)
+		{
+			float shadowDepth = texture(shadowMap_data, UV + texelOffset * vec2(x, y)).r;
+			// Evaluate visibility for this sample
+			if(position_lightspace_NDC3.z < shadowDepth)
+			{
+				accumulatedVisibility += 1.0f;
+			}
+			sampleCount += 1.0f;
+		}
+	}
+	return accumulatedVisibility / sampleCount;
+}
 
 void main()
 {
@@ -78,6 +105,26 @@ void main()
 	
 	float SpotlightEffect = 1.0f;
 
+	//SHADOWMAP
+	//Do perspective division
+	float w = position_lightspace.w;
+	vec3 position_lightspace_persDiv = position_lightspace.xyz / w;;
+	vec3 position_lightspace_NDC = (position_lightspace_persDiv * 0.5f) + 0.5f;
+
+	vec2 shadowUV = vec2(position_lightspace_NDC.x, position_lightspace_NDC.y);
+	vec3 ShadowMap3 = texture(shadowMap_data, shadowUV).xyz; 
+
+	float shadowmap_mod;
+
+	if(using_shadows_int == 1)
+	{
+		shadowmap_mod = getPCFShadow(shadowUV, position_lightspace_NDC);
+	}
+	else
+	{
+			shadowmap_mod = 1.0f;
+	}
+	
 	if(light_type == 1)	//spotlight
 	{
 		vec3 neg_L =  - NORMALIZED_L;
@@ -122,7 +169,7 @@ void main()
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
 			
-			vec3 I_total = att * (I_ambient + SpotlightEffect * (I_diffuse + I_specular));
+			vec3 I_total = att * (I_ambient + shadowmap_mod *SpotlightEffect * (I_diffuse + I_specular));
 			outputColor = vec4(I_total, 1.0f);
 		}
 		else
@@ -149,7 +196,7 @@ void main()
 			float RV_NS_Result = pow(RV_Result, materialSpecularNS);
 			vec3 I_specular = lightSpecular * K_s * RV_NS_Result;
 			
-			vec3 I_total = att * (I_ambient + SpotlightEffect * (I_diffuse + I_specular));
+			vec3 I_total = att * (I_ambient + shadowmap_mod *SpotlightEffect * (I_diffuse + I_specular));
 			outputColor = vec4(I_total, 1.0f);
 		}
 	}
