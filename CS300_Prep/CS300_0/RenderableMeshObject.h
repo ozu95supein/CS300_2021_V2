@@ -9,7 +9,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Camera.h"
 
+//Auxiliary variables for rendering in different modes
+struct AuxRenderVariables
+{
+    int display_wiremesh;
+    int RenderMode;
+    int UsingFaceNormals;
+    int using_shadows; 
+};
 class RenderableMeshObject
 {
 public:
@@ -59,17 +68,22 @@ public:
     Material& GetMaterialRefference();
     void Renderable_RotateModel(float rotation_radians, glm::vec3 axis);
 
-    void New_Renderable_MainDisplay();
+    void New_Renderable_MainDisplay(Camera camera, Light& CurrentLight);
 
     //shader and texture
     void SetObjectTexture(GLuint t)
     {
         mObjectTexture = t;
     }
-    void mSetegularShaderProgram(GLuint s)
+    void SetObjectNormalMap(GLuint n)
+    {
+        mObjectNormalMapTexture = n;
+    }
+    void SetegularShaderProgram(GLuint s)
     {
         mRegularShaderProgram = s;
     }
+
 private:
 
     Mesh mObjectMesh;
@@ -95,5 +109,6 @@ private:
     Material mMaterial;
 
     GLuint mObjectTexture;  //texture specific to this object
+    GLuint mObjectNormalMapTexture;  //texture specific to this object
     GLuint mRegularShaderProgram;  //for regular rendering as well as acting as the second pass for shadows
 };
