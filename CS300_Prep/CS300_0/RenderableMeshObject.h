@@ -59,6 +59,17 @@ public:
     Material& GetMaterialRefference();
     void Renderable_RotateModel(float rotation_radians, glm::vec3 axis);
 
+    void New_Renderable_MainDisplay();
+
+    //shader and texture
+    void SetObjectTexture(GLuint t)
+    {
+        mObjectTexture = t;
+    }
+    void mSetegularShaderProgram(GLuint s)
+    {
+        mRegularShaderProgram = s;
+    }
 private:
 
     Mesh mObjectMesh;
@@ -82,4 +93,7 @@ private:
 
     glm::mat4 mModelMatrix;
     Material mMaterial;
+
+    GLuint mObjectTexture;  //texture specific to this object
+    GLuint mRegularShaderProgram;  //for regular rendering as well as acting as the second pass for shadows
 };

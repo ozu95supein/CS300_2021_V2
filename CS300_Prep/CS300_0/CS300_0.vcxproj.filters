@@ -53,9 +53,6 @@
     <ClInclude Include="LightSourceObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="White.vert" />
