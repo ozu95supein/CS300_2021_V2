@@ -11,6 +11,7 @@ struct Light
     glm::vec4 light_direction;
 
     int light_type;                 //0 = PointLight, 1 = SpotLight, 2 = DirectionalLight
+    int neighbor;                   //for anti alliasing smooth shadows
     float inner = 30.0f;
     float outer = 35.0f;
     float falloff = 1.0f;

@@ -68,7 +68,7 @@ public:
     Material& GetMaterialRefference();
     void Renderable_RotateModel(float rotation_radians, glm::vec3 axis);
 
-    void New_Renderable_MainDisplay(Camera camera, Light& CurrentLight);
+    void New_Renderable_MainDisplay(Camera camera, Light& CurrentLight, Camera light_camera, AuxRenderVariables variables);
 
     //shader and texture
     void SetObjectTexture(GLuint t)
