@@ -41,6 +41,14 @@ public:
 	{
 		mProjectionMatrix = p;
 	}
+	vec3 ExtractCamPosition()
+	{
+		vec3 result;
+		result.x = mViewMatrix[0].w;
+		result.y = mViewMatrix[1].w;
+		result.z = mViewMatrix[2].w;
+		return result;
+	}
 private:
 	mat4 mViewMatrix;
 	mat4 mProjectionMatrix;
