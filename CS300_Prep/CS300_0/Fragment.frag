@@ -122,7 +122,7 @@ void main()
 	}
 	else
 	{
-			shadowmap_mod = 1.0f;
+		shadowmap_mod = 1.0f;
 	}
 	
 	if(light_type == 1)	//spotlight
