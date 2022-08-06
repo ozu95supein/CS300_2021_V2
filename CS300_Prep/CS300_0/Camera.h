@@ -49,6 +49,30 @@ public:
 		result.z = mViewMatrix[2].w;
 		return result;
 	}
+	vec3 ExtractCamRight()
+	{
+		vec3 result;
+		result.x = mViewMatrix[0].x;
+		result.y = mViewMatrix[0].y;
+		result.z = mViewMatrix[0].z;
+		return result;
+	}
+	vec3 ExtractCamUp()
+	{
+		vec3 result;
+		result.x = mViewMatrix[1].x;
+		result.y = mViewMatrix[1].y;
+		result.z = mViewMatrix[1].z;
+		return result;
+	}
+	vec3 ExtractCamDirection()
+	{
+		vec3 result;
+		result.x = mViewMatrix[0].x;
+		result.y = mViewMatrix[0].y;
+		result.z = mViewMatrix[0].z;
+		return result;
+	}
 private:
 	mat4 mViewMatrix;
 	mat4 mProjectionMatrix;
